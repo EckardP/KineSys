@@ -1,0 +1,45 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: clinica_sqlserver
+    environment:
+      SA_PASSWORD: "${SA_PASSWORD}"
+      ACCEPT_EULA: "Y"
+      DB_NAME: "${DB_NAME}"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "${SA_PASSWORD}" -Q "SELECT 1" || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - clinica-net
+
+  api:
+    build:
+      context: ./api/ApiPrueba
+      dockerfile: Dockerfile
+    container_name: clinica_api
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__ClinicaFisioterapiaBD=Server=sqlserver;Database=${DB_NAME};User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=true;Connect Timeout=30
+      - SQL_SERVER_HOST=sqlserver
+      - SQL_SERVER_PORT=1433
+    ports:
+      - "${API_PORT:-7164}:80"
+    networks:
+      - clinica-net
+
+volumes:
+  sql_data:
+
+networks:
+  clinica-net:
+    driver: bridge
