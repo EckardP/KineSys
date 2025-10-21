@@ -24,7 +24,7 @@ namespace ApiPrueba.Service.Implementaciones
                     NombreCompleto = t.NombreCompleto,
                     //Especialidad = t.Especialidad,
                     Telefono = t.Telefono,
-                    CorreoElectronico = t.Email
+                    CorreoElectronico = t.CorreoElectronico
                 })
                 .ToListAsync();
         }
@@ -50,6 +50,8 @@ namespace ApiPrueba.Service.Implementaciones
             {
                 NombreCompleto = dto.NombreCompleto,
                 //Especialidad = dto.Especialidad,
+                DocumentoIdentidad = dto.DocumentoIdentidad,
+                //IdEspecialidad = dto.EspecialidadId,
                 Telefono = dto.Telefono,
                 CorreoElectronico = dto.CorreoElectronico
             };
@@ -66,7 +68,7 @@ namespace ApiPrueba.Service.Implementaciones
             terapeuta.NombreCompleto = dto.NombreCompleto;
             //terapeuta.Especialidad = dto.Especialidad;
             terapeuta.Telefono = dto.Telefono;
-            terapeuta.Email = dto.CorreoElectronico;
+            terapeuta.CorreoElectronico = dto.CorreoElectronico;
 
             await _contexto.SaveChangesAsync();
             return true;

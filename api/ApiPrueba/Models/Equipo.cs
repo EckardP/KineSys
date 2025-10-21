@@ -10,6 +10,6 @@
         public string Ubicacion { get; set; }
 
         // Relación con inventario
-        public Inventario Inventario { get; set; }
+        //public Inventario Inventario { get; set; }
     }
 }

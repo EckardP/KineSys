@@ -3,9 +3,16 @@
     public class Cita
     {
         public int Id { get; set; }
-        public DateTime FechaCita { get; set; }
-        public string HoraCita { get; set; }
-        public string Estado { get; set; } // Programada, Completada, Cancelada
+        public int DuracionProgramadaMin { get; set; }
+        public DateTime? HoraInicioReal { get; set; }
+        public DateTime? HoraFinReal { get; set; }
+        public DateTime? CheckIn { get; set; }
+        public DateTime? CheckOut { get; set; }
+        public bool Confirmada { get; set; }
+
+        // Relación con reserva y nota (opcional)
+        public ReservaCita Reserva { get; set; }
+        public NotaSesion NotaSesion { get; set; }
 
         // Relaciones
         public int IdPaciente { get; set; }

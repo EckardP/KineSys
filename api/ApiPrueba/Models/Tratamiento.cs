@@ -16,6 +16,6 @@
         public int IdTerapeuta { get; set; }
         public Terapeuta Terapeuta { get; set; }
 
-        public PlanTratamiento PlanTratamiento { get; set; }
+        public PlanTratamiento? PlanTratamiento { get; set; }
     }
 }

@@ -13,6 +13,10 @@
 
         public ICollection<Cita> Citas { get; set; }
         public ICollection<Tratamiento> Tratamientos { get; set; }
-        public ICollection<Factura> Facturas { get; set; }
+
+        //Nuevas relaciones
+        public ICollection<ContactoEmergencia> ContactosEmergencia { get; set; }
+        public ICollection<DocumentoPaciente> Documentos { get; set; }
+        public ICollection<EvolucionPaciente> Evoluciones { get; set; }
     }
 }

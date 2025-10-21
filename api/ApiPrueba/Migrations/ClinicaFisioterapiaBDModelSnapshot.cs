@@ -22,36 +22,43 @@ namespace ApiPrueba.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ApiPrueba.Models.Auditoria", b =>
+            modelBuilder.Entity("ApiPrueba.Models.AlertaAgenda", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("IdAlerta")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdAlerta"));
 
-                    b.Property<string>("Accion")
+                    b.Property<string>("Descripcion")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
-                    b.Property<string>("Detalle")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Entidad")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("FechaAccion")
+                    b.Property<DateTime>("FechaGenerada")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Usuario")
+                    b.Property<int?>("IdCita")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdTerapeuta")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Resuelta")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("TipoAlerta")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
-                    b.HasKey("Id");
+                    b.HasKey("IdAlerta");
 
-                    b.ToTable("Auditorias");
+                    b.HasIndex("IdCita");
+
+                    b.HasIndex("IdTerapeuta");
+
+                    b.ToTable("AlertasAgenda", (string)null);
                 });
 
             modelBuilder.Entity("ApiPrueba.Models.Cita", b =>
@@ -62,16 +69,23 @@ namespace ApiPrueba.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Estado")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("FechaCita")
+                    b.Property<DateTime?>("CheckIn")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("HoraCita")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime?>("CheckOut")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Confirmada")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("DuracionProgramadaMin")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("HoraFinReal")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("HoraInicioReal")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("IdPaciente")
                         .HasColumnType("int");
@@ -82,15 +96,151 @@ namespace ApiPrueba.Migrations
                     b.Property<int?>("IdTratamiento")
                         .HasColumnType("int");
 
+                    b.Property<int>("PacienteId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TerapeutaId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TratamientoId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("PacienteId");
+
+                    b.HasIndex("TerapeutaId");
+
+                    b.HasIndex("TratamientoId");
+
+                    b.ToTable("Citas", (string)null);
+                });
+
+            modelBuilder.Entity("ApiPrueba.Models.ContactoEmergencia", b =>
+                {
+                    b.Property<int>("IdContacto")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdContacto"));
+
+                    b.Property<int>("IdPaciente")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<string>("Observaciones")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Parentesco")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("TelefonoAlterno")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
+
+                    b.Property<string>("TelefonoPrincipal")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
+
+                    b.HasKey("IdContacto");
 
                     b.HasIndex("IdPaciente");
 
-                    b.HasIndex("IdTerapeuta");
+                    b.ToTable("ContactosEmergencia", (string)null);
+                });
 
-                    b.HasIndex("IdTratamiento");
+            modelBuilder.Entity("ApiPrueba.Models.DisponibilidadTerapeuta", b =>
+                {
+                    b.Property<int>("IdDisponibilidad")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.ToTable("Citas");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdDisponibilidad"));
+
+                    b.Property<string>("DiaSemana")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
+
+                    b.Property<bool>("Disponible")
+                        .HasColumnType("bit");
+
+                    b.Property<TimeSpan>("HoraFin")
+                        .HasColumnType("time");
+
+                    b.Property<TimeSpan>("HoraInicio")
+                        .HasColumnType("time");
+
+                    b.Property<int>("IdTerapeuta")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TipoAmbiente")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("IdDisponibilidad");
+
+                    b.HasIndex("IdTerapeuta", "DiaSemana")
+                        .IsUnique();
+
+                    b.ToTable("DisponibilidadesTerapeutas", (string)null);
+                });
+
+            modelBuilder.Entity("ApiPrueba.Models.DocumentoPaciente", b =>
+                {
+                    b.Property<int>("IdDocumento")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdDocumento"));
+
+                    b.Property<DateTime>("FechaSubida")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("IdPaciente")
+                        .HasColumnType("int");
+
+                    b.Property<string>("MimeType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("NombreArchivo")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
+
+                    b.Property<string>("Ruta")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("SubidoPor")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<string>("TipoDocumento")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("IdDocumento");
+
+                    b.HasIndex("IdPaciente");
+
+                    b.ToTable("DocumentosPaciente", (string)null);
                 });
 
             modelBuilder.Entity("ApiPrueba.Models.Equipo", b =>
@@ -122,7 +272,38 @@ namespace ApiPrueba.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Equipos");
+                    b.ToTable("Equipos", (string)null);
+                });
+
+            modelBuilder.Entity("ApiPrueba.Models.EquipoSesion", b =>
+                {
+                    b.Property<int>("IdEquipoSesion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdEquipoSesion"));
+
+                    b.Property<int>("CantidadUsada")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdEquipo")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("IdProtocolo")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Observaciones")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.HasKey("IdEquipoSesion");
+
+                    b.HasIndex("IdEquipo");
+
+                    b.HasIndex("IdProtocolo");
+
+                    b.ToTable("EquiposSesion", (string)null);
                 });
 
             modelBuilder.Entity("ApiPrueba.Models.Especialidad", b =>
@@ -143,138 +324,89 @@ namespace ApiPrueba.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Especialidades");
+                    b.ToTable("Especialidad", (string)null);
                 });
 
-            modelBuilder.Entity("ApiPrueba.Models.Factura", b =>
+            modelBuilder.Entity("ApiPrueba.Models.EvolucionPaciente", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("IdEvolucion")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdEvolucion"));
 
-                    b.Property<string>("EstadoPago")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("FechaEmision")
+                    b.Property<DateTime>("Fecha")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("IdPaciente")
                         .HasColumnType("int");
 
-                    b.Property<int?>("IdSeguroMedico")
-                        .HasColumnType("int");
-
-                    b.Property<string>("MetodoPago")
+                    b.Property<string>("Indicador")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
-                    b.Property<decimal>("MontoTotal")
+                    b.Property<decimal>("Valor")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("PacienteId")
-                        .HasColumnType("int");
+                    b.HasKey("IdEvolucion");
 
-                    b.Property<int?>("SeguroMedicoId")
-                        .HasColumnType("int");
+                    b.HasIndex("IdPaciente");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("IdSeguroMedico");
-
-                    b.HasIndex("PacienteId");
-
-                    b.HasIndex("SeguroMedicoId");
-
-                    b.ToTable("Facturas");
+                    b.ToTable("EvolucionesPaciente", (string)null);
                 });
 
-            modelBuilder.Entity("ApiPrueba.Models.Inventario", b =>
+            modelBuilder.Entity("ApiPrueba.Models.NotaSesion", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("IdNota")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdNota"));
 
-                    b.Property<int>("Cantidad")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdEquipo")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Ubicacion")
+                    b.Property<string>("CambioDiagnostico")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
-                    b.HasKey("Id");
+                    b.Property<string>("Diagnostico")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
-                    b.HasIndex("IdEquipo")
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("IdCita")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdPaciente")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Notas")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Recomendaciones")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<string>("RegistradoPor")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.HasKey("IdNota");
+
+                    b.HasIndex("IdCita")
                         .IsUnique();
 
-                    b.ToTable("Inventarios");
-                });
+                    b.HasIndex("IdPaciente");
 
-            modelBuilder.Entity("ApiPrueba.Models.MensajeChat", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Contenido")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("FechaEnvio")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("IdDestinatario")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdRemitente")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("MensajesChat");
-                });
-
-            modelBuilder.Entity("ApiPrueba.Models.Notificacion", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("FechaEnvio")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("IdPaciente")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("IdTerapeuta")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("Leida")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Mensaje")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Titulo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Notificaciones");
+                    b.ToTable("NotasSesion", (string)null);
                 });
 
             modelBuilder.Entity("ApiPrueba.Models.Paciente", b =>
@@ -326,7 +458,7 @@ namespace ApiPrueba.Migrations
 
                     b.HasIndex("SeguroMedicoId");
 
-                    b.ToTable("Pacientes");
+                    b.ToTable("Pacientes", (string)null);
                 });
 
             modelBuilder.Entity("ApiPrueba.Models.PlanTratamiento", b =>
@@ -376,7 +508,81 @@ namespace ApiPrueba.Migrations
 
                     b.HasIndex("TerapeutaId");
 
-                    b.ToTable("PlanesTratamiento");
+                    b.ToTable("PlanTratamiento");
+                });
+
+            modelBuilder.Entity("ApiPrueba.Models.ProtocoloTratamiento", b =>
+                {
+                    b.Property<int>("IdProtocolo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdProtocolo"));
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("DuracionPorSesionMin")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<int>("NumeroSesiones")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Recomendaciones")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.HasKey("IdProtocolo");
+
+                    b.ToTable("ProtocolosTratamiento", (string)null);
+                });
+
+            modelBuilder.Entity("ApiPrueba.Models.ReservaCita", b =>
+                {
+                    b.Property<int>("IdReserva")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdReserva"));
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTime?>("FechaConfirmacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FechaSolicitud")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("IdCita")
+                        .HasColumnType("int");
+
+                    b.Property<string>("MetodoConfirmacion")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("TokenConfirmacion")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
+
+                    b.HasKey("IdReserva");
+
+                    b.HasIndex("IdCita")
+                        .IsUnique();
+
+                    b.ToTable("ReservasCita", (string)null);
                 });
 
             modelBuilder.Entity("ApiPrueba.Models.SeguroMedico", b =>
@@ -401,7 +607,7 @@ namespace ApiPrueba.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SegurosMedicos");
+                    b.ToTable("SeguroMedico");
                 });
 
             modelBuilder.Entity("ApiPrueba.Models.Terapeuta", b =>
@@ -413,14 +619,9 @@ namespace ApiPrueba.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("CorreoElectronico")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DocumentoIdentidad")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -442,7 +643,7 @@ namespace ApiPrueba.Migrations
 
                     b.HasIndex("EspecialidadId");
 
-                    b.ToTable("Terapeutas");
+                    b.ToTable("Terapeutas", (string)null);
                 });
 
             modelBuilder.Entity("ApiPrueba.Models.Tratamiento", b =>
@@ -476,33 +677,62 @@ namespace ApiPrueba.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("PacienteId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TerapeutaId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("IdPaciente");
 
                     b.HasIndex("IdTerapeuta");
 
+                    b.HasIndex("PacienteId");
+
+                    b.HasIndex("TerapeutaId");
+
                     b.ToTable("Tratamientos");
+                });
+
+            modelBuilder.Entity("ApiPrueba.Models.AlertaAgenda", b =>
+                {
+                    b.HasOne("ApiPrueba.Models.Cita", "Cita")
+                        .WithMany()
+                        .HasForeignKey("IdCita")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("ApiPrueba.Models.Terapeuta", "Terapeuta")
+                        .WithMany()
+                        .HasForeignKey("IdTerapeuta")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Cita");
+
+                    b.Navigation("Terapeuta");
                 });
 
             modelBuilder.Entity("ApiPrueba.Models.Cita", b =>
                 {
                     b.HasOne("ApiPrueba.Models.Paciente", "Paciente")
                         .WithMany("Citas")
-                        .HasForeignKey("IdPaciente")
+                        .HasForeignKey("PacienteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ApiPrueba.Models.Terapeuta", "Terapeuta")
                         .WithMany("Citas")
-                        .HasForeignKey("IdTerapeuta")
+                        .HasForeignKey("TerapeutaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ApiPrueba.Models.Tratamiento", "Tratamiento")
                         .WithMany()
-                        .HasForeignKey("IdTratamiento")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("TratamientoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Paciente");
 
@@ -511,37 +741,85 @@ namespace ApiPrueba.Migrations
                     b.Navigation("Tratamiento");
                 });
 
-            modelBuilder.Entity("ApiPrueba.Models.Factura", b =>
+            modelBuilder.Entity("ApiPrueba.Models.ContactoEmergencia", b =>
                 {
-                    b.HasOne("ApiPrueba.Models.SeguroMedico", "SeguroMedico")
-                        .WithMany()
-                        .HasForeignKey("IdSeguroMedico")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("ApiPrueba.Models.Paciente", "Paciente")
-                        .WithMany("Facturas")
-                        .HasForeignKey("PacienteId")
+                        .WithMany("ContactosEmergencia")
+                        .HasForeignKey("IdPaciente")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("ApiPrueba.Models.SeguroMedico", null)
-                        .WithMany("Facturas")
-                        .HasForeignKey("SeguroMedicoId");
 
                     b.Navigation("Paciente");
-
-                    b.Navigation("SeguroMedico");
                 });
 
-            modelBuilder.Entity("ApiPrueba.Models.Inventario", b =>
+            modelBuilder.Entity("ApiPrueba.Models.DisponibilidadTerapeuta", b =>
                 {
-                    b.HasOne("ApiPrueba.Models.Equipo", "Equipo")
-                        .WithOne("Inventario")
-                        .HasForeignKey("ApiPrueba.Models.Inventario", "IdEquipo")
+                    b.HasOne("ApiPrueba.Models.Terapeuta", "Terapeuta")
+                        .WithMany("Disponibilidades")
+                        .HasForeignKey("IdTerapeuta")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Terapeuta");
+                });
+
+            modelBuilder.Entity("ApiPrueba.Models.DocumentoPaciente", b =>
+                {
+                    b.HasOne("ApiPrueba.Models.Paciente", "Paciente")
+                        .WithMany("Documentos")
+                        .HasForeignKey("IdPaciente")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Paciente");
+                });
+
+            modelBuilder.Entity("ApiPrueba.Models.EquipoSesion", b =>
+                {
+                    b.HasOne("ApiPrueba.Models.Equipo", "Equipo")
+                        .WithMany()
+                        .HasForeignKey("IdEquipo")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ApiPrueba.Models.ProtocoloTratamiento", "ProtocoloTratamiento")
+                        .WithMany("EquiposRequeridos")
+                        .HasForeignKey("IdProtocolo")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.Navigation("Equipo");
+
+                    b.Navigation("ProtocoloTratamiento");
+                });
+
+            modelBuilder.Entity("ApiPrueba.Models.EvolucionPaciente", b =>
+                {
+                    b.HasOne("ApiPrueba.Models.Paciente", "Paciente")
+                        .WithMany("Evoluciones")
+                        .HasForeignKey("IdPaciente")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Paciente");
+                });
+
+            modelBuilder.Entity("ApiPrueba.Models.NotaSesion", b =>
+                {
+                    b.HasOne("ApiPrueba.Models.Cita", "Cita")
+                        .WithOne("NotaSesion")
+                        .HasForeignKey("ApiPrueba.Models.NotaSesion", "IdCita")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ApiPrueba.Models.Paciente", "Paciente")
+                        .WithMany()
+                        .HasForeignKey("IdPaciente")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Cita");
+
+                    b.Navigation("Paciente");
                 });
 
             modelBuilder.Entity("ApiPrueba.Models.Paciente", b =>
@@ -560,7 +838,7 @@ namespace ApiPrueba.Migrations
                     b.HasOne("ApiPrueba.Models.Tratamiento", "Tratamiento")
                         .WithOne("PlanTratamiento")
                         .HasForeignKey("ApiPrueba.Models.PlanTratamiento", "IdTratamiento")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ApiPrueba.Models.Paciente", "Paciente")
@@ -582,6 +860,17 @@ namespace ApiPrueba.Migrations
                     b.Navigation("Tratamiento");
                 });
 
+            modelBuilder.Entity("ApiPrueba.Models.ReservaCita", b =>
+                {
+                    b.HasOne("ApiPrueba.Models.Cita", "Cita")
+                        .WithOne("Reserva")
+                        .HasForeignKey("ApiPrueba.Models.ReservaCita", "IdCita")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cita");
+                });
+
             modelBuilder.Entity("ApiPrueba.Models.Terapeuta", b =>
                 {
                     b.HasOne("ApiPrueba.Models.Especialidad", "Especialidad")
@@ -596,25 +885,36 @@ namespace ApiPrueba.Migrations
             modelBuilder.Entity("ApiPrueba.Models.Tratamiento", b =>
                 {
                     b.HasOne("ApiPrueba.Models.Paciente", "Paciente")
-                        .WithMany("Tratamientos")
+                        .WithMany()
                         .HasForeignKey("IdPaciente")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("ApiPrueba.Models.Terapeuta", "Terapeuta")
-                        .WithMany("Tratamientos")
+                        .WithMany()
                         .HasForeignKey("IdTerapeuta")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("ApiPrueba.Models.Paciente", null)
+                        .WithMany("Tratamientos")
+                        .HasForeignKey("PacienteId");
+
+                    b.HasOne("ApiPrueba.Models.Terapeuta", null)
+                        .WithMany("Tratamientos")
+                        .HasForeignKey("TerapeutaId");
 
                     b.Navigation("Paciente");
 
                     b.Navigation("Terapeuta");
                 });
 
-            modelBuilder.Entity("ApiPrueba.Models.Equipo", b =>
+            modelBuilder.Entity("ApiPrueba.Models.Cita", b =>
                 {
-                    b.Navigation("Inventario")
+                    b.Navigation("NotaSesion")
+                        .IsRequired();
+
+                    b.Navigation("Reserva")
                         .IsRequired();
                 });
 
@@ -627,15 +927,22 @@ namespace ApiPrueba.Migrations
                 {
                     b.Navigation("Citas");
 
-                    b.Navigation("Facturas");
+                    b.Navigation("ContactosEmergencia");
+
+                    b.Navigation("Documentos");
+
+                    b.Navigation("Evoluciones");
 
                     b.Navigation("Tratamientos");
                 });
 
+            modelBuilder.Entity("ApiPrueba.Models.ProtocoloTratamiento", b =>
+                {
+                    b.Navigation("EquiposRequeridos");
+                });
+
             modelBuilder.Entity("ApiPrueba.Models.SeguroMedico", b =>
                 {
-                    b.Navigation("Facturas");
-
                     b.Navigation("Pacientes");
                 });
 
@@ -643,13 +950,14 @@ namespace ApiPrueba.Migrations
                 {
                     b.Navigation("Citas");
 
+                    b.Navigation("Disponibilidades");
+
                     b.Navigation("Tratamientos");
                 });
 
             modelBuilder.Entity("ApiPrueba.Models.Tratamiento", b =>
                 {
-                    b.Navigation("PlanTratamiento")
-                        .IsRequired();
+                    b.Navigation("PlanTratamiento");
                 });
 #pragma warning restore 612, 618
         }

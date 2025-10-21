@@ -4,4 +4,4 @@
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // Función auxiliar para componer URLs de endpoints
-export const getEndpoint = (path) => `${API_BASE_URL}${path}`;
+export const getEndpoint = (ruta) => `${API_BASE_URL}/${ruta}`;

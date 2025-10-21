@@ -1,9 +1,6 @@
-﻿using ApiPrueba.data;
-using ApiPrueba.DTO;
-using ApiPrueba.Models;
+﻿using ApiPrueba.DTO;
 using ApiPrueba.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ApiPrueba.Controllers
 {
@@ -11,9 +8,9 @@ namespace ApiPrueba.Controllers
     [Route("api/[controller]")]
     public class TratamientosController : ControllerBase
     {
-        private readonly IServicioPlanTratamiento _servicioTratamiento;
+        private readonly IServiceTratamiento _servicioTratamiento;
 
-        public TratamientosController(IServicioPlanTratamiento servicioTratamiento)
+        public TratamientosController(IServiceTratamiento servicioTratamiento)
         {
             _servicioTratamiento = servicioTratamiento;
         }
@@ -21,8 +18,8 @@ namespace ApiPrueba.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TratamientoDTO>>> ObtenerTodos()
         {
-            var tratamientos = await _servicioTratamiento.ObtenerTodos();
-            return Ok(tratamientos);
+            var lista = await _servicioTratamiento.ObtenerTodos();
+            return Ok(lista);
         }
 
         [HttpGet("{id}")]

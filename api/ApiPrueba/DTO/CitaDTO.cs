@@ -3,13 +3,20 @@
     public class CitaDTO
     {
         public int Id { get; set; }
-        public int PacienteId { get; set; }
-        public string Paciente { get; set; } // nombre completo opcional
-        public int TerapeutaId { get; set; }
-        public string Terapeuta { get; set; } // nombre completo opcional
-        public DateTime Fecha { get; set; }
-        public string Estado { get; set; } // Programada, Completada, Cancelada
-        public int? TratamientoId { get; set; }
-        public string Notas { get; set; }
+        public int DuracionProgramadaMin { get; set; }
+        public DateTime? HoraInicioReal { get; set; }
+        public DateTime? HoraFinReal { get; set; }
+        public DateTime? CheckIn { get; set; }
+        public DateTime? CheckOut { get; set; }
+        public bool Confirmada { get; set; }
+
+        public int IdPaciente { get; set; }
+        public int IdTerapeuta { get; set; }
+        public int? IdTratamiento { get; set; }
+
+        // Opcional: nombres solo para mostrar
+        public string NombrePaciente { get; set; }
+        public string NombreTerapeuta { get; set; }
+        public string NombreTratamiento { get; set; }
     }
 }

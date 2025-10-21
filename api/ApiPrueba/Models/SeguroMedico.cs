@@ -8,6 +8,5 @@
         public string Cobertura { get; set; }
 
         public ICollection<Paciente> Pacientes { get; set; }
-        public ICollection<Factura> Facturas { get; set; }
     }
 }
