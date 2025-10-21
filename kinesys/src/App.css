@@ -40,3 +40,98 @@
 .read-the-docs {
   color: #888;
 }
+
+
+
+
+/* Eliminados estilos personalizados complejos, usando estilos básicos */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+
+.contenedor-usuario {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #3f3a44 100%);
+  width: 250vh;
+}
+
+.contenedor-usuario form {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+.contenedor-usuario .form-label {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.contenedor-usuario .form-control {
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+.contenedor-usuario .form-control:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  outline: none;
+}
+
+.contenedor-usuario .form-text {
+  color: #666;
+  font-size: 12px;
+}
+
+.contenedor-usuario .form-check-input {
+  border: 2px solid #e0e0e0;
+  border-radius: 4px;
+ 
+  cursor: pointer;
+}
+
+.contenedor-usuario .form-check-input:checked {
+  background-color: #667eea;
+  border-color: #667eea;
+}
+
+.contenedor-usuario .form-check-label {
+  color: #555;
+  cursor: pointer;
+}
+
+.contenedor-usuario .btn-primary {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.contenedor-usuario .btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.contenedor-usuario .btn-primary:active {
+  transform: translateY(0);
+}

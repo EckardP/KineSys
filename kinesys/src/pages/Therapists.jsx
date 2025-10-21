@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { fetchTherapists, registerTherapist } from '../services/therapistService'
+
 import TherapistCard from '../components/TherapistCard'
 
 export default function Therapists() {

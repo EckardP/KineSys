@@ -4,6 +4,7 @@ import Therapists from '../pages/Therapists'
 import Patients from '../pages/Patients'
 import Treatments from '../pages/Treatments'
 import Agenda from '../pages/Agenda'
+import InicioSesion from '../pages/InicioSesion'
 
 export default function AppRouter() {
   return (
@@ -13,6 +14,7 @@ export default function AppRouter() {
       <Route path="/patients" element={<Patients />} />
       <Route path="/treatments" element={<Treatments />} />
       <Route path="/agenda" element={<Agenda />} />
+      <Route path="/iniciosesion" element={<InicioSesion/>}/>
     </Routes>
   )
 }
