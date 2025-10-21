@@ -10,7 +10,6 @@
         // Relaciones
         public int? IdSeguroMedico { get; set; }
         public SeguroMedico SeguroMedico { get; set; }
-
         public ICollection<Cita> Citas { get; set; }
         public ICollection<Tratamiento> Tratamientos { get; set; }
 

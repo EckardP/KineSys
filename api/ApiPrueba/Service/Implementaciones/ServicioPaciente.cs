@@ -49,6 +49,12 @@ namespace ApiPrueba.Service.Implementaciones
 
         public async Task Crear(PacienteDTO dto)
         {
+             var existente = await ObtenerPorId(dto.Id);
+                if (existente != null)
+                {
+                    throw new Exception("Error: El paciente ya se encuentra registrado.");
+                }
+
             var paciente = new Paciente
             {
                 NombreCompleto = dto.NombreCompleto,
