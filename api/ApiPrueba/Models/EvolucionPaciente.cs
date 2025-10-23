@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace ApiPrueba.Models
 {
@@ -23,7 +24,7 @@ namespace ApiPrueba.Models
 
         [Required]
         public decimal Valor { get; set; }
-
+        [JsonIgnore]
         public Paciente Paciente { get; set; }
     }
 }

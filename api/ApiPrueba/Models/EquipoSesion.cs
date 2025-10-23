@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace ApiPrueba.Models
 {
@@ -21,8 +22,9 @@ namespace ApiPrueba.Models
 
         [StringLength(150)]
         public string Observaciones { get; set; }
-
+        [JsonIgnore]
         public ProtocoloTratamiento ProtocoloTratamiento { get; set; }
+        [JsonIgnore]
         public Equipo Equipo { get; set; }
     }
 }

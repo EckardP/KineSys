@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace ApiPrueba.Models
 {
@@ -27,7 +28,9 @@ namespace ApiPrueba.Models
 
         public bool Resuelta { get; set; }
 
-        public Cita Cita { get; set; }
+        [JsonIgnore]
+        public Cita? Cita { get; set; }
+        [JsonIgnore]
         public Terapeuta Terapeuta { get; set; }
     }
 }

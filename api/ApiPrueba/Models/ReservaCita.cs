@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace ApiPrueba.Models
 {
@@ -18,6 +19,7 @@ namespace ApiPrueba.Models
         public string TokenConfirmacion { get; set; }
 
         public DateTime FechaSolicitud { get; set; }
+        public bool Confirmada { get; set; }
 
         public DateTime? FechaConfirmacion { get; set; }
 
@@ -27,6 +29,7 @@ namespace ApiPrueba.Models
         [Required, StringLength(20)]
         public string Estado { get; set; } // Pendiente / Confirmada / Cancelada
 
+        [JsonIgnore]
         public Cita Cita { get; set; }
     }
 }

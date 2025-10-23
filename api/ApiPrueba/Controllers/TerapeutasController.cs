@@ -1,67 +1,120 @@
-﻿using ApiPrueba.data;
-using ApiPrueba.DTO;
-using ApiPrueba.Models;
-using ApiPrueba.Service.Interfaces;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ApiPrueba.Data;
+using ApiPrueba.Models;
 
 namespace ApiPrueba.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
     public class TerapeutasController : ControllerBase
     {
-        private readonly IServicioTerapeuta _servicioTerapeuta;
+        private readonly ClinicaFisioterapiaBD _context;
 
-        public TerapeutasController(IServicioTerapeuta servicioTerapeuta)
+        public TerapeutasController(ClinicaFisioterapiaBD context)
         {
-            _servicioTerapeuta = servicioTerapeuta;
+            _context = context;
         }
 
+        // GET: api/Terapeutas
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TerapeutaDTO>>> ObtenerTodos()
+        public async Task<ActionResult<IEnumerable<Terapeuta>>> GetTerapeutas()
         {
-            var terapeutas = await _servicioTerapeuta.ObtenerTodos();
-            return Ok(terapeutas);
+            return await _context.Terapeutas.ToListAsync();
         }
 
+        // GET: api/Terapeutas/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<TerapeutaDTO>> ObtenerPorId(int id)
+        public async Task<ActionResult<Terapeuta>> GetTerapeuta(int id)
         {
-            var terapeuta = await _servicioTerapeuta.ObtenerPorId(id);
+            var terapeuta = await _context.Terapeutas.FindAsync(id);
+
             if (terapeuta == null)
+            {
                 return NotFound();
-            return Ok(terapeuta);
+            }
+
+            return terapeuta;
         }
 
-        [HttpPost]
-        public async Task<ActionResult> Crear(TerapeutaDTO terapeuta)
-        {
-            await _servicioTerapeuta.Crear(terapeuta);
-            return CreatedAtAction(nameof(ObtenerPorId), new { id = terapeuta.Id }, terapeuta);
-        }
-
+        // PUT: api/Terapeutas/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<ActionResult> Actualizar(int id, TerapeutaDTO terapeuta)
+        public async Task<IActionResult> PutTerapeuta(int id, Terapeuta terapeuta)
         {
             if (id != terapeuta.Id)
+            {
                 return BadRequest();
+            }
 
-            var actualizado = await _servicioTerapeuta.Actualizar(terapeuta);
-            if (!actualizado)
-                return NotFound();
+            _context.Entry(terapeuta).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!TerapeutaExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> Eliminar(int id)
+        // POST: api/Terapeutas
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<Terapeuta>> PostTerapeuta(Terapeuta terapeuta)
         {
-            var eliminado = await _servicioTerapeuta.Eliminar(id);
-            if (!eliminado)
+            var existeDocumento = await _context.Terapeutas
+            .AnyAsync(p => p.DocumentoIdentidad == terapeuta.DocumentoIdentidad);
+
+            if (existeDocumento)
+            {
+                return Conflict(new
+                {
+                    message = "Ya existe una persona registrada con ese documento de identidad.",
+                    campo = "documentoIdentidad",
+                    valor = terapeuta.DocumentoIdentidad
+                });
+            }
+            _context.Terapeutas.Add(terapeuta);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetTerapeuta", new { id = terapeuta.Id }, terapeuta);
+        }
+
+        // DELETE: api/Terapeutas/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTerapeuta(int id)
+        {
+            var terapeuta = await _context.Terapeutas.FindAsync(id);
+            if (terapeuta == null)
+            {
                 return NotFound();
+            }
+
+            _context.Terapeutas.Remove(terapeuta);
+            await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        private bool TerapeutaExists(int id)
+        {
+            return _context.Terapeutas.Any(e => e.Id == id);
         }
     }
 }

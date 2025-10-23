@@ -1,6 +1,6 @@
 import React from 'react'
-import * as bootstrap from 'react-bootstrap'
-import '../App.css'
+// import * as bootstrap from 'react-bootstrap'
+import '../styles/App.css'
 export default function inicioSesion() {
   return (
     <div className="contenedor-usuario">

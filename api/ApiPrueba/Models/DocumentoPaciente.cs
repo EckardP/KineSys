@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace ApiPrueba.Models
 {
@@ -25,13 +26,13 @@ namespace ApiPrueba.Models
         public string Ruta { get; set; }
 
         [StringLength(50)]
-        public string MimeType { get; set; }
+        public string? MimeType { get; set; }
 
         public DateTime FechaSubida { get; set; }
 
         [StringLength(80)]
-        public string SubidoPor { get; set; }
-
-        public Paciente Paciente { get; set; }
+        public string? SubidoPor { get; set; }
+        [JsonIgnore]
+        public Paciente? Paciente { get; set; }
     }
 }

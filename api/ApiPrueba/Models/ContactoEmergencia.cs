@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace ApiPrueba.Models
 {
@@ -25,11 +26,11 @@ namespace ApiPrueba.Models
         public string TelefonoPrincipal { get; set; }
 
         [StringLength(15)]
-        public string TelefonoAlterno { get; set; }
+        public string? TelefonoAlterno { get; set; }
 
         [StringLength(200)]
-        public string Observaciones { get; set; }
-
-        public Paciente Paciente { get; set; }
+        public string? Observaciones { get; set; }
+        [JsonIgnore]
+        public Paciente? Paciente { get; set; }
     }
 }

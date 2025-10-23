@@ -1,4 +1,4 @@
-
 import { crearApiCliente } from "./apiCliente";
 
-export const pacientesApi = crearApiCliente('pacientes');
+// Exporta directamente el cliente, no como propiedad
+export default crearApiCliente('Pacientes');

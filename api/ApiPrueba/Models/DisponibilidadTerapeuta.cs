@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace ApiPrueba.Models
 {
@@ -28,8 +29,8 @@ namespace ApiPrueba.Models
         public bool Disponible { get; set; }
 
         [StringLength(20)]
-        public string TipoAmbiente { get; set; } // Calle u Oficina
-
-        public Terapeuta Terapeuta { get; set; }
+        public string? TipoAmbiente { get; set; } // Calle u Oficina
+        [JsonIgnore]
+        public Terapeuta? Terapeuta { get; set; }
     }
 }

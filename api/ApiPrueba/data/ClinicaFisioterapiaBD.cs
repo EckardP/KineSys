@@ -1,14 +1,12 @@
-﻿using ApiPrueba.Models;
-using ApiPrueba.Service.Implementaciones;
-using ApiPrueba.Service.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
+﻿using Microsoft.EntityFrameworkCore;
+using ApiPrueba.Models;
 
-namespace ApiPrueba.data
+namespace ApiPrueba.Data
 {
     /// <summary>
     /// Contexto principal de la base de datos para la clínica de fisioterapia.
-    /// Contiene todos los DbSet y relaciones entre entidades.
+    /// Contiene todos los DbSet y configuraciones mínimas necesarias.
+    /// Las relaciones se infieren automáticamente desde las propiedades de navegación en los modelos.
     /// </summary>
     public class ClinicaFisioterapiaBD : DbContext
     {
@@ -17,7 +15,6 @@ namespace ApiPrueba.data
         {
         }
 
-
         // =======================
         // ENTIDADES PRINCIPALES
         // =======================
@@ -25,7 +22,9 @@ namespace ApiPrueba.data
         public DbSet<Terapeuta> Terapeutas { get; set; }
         public DbSet<Cita> Citas { get; set; }
         public DbSet<Equipo> Equipos { get; set; }
-       
+        public DbSet<Especialidad> Especialidades { get; set; }
+        public DbSet<TipoTerapia> TipoTerapias { get; set; }
+        public DbSet<SeguroMedico> SegurosMedicos { get; set; }
 
         // =======================
         // GESTIÓN DE PACIENTES
@@ -42,25 +41,25 @@ namespace ApiPrueba.data
         // =======================
         // TRATAMIENTOS Y TERAPIAS
         // =======================
-        public DbSet<ProtocoloTratamiento> ProtocolosTratamiento { get; set; }
-        public DbSet<EquipoSesion> EquiposSesion { get; set; }
         public DbSet<Tratamiento> Tratamientos { get; set; }
+        public DbSet<PlanTratamiento> PlanTratamientos { get; set; }
+        public DbSet<ProtocoloTratamiento> ProtocoloTratamientos { get; set; }
 
         // =======================
         // AGENDA Y CITAS
         // =======================
         public DbSet<ReservaCita> ReservasCita { get; set; }
         public DbSet<AlertaAgenda> AlertasAgenda { get; set; }
-
-        // =======================
-        // NOTAS POR SESIÓN
-        // =======================
         public DbSet<NotaSesion> NotasSesion { get; set; }
 
         // =======================
-        // ESPECIALIDAD 
+        // TABLAS INTERMEDIAS (N:N)
         // =======================
-        public DbSet<Especialidad> Especialidades { get; set; }
+        public DbSet<EquipoSesion> EquiposSesion { get; set; }
+        public DbSet<TerapeutaEspecialidad> TerapeutaEspecialidades { get; set; }
+        public DbSet<TratamientoProtocolo> TratamientoProtocolos { get; set; }
+        public DbSet<TratamientoTipoTerapia> TratamientoTipoTerapias { get; set; }
+        public DbSet<ProtocoloTipoTerapia> ProtocoloTipoTerapias { get; set; }
 
         // =======================
         // CONFIGURACIÓN DE MODELOS
@@ -69,41 +68,68 @@ namespace ApiPrueba.data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Nombres de tablas explícitos
-            modelBuilder.Entity<Paciente>().ToTable("Pacientes");
-            modelBuilder.Entity<Terapeuta>().ToTable("Terapeutas");
-            modelBuilder.Entity<Cita>().ToTable("Citas");
-            modelBuilder.Entity<Equipo>().ToTable("Equipos");
-            modelBuilder.Entity<ContactoEmergencia>().ToTable("ContactosEmergencia");
-            modelBuilder.Entity<DocumentoPaciente>().ToTable("DocumentosPaciente");
-            modelBuilder.Entity<EvolucionPaciente>().ToTable("EvolucionesPaciente");
-            modelBuilder.Entity<DisponibilidadTerapeuta>().ToTable("DisponibilidadesTerapeutas");
-            modelBuilder.Entity<ProtocoloTratamiento>().ToTable("ProtocolosTratamiento");
-            modelBuilder.Entity<EquipoSesion>().ToTable("EquiposSesion");
-            modelBuilder.Entity<Especialidad>().ToTable("Especialidad");
-            //Tratamiento
-            modelBuilder.Entity<ReservaCita>().ToTable("ReservasCita");
-            modelBuilder.Entity<AlertaAgenda>().ToTable("AlertasAgenda");
-            modelBuilder.Entity<NotaSesion>().ToTable("NotasSesion");
+            // ========================================
+            // CONFIGURACIÓN DE HERENCIA TPH (Table Per Hierarchy)
+            // Persona es abstracta, Paciente y Terapeuta heredan
+            // ========================================
+            modelBuilder.Entity<Persona>()
+                .HasDiscriminator<string>("TipoPersona")
+                .HasValue<Paciente>("Paciente")
+                .HasValue<Terapeuta>("Terapeuta");
 
+            // ========================================
+            // ÍNDICES ÚNICOS PARA TABLAS INTERMEDIAS
+            // Previenen duplicados en relaciones N:N
+            // ========================================
 
-            // Relaciones principales
-            modelBuilder.Entity<ContactoEmergencia>()
-                .HasOne(p => p.Paciente)
-                .WithMany(p => p.ContactosEmergencia)
-                .HasForeignKey(p => p.IdPaciente)
-                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<TerapeutaEspecialidad>()
+                .HasIndex(te => new { te.IdTerapeuta, te.IdEspecialidad })
+                .IsUnique();
 
-            modelBuilder.Entity<Tratamiento>()
-               .HasOne(t => t.PlanTratamiento)
-               .WithOne(p => p.Tratamiento)
-               .HasForeignKey<PlanTratamiento>(p => p.IdTratamiento);
+            modelBuilder.Entity<TratamientoProtocolo>()
+                .HasIndex(tp => new { tp.IdTratamiento, tp.IdProtocolo })
+                .IsUnique();
 
-            modelBuilder.Entity<Tratamiento>()
-                .HasOne(t => t.Paciente)
-                .WithMany()
-                .HasForeignKey(t => t.IdPaciente)
-                .OnDelete(DeleteBehavior.Restrict); // Evita cascada circular
+            modelBuilder.Entity<TratamientoTipoTerapia>()
+                .HasIndex(tt => new { tt.IdTratamiento, tt.IdTipoTerapia })
+                .IsUnique();
+
+            modelBuilder.Entity<ProtocoloTipoTerapia>()
+                .HasIndex(pt => new { pt.IdProtocolo, pt.IdTipoTerapia })
+                .IsUnique();
+
+            modelBuilder.Entity<EquipoSesion>()
+                .HasIndex(es => new { es.IdProtocolo, es.IdEquipo })
+                .IsUnique();
+
+            // ========================================
+            // ÍNDICES ADICIONALES PARA RENDIMIENTO
+            // ========================================
+
+            // Búsquedas frecuentes por documento de identidad
+            modelBuilder.Entity<Persona>()
+                .HasIndex(p => p.DocumentoIdentidad)
+                .IsUnique();
+
+            // Búsquedas de citas por fecha
+            modelBuilder.Entity<Cita>()
+                .HasIndex(c => new { c.IdTerapeuta, c.CheckIn });
+
+            // Búsquedas de disponibilidad
+            modelBuilder.Entity<DisponibilidadTerapeuta>()
+                .HasIndex(d => new { d.IdTerapeuta, d.DiaSemana });
+
+            // Búsquedas de documentos por paciente
+            modelBuilder.Entity<DocumentoPaciente>()
+                .HasIndex(d => new { d.IdPaciente, d.FechaSubida });
+
+            // Búsquedas de evolución por paciente
+            modelBuilder.Entity<EvolucionPaciente>()
+                .HasIndex(e => new { e.IdPaciente, e.Fecha });
+
+            // Búsquedas de alertas no resueltas
+            modelBuilder.Entity<AlertaAgenda>()
+                .HasIndex(a => new { a.IdTerapeuta, a.Resuelta });
 
             modelBuilder.Entity<Tratamiento>()
                 .HasOne(t => t.Terapeuta)
@@ -111,63 +137,29 @@ namespace ApiPrueba.data
                 .HasForeignKey(t => t.IdTerapeuta)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<EvolucionPaciente>()
-                .Property(e => e.Valor)
-                .HasPrecision(18, 2);
-
-            modelBuilder.Entity<DocumentoPaciente>()
-                .HasOne(p => p.Paciente)
-                .WithMany(p => p.Documentos)
-                .HasForeignKey(p => p.IdPaciente)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<EvolucionPaciente>()
-                .HasOne(p => p.Paciente)
-                .WithMany(p => p.Evoluciones)
-                .HasForeignKey(p => p.IdPaciente)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<DisponibilidadTerapeuta>()
-                .HasOne(d => d.Terapeuta)
-                .WithMany(t => t.Disponibilidades)
-                .HasForeignKey(d => d.IdTerapeuta)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<EquipoSesion>()
-                .HasOne(e => e.ProtocoloTratamiento)
-                .WithMany(p => p.EquiposRequeridos)
-                .HasForeignKey(e => e.IdProtocolo)
+            modelBuilder.Entity<Cita>()
+                .HasOne(c => c.Terapeuta)
+                .WithMany()
+                .HasForeignKey(c => c.IdTerapeuta)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<EquipoSesion>()
-                .HasOne(e => e.Equipo)
+            modelBuilder.Entity<Cita>()
+                .HasOne(c => c.Tratamiento)
                 .WithMany()
-                .HasForeignKey(e => e.IdEquipo)
+                .HasForeignKey(c => c.IdTratamiento)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<AlertaAgenda>()
-                .HasOne(a => a.Cita)
+            modelBuilder.Entity<PlanTratamiento>()
+                .HasOne(p => p.Terapeuta)
                 .WithMany()
-                .HasForeignKey(a => a.IdCita)
-                .OnDelete(DeleteBehavior.SetNull);
-
-            modelBuilder.Entity<AlertaAgenda>()
-                .HasOne(a => a.Terapeuta)
-                .WithMany()
-                .HasForeignKey(a => a.IdTerapeuta)
+                .HasForeignKey(p => p.IdTerapeuta)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<ReservaCita>()
-                .HasOne(r => r.Cita)
-                .WithOne(c => c.Reserva)
-                .HasForeignKey<ReservaCita>(r => r.IdCita)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<NotaSesion>()
-                .HasOne(n => n.Cita)
-                .WithOne(c => c.NotaSesion)
-                .HasForeignKey<NotaSesion>(n => n.IdCita)
-                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<PlanTratamiento>()
+                .HasOne(p => p.Tratamiento)
+                .WithOne(t => t.PlanTratamiento)
+                .HasForeignKey<PlanTratamiento>(p => p.IdTratamiento)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<NotaSesion>()
                 .HasOne(n => n.Paciente)
@@ -175,10 +167,8 @@ namespace ApiPrueba.data
                 .HasForeignKey(n => n.IdPaciente)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Claves compuestas opcionales
-            modelBuilder.Entity<DisponibilidadTerapeuta>()
-                .HasIndex(d => new { d.IdTerapeuta, d.DiaSemana })
-                .IsUnique();
+
         }
+    public DbSet<ApiPrueba.Models.Persona> Persona { get; set; } = default!;
     }
 }

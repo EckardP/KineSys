@@ -1,9 +1,6 @@
-//using ApiPrueba.Models;
-using ApiPrueba.data;
+using ApiPrueba.Data;
 using Microsoft.EntityFrameworkCore;
-using ApiPrueba.Service.Interfaces;
-using ApiPrueba.Service.Implementaciones;
-using ApiPrueba.Service.Interfaces.ApiPrueba.Service.Interfaces;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,22 +13,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//El Cors
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll", policy =>
-        policy.AllowAnyOrigin()
-              .AllowAnyHeader()
-              .AllowAnyMethod());
-});
 // Inyección de dependencias (los servicios se añadirán luego)
-//builder.Services.AddScoped<ClinicaFisioterapiaBD>();
+builder.Services.AddScoped<ClinicaFisioterapiaBD>();
 
-builder.Services.AddScoped<IServicioCita, ServicioCita>();
-builder.Services.AddScoped<IServicioPaciente, ServicioPaciente>();
-builder.Services.AddScoped<IServicioTerapeuta, ServicioTerapeuta>();
-builder.Services.AddScoped<IServiceEspecialidad, ServicioEspecialidad>();
-builder.Services.AddScoped<IServiceTratamiento, ServicioTratamiento>();
 
 
 var app = builder.Build();
@@ -42,8 +26,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 app.UseAuthorization();

@@ -1,17 +1,24 @@
-﻿namespace ApiPrueba.Models
+﻿using System.Text.Json.Serialization;
+
+namespace ApiPrueba.Models
 {
     public class Terapeuta : Persona
     {
-        public int IdEspecialidad { get; set; }
-        public Especialidad Especialidad { get; set; }
-        public string DocumentoIdentidad { get; set; }
-        public string? CorreoElectronico { get; set; }
+        //public string DocumentoIdentidad { get; set; }
+        //public string? CorreoElectronico { get; set; }
 
         //Relaciones
-        public ICollection<Cita> Citas { get; set; }
-        public ICollection<Tratamiento> Tratamientos { get; set; }
-
-        //Nuevas relaciones
-        public ICollection<DisponibilidadTerapeuta> Disponibilidades { get; set; }
+        [JsonIgnore]
+        public ICollection<Cita> Citas { get; set; } = new List<Cita>();
+        [JsonIgnore]
+        public ICollection<Tratamiento> Tratamientos { get; set; } = new List<Tratamiento>();
+        [JsonIgnore]
+        public ICollection<DisponibilidadTerapeuta> Disponibilidades { get; set; } = new List<DisponibilidadTerapeuta>();
+        [JsonIgnore]
+        public ICollection<TerapeutaEspecialidad> TerapeutaEspecialidades { get; set; } = new List<TerapeutaEspecialidad>();
+        [JsonIgnore]
+        public ICollection<AlertaAgenda> AlertasAgenda { get; set; } = new List<AlertaAgenda>();
+        [JsonIgnore]
+        public ICollection<PlanTratamiento> PlanesTratamiento { get; set; } = new List<PlanTratamiento>();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace ApiPrueba.Models
 {
@@ -37,7 +38,9 @@ namespace ApiPrueba.Models
         [StringLength(80)]
         public string RegistradoPor { get; set; }
 
+        [JsonIgnore]
         public Paciente Paciente { get; set; }
+        [JsonIgnore]
         public Cita Cita { get; set; }
     }
 }
