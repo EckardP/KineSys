@@ -15,9 +15,6 @@ namespace ApiPrueba.Data
         {
         }
 
-        // =======================
-        // ENTIDADES PRINCIPALES
-        // =======================
         public DbSet<Paciente> Pacientes { get; set; }
         public DbSet<Terapeuta> Terapeutas { get; set; }
         public DbSet<Cita> Citas { get; set; }
@@ -26,44 +23,28 @@ namespace ApiPrueba.Data
         public DbSet<TipoTerapia> TipoTerapias { get; set; }
         public DbSet<SeguroMedico> SegurosMedicos { get; set; }
 
-        // =======================
-        // GESTIÓN DE PACIENTES
-        // =======================
         public DbSet<ContactoEmergencia> ContactosEmergencia { get; set; }
         public DbSet<DocumentoPaciente> DocumentosPaciente { get; set; }
         public DbSet<EvolucionPaciente> EvolucionesPaciente { get; set; }
 
-        // =======================
-        // GESTIÓN DE TERAPEUTAS
-        // =======================
         public DbSet<DisponibilidadTerapeuta> DisponibilidadesTerapeutas { get; set; }
 
-        // =======================
-        // TRATAMIENTOS Y TERAPIAS
-        // =======================
         public DbSet<Tratamiento> Tratamientos { get; set; }
         public DbSet<PlanTratamiento> PlanTratamientos { get; set; }
         public DbSet<ProtocoloTratamiento> ProtocoloTratamientos { get; set; }
 
-        // =======================
-        // AGENDA Y CITAS
-        // =======================
         public DbSet<ReservaCita> ReservasCita { get; set; }
         public DbSet<AlertaAgenda> AlertasAgenda { get; set; }
         public DbSet<NotaSesion> NotasSesion { get; set; }
 
-        // =======================
-        // TABLAS INTERMEDIAS (N:N)
-        // =======================
+        //tablas intermedias N:N
         public DbSet<EquipoSesion> EquiposSesion { get; set; }
         public DbSet<TerapeutaEspecialidad> TerapeutaEspecialidades { get; set; }
         public DbSet<TratamientoProtocolo> TratamientoProtocolos { get; set; }
         public DbSet<TratamientoTipoTerapia> TratamientoTipoTerapias { get; set; }
         public DbSet<ProtocoloTipoTerapia> ProtocoloTipoTerapias { get; set; }
 
-        // =======================
-        // CONFIGURACIÓN DE MODELOS
-        // =======================
+        //Modelos
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -86,19 +67,13 @@ namespace ApiPrueba.Data
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
-            // ========================================
-            // CONFIGURACIÓN DE HERENCIA TPH (Table Per Hierarchy)
-            // Persona es abstracta, Paciente y Terapeuta heredan
-            // ========================================
+            //Relacion herencia Persona -> Paciente / Terapeuta
             modelBuilder.Entity<Persona>()
                 .HasDiscriminator<string>("TipoPersona")
                 .HasValue<Paciente>("Paciente")
                 .HasValue<Terapeuta>("Terapeuta");
 
-            // ========================================
-            // ÍNDICES ÚNICOS PARA TABLAS INTERMEDIAS
-            // Previenen duplicados en relaciones N:N
-            // ========================================
+            //tablas intermedias N:N con índices únicos
 
             modelBuilder.Entity<TerapeutaEspecialidad>()
                 .HasIndex(te => new { te.IdTerapeuta, te.IdEspecialidad })
@@ -149,6 +124,12 @@ namespace ApiPrueba.Data
             modelBuilder.Entity<AlertaAgenda>()
                 .HasIndex(a => new { a.IdTerapeuta, a.Resuelta });
 
+            //Relacion 1:1 de Administrador con Persona
+            modelBuilder.Entity<Administrador>()
+                .HasOne(a => a.Persona)
+                .WithOne(p => p.Administrador)
+                .HasForeignKey<Administrador>(a => a.IdPersona);
+
             modelBuilder.Entity<Tratamiento>()
                 .HasOne(t => t.Terapeuta)
                 .WithMany()
@@ -178,7 +159,10 @@ namespace ApiPrueba.Data
                 .WithMany()
                 .HasForeignKey(n => n.IdPaciente)
                 .OnDelete(DeleteBehavior.Restrict);
+
         }
+
+        
 
         public DbSet<ApiPrueba.Models.Persona> Persona { get; set; } = default!;
     }

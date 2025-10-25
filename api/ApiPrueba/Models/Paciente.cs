@@ -30,5 +30,8 @@ namespace ApiPrueba.Models
         public ICollection<DocumentoPaciente> Documentos { get; set; } = new List<DocumentoPaciente>();
         [JsonIgnore]
         public ICollection<EvolucionPaciente> Evoluciones { get; set; } = new List<EvolucionPaciente>();
+
+        [JsonIgnore]
+        public ICollection<Diagnostico> Diagnosticos { get; set; } = new List<Diagnostico>();
     }
 }
