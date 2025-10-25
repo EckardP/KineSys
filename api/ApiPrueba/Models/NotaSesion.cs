@@ -39,8 +39,8 @@ namespace ApiPrueba.Models
         public string RegistradoPor { get; set; }
 
         [JsonIgnore]
-        public Paciente Paciente { get; set; }
+        public Paciente? Paciente { get; set; }
         [JsonIgnore]
-        public Cita Cita { get; set; }
+        public Cita? Cita { get; set; }
     }
 }

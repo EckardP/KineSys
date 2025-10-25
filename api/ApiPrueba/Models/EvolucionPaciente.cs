@@ -25,6 +25,6 @@ namespace ApiPrueba.Models
         [Required]
         public decimal Valor { get; set; }
         [JsonIgnore]
-        public Paciente Paciente { get; set; }
+        public Paciente? Paciente { get; set; }
     }
 }

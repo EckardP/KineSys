@@ -186,8 +186,8 @@ namespace ApiPrueba.Migrations
                     Nombre = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false),
                     Parentesco = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     TelefonoPrincipal = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
-                    TelefonoAlterno = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
-                    Observaciones = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false)
+                    TelefonoAlterno = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true),
+                    Observaciones = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -211,7 +211,7 @@ namespace ApiPrueba.Migrations
                     HoraInicio = table.Column<TimeSpan>(type: "time", nullable: false),
                     HoraFin = table.Column<TimeSpan>(type: "time", nullable: false),
                     Disponible = table.Column<bool>(type: "bit", nullable: false),
-                    TipoAmbiente = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false)
+                    TipoAmbiente = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -234,9 +234,9 @@ namespace ApiPrueba.Migrations
                     TipoDocumento = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     NombreArchivo = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: false),
                     Ruta = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    MimeType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    MimeType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     FechaSubida = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    SubidoPor = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false)
+                    SubidoPor = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -312,7 +312,6 @@ namespace ApiPrueba.Migrations
                     FechaInicio = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FechaFin = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IdPaciente = table.Column<int>(type: "int", nullable: false),
-                    PacienteId = table.Column<int>(type: "int", nullable: false),
                     IdTerapeuta = table.Column<int>(type: "int", nullable: false),
                     TerapeutaId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -320,17 +319,17 @@ namespace ApiPrueba.Migrations
                 {
                     table.PrimaryKey("PK_Tratamientos", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Tratamientos_Persona_IdPaciente",
+                        column: x => x.IdPaciente,
+                        principalTable: "Persona",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_Tratamientos_Persona_IdTerapeuta",
                         column: x => x.IdTerapeuta,
                         principalTable: "Persona",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Tratamientos_Persona_PacienteId",
-                        column: x => x.PacienteId,
-                        principalTable: "Persona",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Tratamientos_Persona_TerapeutaId",
                         column: x => x.TerapeutaId,
@@ -355,7 +354,8 @@ namespace ApiPrueba.Migrations
                     PacienteId = table.Column<int>(type: "int", nullable: false),
                     IdTerapeuta = table.Column<int>(type: "int", nullable: false),
                     IdTratamiento = table.Column<int>(type: "int", nullable: true),
-                    TerapeutaId = table.Column<int>(type: "int", nullable: true)
+                    TerapeutaId = table.Column<int>(type: "int", nullable: true),
+                    TratamientoId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -383,6 +383,11 @@ namespace ApiPrueba.Migrations
                         principalTable: "Tratamientos",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Citas_Tratamientos_TratamientoId",
+                        column: x => x.TratamientoId,
+                        principalTable: "Tratamientos",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -396,7 +401,6 @@ namespace ApiPrueba.Migrations
                     DuracionDias = table.Column<int>(type: "int", nullable: false),
                     Observaciones = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IdPaciente = table.Column<int>(type: "int", nullable: false),
-                    PacienteId = table.Column<int>(type: "int", nullable: false),
                     IdTerapeuta = table.Column<int>(type: "int", nullable: false),
                     IdTratamiento = table.Column<int>(type: "int", nullable: false),
                     TerapeutaId = table.Column<int>(type: "int", nullable: true)
@@ -405,17 +409,17 @@ namespace ApiPrueba.Migrations
                 {
                     table.PrimaryKey("PK_PlanTratamientos", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_PlanTratamientos_Persona_IdPaciente",
+                        column: x => x.IdPaciente,
+                        principalTable: "Persona",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_PlanTratamientos_Persona_IdTerapeuta",
                         column: x => x.IdTerapeuta,
                         principalTable: "Persona",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_PlanTratamientos_Persona_PacienteId",
-                        column: x => x.PacienteId,
-                        principalTable: "Persona",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PlanTratamientos_Persona_TerapeutaId",
                         column: x => x.TerapeutaId,
@@ -610,6 +614,11 @@ namespace ApiPrueba.Migrations
                 column: "TerapeutaId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Citas_TratamientoId",
+                table: "Citas",
+                column: "TratamientoId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ContactosEmergencia_IdPaciente",
                 table: "ContactosEmergencia",
                 column: "IdPaciente");
@@ -669,6 +678,11 @@ namespace ApiPrueba.Migrations
                 column: "SeguroMedicoIdSeguro");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PlanTratamientos_IdPaciente",
+                table: "PlanTratamientos",
+                column: "IdPaciente");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PlanTratamientos_IdTerapeuta",
                 table: "PlanTratamientos",
                 column: "IdTerapeuta");
@@ -678,11 +692,6 @@ namespace ApiPrueba.Migrations
                 table: "PlanTratamientos",
                 column: "IdTratamiento",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PlanTratamientos_PacienteId",
-                table: "PlanTratamientos",
-                column: "PacienteId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PlanTratamientos_TerapeutaId",
@@ -729,14 +738,14 @@ namespace ApiPrueba.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Tratamientos_IdPaciente",
+                table: "Tratamientos",
+                column: "IdPaciente");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Tratamientos_IdTerapeuta",
                 table: "Tratamientos",
                 column: "IdTerapeuta");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tratamientos_PacienteId",
-                table: "Tratamientos",
-                column: "PacienteId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tratamientos_TerapeutaId",

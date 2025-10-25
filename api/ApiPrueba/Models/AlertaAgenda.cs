@@ -31,6 +31,6 @@ namespace ApiPrueba.Models
         [JsonIgnore]
         public Cita? Cita { get; set; }
         [JsonIgnore]
-        public Terapeuta Terapeuta { get; set; }
+        public Terapeuta? Terapeuta { get; set; }
     }
 }

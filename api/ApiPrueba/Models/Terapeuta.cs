@@ -7,6 +7,11 @@ namespace ApiPrueba.Models
         //public string DocumentoIdentidad { get; set; }
         //public string? CorreoElectronico { get; set; }
 
+        public string NoLicencia { get; set; }
+        public string TituloAcademico { get; set; }
+        public int AñosExperiencia { get; set; }
+        public DateTime FechaContratacion { get; set; }
+
         //Relaciones
         [JsonIgnore]
         public ICollection<Cita> Citas { get; set; } = new List<Cita>();

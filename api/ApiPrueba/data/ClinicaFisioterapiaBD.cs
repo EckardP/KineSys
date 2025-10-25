@@ -68,6 +68,24 @@ namespace ApiPrueba.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Cita>(entity =>
+            {
+                entity.HasOne(c => c.Paciente)
+                    .WithMany()
+                    .HasForeignKey(c => c.IdPaciente)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(c => c.Terapeuta)
+                    .WithMany()
+                    .HasForeignKey(c => c.IdTerapeuta)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(c => c.Tratamiento)
+                    .WithMany()
+                    .HasForeignKey(c => c.IdTratamiento)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
             // ========================================
             // CONFIGURACIÓN DE HERENCIA TPH (Table Per Hierarchy)
             // Persona es abstracta, Paciente y Terapeuta heredan
@@ -137,18 +155,6 @@ namespace ApiPrueba.Data
                 .HasForeignKey(t => t.IdTerapeuta)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Cita>()
-                .HasOne(c => c.Terapeuta)
-                .WithMany()
-                .HasForeignKey(c => c.IdTerapeuta)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Cita>()
-                .HasOne(c => c.Tratamiento)
-                .WithMany()
-                .HasForeignKey(c => c.IdTratamiento)
-                .OnDelete(DeleteBehavior.Restrict);
-
             modelBuilder.Entity<PlanTratamiento>()
                 .HasOne(p => p.Terapeuta)
                 .WithMany()
@@ -157,8 +163,14 @@ namespace ApiPrueba.Data
 
             modelBuilder.Entity<PlanTratamiento>()
                 .HasOne(p => p.Tratamiento)
-                .WithOne(t => t.PlanTratamiento)
-                .HasForeignKey<PlanTratamiento>(p => p.IdTratamiento)
+                .WithMany()
+                .HasForeignKey(p => p.IdTratamiento)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<PlanTratamiento>()
+                .HasOne(p => p.Paciente)
+                .WithMany()
+                .HasForeignKey(p => p.IdPaciente)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<NotaSesion>()
@@ -166,9 +178,8 @@ namespace ApiPrueba.Data
                 .WithMany()
                 .HasForeignKey(n => n.IdPaciente)
                 .OnDelete(DeleteBehavior.Restrict);
-
-
         }
-    public DbSet<ApiPrueba.Models.Persona> Persona { get; set; } = default!;
+
+        public DbSet<ApiPrueba.Models.Persona> Persona { get; set; } = default!;
     }
 }

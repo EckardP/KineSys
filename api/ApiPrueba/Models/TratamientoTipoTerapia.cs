@@ -18,14 +18,14 @@ namespace ApiPrueba.Models
 
         [ForeignKey("IdTratamiento")]
         [JsonIgnore]
-        public Tratamiento Tratamiento { get; set; }
+        public Tratamiento? Tratamiento { get; set; }
 
         [Required]
         public int IdTipoTerapia { get; set; }
 
         [ForeignKey("IdTipoTerapia")]
         [JsonIgnore]
-        public TipoTerapia TipoTerapia { get; set; }
+        public TipoTerapia? TipoTerapia { get; set; }
 
         public int NumeroSesionesAsignadas { get; set; }
 

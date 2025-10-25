@@ -1,26 +1,34 @@
 using ApiPrueba.Data;
 using Microsoft.EntityFrameworkCore;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
-// Configuraci髇 de conexi髇 SQL Server
+// 1 Configuraci贸n de conexi贸n SQL Server
 builder.Services.AddDbContext<ClinicaFisioterapiaBD>(opciones =>
     opciones.UseSqlServer(builder.Configuration.GetConnectionString("ClinicaFisioterapiaBD")));
 
-// Habilitar controladores y Swagger
+// 2 Configurar CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("PermitirTodo", policy =>
+    {
+        policy.AllowAnyOrigin()      // Permite cualquier origen (frontend)
+              .AllowAnyMethod()      // Permite GET, POST, PUT, DELETE, etc.
+              .AllowAnyHeader();     // Permite cualquier encabezado
+    });
+});
+
+// 3 Controladores y Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Inyecci髇 de dependencias (los servicios se a馻dir醤 luego)
+// 4 Inyecci贸n de dependencias (si las usas m谩s adelante)
 builder.Services.AddScoped<ClinicaFisioterapiaBD>();
-
-
 
 var app = builder.Build();
 
-// Configuraci髇 de entorno
+// 5 Configuraci贸n del entorno
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -28,37 +36,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// 6 Activar la pol铆tica CORS (antes de Authorization)
+app.UseCors("PermitirTodo");
+
 app.UseAuthorization();
+
+// 7 Mapear controladores
 app.MapControllers();
+
 app.Run();
-
-
-//using ApiPrueba.data;
-//using Microsoft.EntityFrameworkCore;
-
-//var builder = WebApplication.CreateBuilder(args);
-//var CadenaConexion=builder.Configuration.GetConnectionString("CadenaConexionDB");
-//builder.Services.AddDbContext<ConexionContextDB>(options=>options.UseSqlServer(CadenaConexion));
-//// Add services to the container.
-
-//builder.Services.AddControllers();
-//// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-//builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddSwaggerGen();
-
-//var app = builder.Build();
-
-//// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
-//    app.UseSwagger();
-//    app.UseSwaggerUI();
-//}
-
-//app.UseHttpsRedirection();
-
-//app.UseAuthorization();
-
-//app.MapControllers();
-
-//app.Run();

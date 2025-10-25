@@ -30,6 +30,6 @@ namespace ApiPrueba.Models
         public string Estado { get; set; } // Pendiente / Confirmada / Cancelada
 
         [JsonIgnore]
-        public Cita Cita { get; set; }
+        public Cita? Cita { get; set; }
     }
 }

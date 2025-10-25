@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiPrueba.Migrations
 {
     [DbContext(typeof(ClinicaFisioterapiaBD))]
-    [Migration("20251022011216_Inicial")]
+    [Migration("20251023021719_Inicial")]
     partial class Inicial
     {
         /// <inheritdoc />
@@ -108,6 +108,9 @@ namespace ApiPrueba.Migrations
                     b.Property<int?>("TerapeutaId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("TratamientoId")
+                        .HasColumnType("int");
+
                     b.HasKey("IdCita");
 
                     b.HasIndex("IdTratamiento");
@@ -115,6 +118,8 @@ namespace ApiPrueba.Migrations
                     b.HasIndex("PacienteId");
 
                     b.HasIndex("TerapeutaId");
+
+                    b.HasIndex("TratamientoId");
 
                     b.HasIndex("IdTerapeuta", "CheckIn");
 
@@ -138,7 +143,6 @@ namespace ApiPrueba.Migrations
                         .HasColumnType("nvarchar(80)");
 
                     b.Property<string>("Observaciones")
-                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
@@ -148,7 +152,6 @@ namespace ApiPrueba.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("TelefonoAlterno")
-                        .IsRequired()
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
@@ -190,7 +193,6 @@ namespace ApiPrueba.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("TipoAmbiente")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
@@ -216,7 +218,6 @@ namespace ApiPrueba.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("MimeType")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -231,7 +232,6 @@ namespace ApiPrueba.Migrations
                         .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("SubidoPor")
-                        .IsRequired()
                         .HasMaxLength(80)
                         .HasColumnType("nvarchar(80)");
 
@@ -492,20 +492,17 @@ namespace ApiPrueba.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PacienteId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("TerapeutaId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("IdPaciente");
+
                     b.HasIndex("IdTerapeuta");
 
                     b.HasIndex("IdTratamiento")
                         .IsUnique();
-
-                    b.HasIndex("PacienteId");
 
                     b.HasIndex("TerapeutaId");
 
@@ -748,17 +745,14 @@ namespace ApiPrueba.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PacienteId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("TerapeutaId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdTerapeuta");
+                    b.HasIndex("IdPaciente");
 
-                    b.HasIndex("PacienteId");
+                    b.HasIndex("IdTerapeuta");
 
                     b.HasIndex("TerapeutaId");
 
@@ -910,6 +904,10 @@ namespace ApiPrueba.Migrations
                         .WithMany("Citas")
                         .HasForeignKey("TerapeutaId");
 
+                    b.HasOne("ApiPrueba.Models.Tratamiento", null)
+                        .WithMany("Citas")
+                        .HasForeignKey("TratamientoId");
+
                     b.Navigation("Paciente");
 
                     b.Navigation("Terapeuta");
@@ -1003,6 +1001,12 @@ namespace ApiPrueba.Migrations
 
             modelBuilder.Entity("ApiPrueba.Models.PlanTratamiento", b =>
                 {
+                    b.HasOne("ApiPrueba.Models.Paciente", "Paciente")
+                        .WithMany("PlanesTratamiento")
+                        .HasForeignKey("IdPaciente")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("ApiPrueba.Models.Terapeuta", "Terapeuta")
                         .WithMany()
                         .HasForeignKey("IdTerapeuta")
@@ -1013,12 +1017,6 @@ namespace ApiPrueba.Migrations
                         .WithOne("PlanTratamiento")
                         .HasForeignKey("ApiPrueba.Models.PlanTratamiento", "IdTratamiento")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("ApiPrueba.Models.Paciente", "Paciente")
-                        .WithMany("PlanesTratamiento")
-                        .HasForeignKey("PacienteId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ApiPrueba.Models.Terapeuta", null)
@@ -1083,16 +1081,16 @@ namespace ApiPrueba.Migrations
 
             modelBuilder.Entity("ApiPrueba.Models.Tratamiento", b =>
                 {
+                    b.HasOne("ApiPrueba.Models.Paciente", "Paciente")
+                        .WithMany("Tratamientos")
+                        .HasForeignKey("IdPaciente")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("ApiPrueba.Models.Terapeuta", "Terapeuta")
                         .WithMany()
                         .HasForeignKey("IdTerapeuta")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("ApiPrueba.Models.Paciente", "Paciente")
-                        .WithMany("Tratamientos")
-                        .HasForeignKey("PacienteId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ApiPrueba.Models.Terapeuta", null)
@@ -1193,6 +1191,8 @@ namespace ApiPrueba.Migrations
 
             modelBuilder.Entity("ApiPrueba.Models.Tratamiento", b =>
                 {
+                    b.Navigation("Citas");
+
                     b.Navigation("PlanTratamiento");
 
                     b.Navigation("TratamientoProtocolos");

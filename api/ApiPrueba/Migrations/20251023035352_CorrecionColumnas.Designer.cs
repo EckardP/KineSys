@@ -4,6 +4,7 @@ using ApiPrueba.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiPrueba.Migrations
 {
     [DbContext(typeof(ClinicaFisioterapiaBD))]
-    partial class ClinicaFisioterapiaBDModelSnapshot : ModelSnapshot
+    [Migration("20251023035352_CorrecionColumnas")]
+    partial class CorrecionColumnas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -428,15 +431,7 @@ namespace ApiPrueba.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Apellidos")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("CorreoElectronico")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Direccion")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -444,14 +439,7 @@ namespace ApiPrueba.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime>("FechaNacimiento")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Genero")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Nombres")
+                    b.Property<string>("NombreCompleto")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -855,7 +843,14 @@ namespace ApiPrueba.Migrations
                 {
                     b.HasBaseType("ApiPrueba.Models.Persona");
 
-                    b.Property<string>("Diagnostico")
+                    b.Property<string>("Direccion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("FechaNacimiento")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Genero")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -877,20 +872,6 @@ namespace ApiPrueba.Migrations
             modelBuilder.Entity("ApiPrueba.Models.Terapeuta", b =>
                 {
                     b.HasBaseType("ApiPrueba.Models.Persona");
-
-                    b.Property<int>("AñosExperiencia")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("FechaContratacion")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("NoLicencia")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TituloAcademico")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasDiscriminator().HasValue("Terapeuta");
                 });

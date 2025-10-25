@@ -4,10 +4,11 @@ namespace ApiPrueba.Models
 {
     public class Paciente : Persona
     {
-        public DateTime FechaNacimiento { get; set; }
-        public string Genero { get; set; }
-        public string Direccion { get; set; }
+        
+        
+        
         public string HistorialMedico { get; set; }
+        public string Diagnostico { get; set; }
 
         // Relaciones
         public int? IdSeguroMedico { get; set; }
