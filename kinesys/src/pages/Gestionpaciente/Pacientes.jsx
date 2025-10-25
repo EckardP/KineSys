@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Table, Form, Row, Col, Badge, Container, Spinner, Alert, Modal, Card } from "react-bootstrap";
+import { Button, Table, Form, Row, Col, Badge, Container, Spinner, Alert, Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import {
   listarPacientes,
@@ -18,14 +18,17 @@ export default function Pacientes() {
 
   // Estado del formulario de registro
   const [formData, setFormData] = useState({
-    nombreCompleto: '',
-    documentoIdentidad: '',
-    telefono: '',
-    correoElectronico: '',
-    fechaNacimiento: '',
-    genero: '',
-    direccion: '',
-    historialMedico: '',
+    id: 0,
+    nombres: "",
+    apellidos: "",
+    documentoIdentidad: "",
+    telefono: "",
+    correoElectronico: "",
+    fechaNacimiento: "",
+    genero: "",
+    direccion: "",
+    historialMedico: "",
+    diagnostico: "",
     idSeguroMedico: 0
   });
 
@@ -34,7 +37,6 @@ export default function Pacientes() {
     cargarPacientes();
   }, []);
 
-  // --- Función para obtener pacientes desde el backend ---
   const cargarPacientes = async () => {
     try {
       setCargando(true);
@@ -48,7 +50,6 @@ export default function Pacientes() {
     }
   };
 
-  // --- Función para eliminar un paciente ---
   const handleEliminar = async (id) => {
     const confirmar = window.confirm("¿Seguro que deseas eliminar este paciente?");
     if (!confirmar) return;
@@ -63,12 +64,12 @@ export default function Pacientes() {
     }
   };
 
-  // --- Manejo del formulario de registro ---
+  // Manejo del formulario
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: name === 'idSeguroMedico' ? parseInt(value) || 0 : value
+      [name]: name === "idSeguroMedico" ? parseInt(value) || 0 : value
     });
   };
 
@@ -77,15 +78,20 @@ export default function Pacientes() {
     setEnviando(true);
 
     try {
-      await crearPaciente(formData);
-      await cargarPacientes(); // Recargar la lista
+      const dataAEnviar = {
+        ...formData,
+        fechaNacimiento: new Date(formData.fechaNacimiento).toISOString()
+      };
+
+      await crearPaciente(dataAEnviar);
+      await cargarPacientes();
       setShowModal(false);
       resetForm();
       setError(null);
-      alert('Paciente registrado correctamente');
+      alert("Paciente registrado correctamente");
     } catch (error) {
-      console.error('Error al registrar paciente:', error);
-      setError('Ocurrió un error al registrar el paciente');
+      console.error("Error al registrar paciente:", error);
+      setError("Ocurrió un error al registrar el paciente");
     } finally {
       setEnviando(false);
     }
@@ -93,14 +99,17 @@ export default function Pacientes() {
 
   const resetForm = () => {
     setFormData({
-      nombreCompleto: '',
-      documentoIdentidad: '',
-      telefono: '',
-      correoElectronico: '',
-      fechaNacimiento: '',
-      genero: '',
-      direccion: '',
-      historialMedico: '',
+      id: 0,
+      nombres: "",
+      apellidos: "",
+      documentoIdentidad: "",
+      telefono: "",
+      correoElectronico: "",
+      fechaNacimiento: "",
+      genero: "",
+      direccion: "",
+      historialMedico: "",
+      diagnostico: "",
       idSeguroMedico: 0
     });
   };
@@ -110,14 +119,15 @@ export default function Pacientes() {
     resetForm();
   };
 
-  // --- Filtrado de pacientes ---
-  const pacientesFiltrados = pacientes ? pacientes.filter(
-    (p) =>
-      p.nombreCompleto?.toLowerCase().includes(busqueda.toLowerCase()) ||
-      p.correoElectronico?.toLowerCase().includes(busqueda.toLowerCase()) ||
-      p.telefono?.includes(busqueda) ||
-      p.documentoIdentidad?.includes(busqueda)
-  ) : [];
+  const pacientesFiltrados = pacientes
+    ? pacientes.filter(
+        (p) =>
+          `${p.nombres} ${p.apellidos}`.toLowerCase().includes(busqueda.toLowerCase()) ||
+          p.correoElectronico?.toLowerCase().includes(busqueda.toLowerCase()) ||
+          p.telefono?.includes(busqueda) ||
+          p.documentoIdentidad?.includes(busqueda)
+      )
+    : [];
 
   return (
     <Container className="mt-4">
@@ -130,18 +140,10 @@ export default function Pacientes() {
           </p>
         </Col>
         <Col className="text-end">
-          <Button 
-            variant="success"
-            className="me-2"
-            onClick={() => setShowModal(true)}
-          >
+          <Button variant="success" className="me-2" onClick={() => setShowModal(true)}>
             + Nuevo Paciente
           </Button>
-          <Button 
-            variant="outline-primary" 
-            onClick={cargarPacientes}
-            disabled={cargando}
-          >
+          <Button variant="outline-primary" onClick={cargarPacientes} disabled={cargando}>
             {cargando ? <Spinner animation="border" size="sm" /> : "Actualizar"}
           </Button>
         </Col>
@@ -174,12 +176,17 @@ export default function Pacientes() {
 
       {/* Estado de error */}
       {error && (
-        <Alert variant="danger" className="text-center" dismissible onClose={() => setError(null)}>
+        <Alert
+          variant="danger"
+          className="text-center"
+          dismissible
+          onClose={() => setError(null)}
+        >
           {error}
         </Alert>
       )}
 
-      {/* Tabla de pacientes */}
+      {/* Tabla */}
       {!cargando && !error && (
         <div className="table-responsive">
           <Table striped bordered hover>
@@ -198,20 +205,23 @@ export default function Pacientes() {
               {pacientesFiltrados.length > 0 ? (
                 pacientesFiltrados.map((p) => (
                   <tr key={p.id}>
-                    <td className="fw-bold">{p.nombreCompleto}</td>
+                    <td className="fw-bold">{`${p.nombres} ${p.apellidos}`}</td>
                     <td>
                       <Badge bg="secondary">{p.documentoIdentidad || "—"}</Badge>
                     </td>
                     <td>
                       {p.fechaNacimiento
-                        ? new Date(p.fechaNacimiento).toLocaleDateString('es-ES')
+                        ? new Date(p.fechaNacimiento).toLocaleDateString("es-ES")
                         : "—"}
                     </td>
                     <td>
-                      <Badge 
+                      <Badge
                         bg={
-                          p.genero === "masculino" ? "primary" : 
-                          p.genero === "femenino" ? "success" : "warning"
+                          p.genero === "masculino"
+                            ? "primary"
+                            : p.genero === "femenino"
+                            ? "success"
+                            : "warning"
                         }
                       >
                         {p.genero || "—"}
@@ -220,7 +230,10 @@ export default function Pacientes() {
                     <td>{p.telefono || "—"}</td>
                     <td>
                       {p.correoElectronico ? (
-                        <a href={`mailto:${p.correoElectronico}`} className="text-decoration-none">
+                        <a
+                          href={`mailto:${p.correoElectronico}`}
+                          className="text-decoration-none"
+                        >
                           {p.correoElectronico}
                         </a>
                       ) : (
@@ -259,7 +272,9 @@ export default function Pacientes() {
               ) : (
                 <tr>
                   <td colSpan="7" className="text-center text-muted py-4">
-                    {busqueda ? "No se encontraron pacientes con esos criterios." : "No hay pacientes registrados."}
+                    {busqueda
+                      ? "No se encontraron pacientes con esos criterios."
+                      : "No hay pacientes registrados."}
                   </td>
                 </tr>
               )}
@@ -268,30 +283,45 @@ export default function Pacientes() {
         </div>
       )}
 
-      {/* Modal para registrar nuevo paciente */}
+      {/* Modal */}
       <Modal show={showModal} onHide={handleCloseModal} size="lg" centered>
         <Modal.Header closeButton className="bg-secondary text-white">
           <Modal.Title>Registro de Paciente</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
-            {/* Información Personal */}
             <h5 className="mb-3">Información Personal</h5>
-            
+
             <Row className="mb-3">
               <Col md={6}>
                 <Form.Label className="fw-bold">
-                  Nombre Completo <span className="text-danger">*</span>
+                  Nombres <span className="text-danger">*</span>
                 </Form.Label>
                 <Form.Control
                   type="text"
-                  name="nombreCompleto"
-                  placeholder="Ingrese el nombre completo"
-                  value={formData.nombreCompleto}
+                  name="nombres"
+                  placeholder="Ingrese los nombres"
+                  value={formData.nombres}
                   onChange={handleChange}
                   required
                 />
               </Col>
+              <Col md={6}>
+                <Form.Label className="fw-bold">
+                  Apellidos <span className="text-danger">*</span>
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  name="apellidos"
+                  placeholder="Ingrese los apellidos"
+                  value={formData.apellidos}
+                  onChange={handleChange}
+                  required
+                />
+              </Col>
+            </Row>
+
+            <Row className="mb-3">
               <Col md={6}>
                 <Form.Label className="fw-bold">
                   Documento de Identidad <span className="text-danger">*</span>
@@ -305,9 +335,6 @@ export default function Pacientes() {
                   required
                 />
               </Col>
-            </Row>
-
-            <Row className="mb-3">
               <Col md={6}>
                 <Form.Label className="fw-bold">
                   Teléfono <span className="text-danger">*</span>
@@ -321,6 +348,9 @@ export default function Pacientes() {
                   required
                 />
               </Col>
+            </Row>
+
+            <Row className="mb-3">
               <Col md={6}>
                 <Form.Label className="fw-bold">
                   Correo Electrónico
@@ -333,9 +363,6 @@ export default function Pacientes() {
                   onChange={handleChange}
                 />
               </Col>
-            </Row>
-
-            <Row className="mb-3">
               <Col md={6}>
                 <Form.Label className="fw-bold">
                   Fecha de Nacimiento <span className="text-danger">*</span>
@@ -348,6 +375,9 @@ export default function Pacientes() {
                   required
                 />
               </Col>
+            </Row>
+
+            <Row className="mb-3">
               <Col md={6}>
                 <Form.Label className="fw-bold">
                   Género <span className="text-danger">*</span>
@@ -365,13 +395,8 @@ export default function Pacientes() {
                   <option value="prefiero-no-decir">Prefiero no decir</option>
                 </Form.Select>
               </Col>
-            </Row>
-
-            <Row className="mb-3">
-              <Col>
-                <Form.Label className="fw-bold">
-                  Dirección
-                </Form.Label>
+              <Col md={6}>
+                <Form.Label className="fw-bold">Dirección</Form.Label>
                 <Form.Control
                   type="text"
                   name="direccion"
@@ -384,14 +409,11 @@ export default function Pacientes() {
 
             <hr className="my-3" />
 
-            {/* Información Médica */}
             <h5 className="mb-3">Información Médica</h5>
-            
+
             <Row className="mb-3">
               <Col md={6}>
-                <Form.Label className="fw-bold">
-                  ID Seguro Médico
-                </Form.Label>
+                <Form.Label className="fw-bold">ID Seguro Médico</Form.Label>
                 <Form.Control
                   type="number"
                   name="idSeguroMedico"
@@ -405,9 +427,7 @@ export default function Pacientes() {
 
             <Row className="mb-3">
               <Col>
-                <Form.Label className="fw-bold">
-                  Historial Médico
-                </Form.Label>
+                <Form.Label className="fw-bold">Historial Médico</Form.Label>
                 <Form.Control
                   as="textarea"
                   rows={3}
@@ -416,25 +436,28 @@ export default function Pacientes() {
                   value={formData.historialMedico}
                   onChange={handleChange}
                 />
-                <Form.Text className="text-muted">
-                  Incluya información relevante sobre condiciones médicas, alergias, medicamentos, etc.
-                </Form.Text>
+              </Col>
+            </Row>
+
+            <Row className="mb-3">
+              <Col>
+                <Form.Label className="fw-bold">Diagnóstico</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={2}
+                  name="diagnostico"
+                  placeholder="Ingrese el diagnóstico del paciente"
+                  value={formData.diagnostico}
+                  onChange={handleChange}
+                />
               </Col>
             </Row>
 
             <div className="d-flex justify-content-end gap-2 mt-4">
-              <Button 
-                variant="outline-secondary" 
-                onClick={handleCloseModal}
-                disabled={enviando}
-              >
+              <Button variant="outline-secondary" onClick={handleCloseModal} disabled={enviando}>
                 Cancelar
               </Button>
-              <Button 
-                type="submit" 
-                variant="primary"
-                disabled={enviando}
-              >
+              <Button type="submit" variant="primary" disabled={enviando}>
                 {enviando ? <Spinner animation="border" size="sm" /> : "Registrar Paciente"}
               </Button>
             </div>
