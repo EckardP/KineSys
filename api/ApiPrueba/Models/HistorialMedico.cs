@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace ApiPrueba.Models
@@ -7,7 +8,6 @@ namespace ApiPrueba.Models
     {
         [Key]
         public int IdHistorial { get; set; }
-
         public int IdPaciente { get; set; }
 
         public string? Alergias { get; set; }
@@ -30,6 +30,7 @@ namespace ApiPrueba.Models
 
         // Relación con Paciente
         [JsonIgnore]
-        public Paciente Paciente { get; set; }
+        [ForeignKey("IdPaciente")]
+        public Paciente? Paciente { get; set; }
     }
 }

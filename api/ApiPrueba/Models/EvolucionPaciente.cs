@@ -13,7 +13,6 @@ namespace ApiPrueba.Models
         public int IdEvolucion { get; set; }
 
         [Required]
-        [ForeignKey("Paciente")]
         public int IdPaciente { get; set; }
 
         [Required]
@@ -25,6 +24,7 @@ namespace ApiPrueba.Models
         [Required]
         public decimal Valor { get; set; }
         [JsonIgnore]
+        [ForeignKey("IdPaciente")]
         public Paciente? Paciente { get; set; }
     }
 }

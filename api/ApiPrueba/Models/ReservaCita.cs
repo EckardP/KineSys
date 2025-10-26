@@ -12,7 +12,7 @@ namespace ApiPrueba.Models
         [Key]
         public int IdReserva { get; set; }
 
-        [ForeignKey("Cita")]
+        
         public int IdCita { get; set; }
 
         [Required, StringLength(120)]
@@ -30,6 +30,7 @@ namespace ApiPrueba.Models
         public string Estado { get; set; } // Pendiente / Confirmada / Cancelada
 
         [JsonIgnore]
+        [ForeignKey("IdCita")]
         public Cita? Cita { get; set; }
     }
 }

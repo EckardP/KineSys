@@ -4,6 +4,7 @@ using ApiPrueba.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiPrueba.Migrations
 {
     [DbContext(typeof(ClinicaFisioterapiaBD))]
-    partial class ClinicaFisioterapiaBDModelSnapshot : ModelSnapshot
+    [Migration("20251026175712_Nuevaclase")]
+    partial class Nuevaclase
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -401,9 +404,6 @@ namespace ApiPrueba.Migrations
                     b.Property<int?>("IdProtocolo")
                         .HasColumnType("int");
 
-                    b.Property<int?>("IdProtocoloTratamiento")
-                        .HasColumnType("int");
-
                     b.Property<string>("Observaciones")
                         .IsRequired()
                         .HasMaxLength(150)
@@ -412,8 +412,6 @@ namespace ApiPrueba.Migrations
                     b.HasKey("IdEquipoSesion");
 
                     b.HasIndex("IdEquipo");
-
-                    b.HasIndex("IdProtocoloTratamiento");
 
                     b.HasIndex("IdProtocolo", "IdEquipo")
                         .IsUnique()
@@ -510,10 +508,12 @@ namespace ApiPrueba.Migrations
                     b.Property<string>("ObservacionesGenerales")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("PacienteId")
+                        .HasColumnType("int");
+
                     b.HasKey("IdHistorial");
 
-                    b.HasIndex("IdPaciente")
-                        .IsUnique();
+                    b.HasIndex("PacienteId");
 
                     b.ToTable("HistorialMedicos");
                 });
@@ -1009,6 +1009,14 @@ namespace ApiPrueba.Migrations
                 {
                     b.HasBaseType("ApiPrueba.Models.Persona");
 
+                    b.Property<string>("Diagnostico")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HistorialMedico")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("IdSeguroMedico")
                         .HasColumnType("int");
 
@@ -1188,7 +1196,7 @@ namespace ApiPrueba.Migrations
 
                     b.HasOne("ApiPrueba.Models.ProtocoloTratamiento", "ProtocoloTratamiento")
                         .WithMany("EquiposSesion")
-                        .HasForeignKey("IdProtocoloTratamiento");
+                        .HasForeignKey("IdProtocolo");
 
                     b.Navigation("Equipo");
 
@@ -1209,8 +1217,8 @@ namespace ApiPrueba.Migrations
             modelBuilder.Entity("ApiPrueba.Models.HistorialMedico", b =>
                 {
                     b.HasOne("ApiPrueba.Models.Paciente", "Paciente")
-                        .WithOne("HistorialMedico")
-                        .HasForeignKey("ApiPrueba.Models.HistorialMedico", "IdPaciente")
+                        .WithMany()
+                        .HasForeignKey("PacienteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1461,8 +1469,6 @@ namespace ApiPrueba.Migrations
                     b.Navigation("Documentos");
 
                     b.Navigation("Evoluciones");
-
-                    b.Navigation("HistorialMedico");
 
                     b.Navigation("NotasSesion");
 

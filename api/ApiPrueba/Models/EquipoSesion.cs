@@ -12,10 +12,8 @@ namespace ApiPrueba.Models
         [Key]
         public int IdEquipoSesion { get; set; }
 
-        [ForeignKey("ProtocoloTratamiento")]
         public int? IdProtocolo { get; set; }
 
-        [ForeignKey("Equipo")]
         public int IdEquipo { get; set; }
 
         public int CantidadUsada { get; set; }
@@ -23,8 +21,10 @@ namespace ApiPrueba.Models
         [StringLength(150)]
         public string Observaciones { get; set; }
         [JsonIgnore]
+        [ForeignKey("IdProtocoloTratamiento")]
         public ProtocoloTratamiento? ProtocoloTratamiento { get; set; }
         [JsonIgnore]
+        [ForeignKey("IdEquipo")]
         public Equipo? Equipo { get; set; }
     }
 }

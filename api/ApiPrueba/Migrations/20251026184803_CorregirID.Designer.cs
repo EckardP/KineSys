@@ -4,6 +4,7 @@ using ApiPrueba.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiPrueba.Migrations
 {
     [DbContext(typeof(ClinicaFisioterapiaBD))]
-    partial class ClinicaFisioterapiaBDModelSnapshot : ModelSnapshot
+    [Migration("20251026184803_CorregirID")]
+    partial class CorregirID
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -401,9 +404,6 @@ namespace ApiPrueba.Migrations
                     b.Property<int?>("IdProtocolo")
                         .HasColumnType("int");
 
-                    b.Property<int?>("IdProtocoloTratamiento")
-                        .HasColumnType("int");
-
                     b.Property<string>("Observaciones")
                         .IsRequired()
                         .HasMaxLength(150)
@@ -412,8 +412,6 @@ namespace ApiPrueba.Migrations
                     b.HasKey("IdEquipoSesion");
 
                     b.HasIndex("IdEquipo");
-
-                    b.HasIndex("IdProtocoloTratamiento");
 
                     b.HasIndex("IdProtocolo", "IdEquipo")
                         .IsUnique()
@@ -1188,7 +1186,7 @@ namespace ApiPrueba.Migrations
 
                     b.HasOne("ApiPrueba.Models.ProtocoloTratamiento", "ProtocoloTratamiento")
                         .WithMany("EquiposSesion")
-                        .HasForeignKey("IdProtocoloTratamiento");
+                        .HasForeignKey("IdProtocolo");
 
                     b.Navigation("Equipo");
 

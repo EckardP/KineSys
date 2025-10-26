@@ -4,16 +4,14 @@ namespace ApiPrueba.Models
 {
     public class Paciente : Persona
     {
-        
-        
-        
-        public string HistorialMedico { get; set; }
-        public string Diagnostico { get; set; }
 
         // Relaciones
         public int? IdSeguroMedico { get; set; }
         [JsonIgnore]
         public SeguroMedico? SeguroMedico { get; set; }
+        [JsonIgnore]
+        public HistorialMedico? HistorialMedico { get; set; }
+
         [JsonIgnore]
         public ICollection<Cita> Citas { get; set; } = new List<Cita>();
         [JsonIgnore]

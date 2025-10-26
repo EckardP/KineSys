@@ -10,7 +10,7 @@ namespace ApiPrueba.Models
         public int IdDiagnostico { get; set; }
 
         [Required]
-        public string Descripcion { get; set; }
+        public string? Descripcion { get; set; }
 
         public string? Observaciones { get; set; }
 

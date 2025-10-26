@@ -185,6 +185,11 @@ namespace ApiPrueba.Data
                 .HasForeignKey(d => d.IdTratamiento)
                 .OnDelete(DeleteBehavior.SetNull);
 
+            modelBuilder.Entity<HistorialMedico>()
+                .HasOne(h => h.Paciente)
+                .WithOne(p => p.HistorialMedico)
+                .HasForeignKey<HistorialMedico>(h => h.IdPaciente);
+
         }
 
         

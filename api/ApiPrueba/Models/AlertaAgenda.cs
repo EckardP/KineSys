@@ -11,11 +11,7 @@ namespace ApiPrueba.Models
     {
         [Key]
         public int IdAlerta { get; set; }
-
-        [ForeignKey("Cita")]
         public int? IdCita { get; set; }
-
-        [ForeignKey("Terapeuta")]
         public int IdTerapeuta { get; set; }
 
         [Required, StringLength(50)]
@@ -29,8 +25,10 @@ namespace ApiPrueba.Models
         public bool Resuelta { get; set; }
 
         [JsonIgnore]
+        [ForeignKey("IdCita")]
         public Cita? Cita { get; set; }
         [JsonIgnore]
+        [ForeignKey("IdTerapeuta")]
         public Terapeuta? Terapeuta { get; set; }
     }
 }

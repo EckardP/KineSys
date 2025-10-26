@@ -13,11 +13,9 @@ namespace ApiPrueba.Models
         public int IdNota { get; set; }
 
         [Required]
-        [ForeignKey("Cita")]
         public int IdCita { get; set; }
 
         [Required]
-        [ForeignKey("Paciente")]
         public int IdPaciente { get; set; }
 
         [Required]
@@ -39,8 +37,10 @@ namespace ApiPrueba.Models
         public string RegistradoPor { get; set; }
 
         [JsonIgnore]
+        [ForeignKey("IdPaciente")]
         public Paciente? Paciente { get; set; }
         [JsonIgnore]
+        [ForeignKey("IdCita")]
         public Cita? Cita { get; set; }
     }
 }

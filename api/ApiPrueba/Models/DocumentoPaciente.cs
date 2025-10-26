@@ -13,7 +13,6 @@ namespace ApiPrueba.Models
         public int IdDocumento { get; set; }
 
         [Required]
-        [ForeignKey("Paciente")]
         public int IdPaciente { get; set; }
 
         [Required, StringLength(50)]
@@ -33,6 +32,7 @@ namespace ApiPrueba.Models
         [StringLength(80)]
         public string? SubidoPor { get; set; }
         [JsonIgnore]
+        [ForeignKey("IdPaciente")]
         public Paciente? Paciente { get; set; }
     }
 }

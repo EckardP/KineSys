@@ -15,13 +15,13 @@ namespace ApiPrueba.Models
         public DateTime? FechaFin { get; set; }
 
         // Relaciones
-        [ForeignKey("Paciente")]
         public int IdPaciente { get; set; }
         [JsonIgnore]
+        [ForeignKey("IdPaciente")]
         public Paciente? Paciente { get; set; }
-        [ForeignKey("Terapeuta")]
         public int IdTerapeuta { get; set; }
         [JsonIgnore]
+        [ForeignKey("IdTerapeuta")]
         public Terapeuta? Terapeuta { get; set; }
         [JsonIgnore]
         public PlanTratamiento? PlanTratamiento { get; set; }

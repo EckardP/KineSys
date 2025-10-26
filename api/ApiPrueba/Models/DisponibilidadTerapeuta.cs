@@ -13,7 +13,6 @@ namespace ApiPrueba.Models
         public int IdDisponibilidad { get; set; }
 
         [Required]
-        [ForeignKey("Terapeuta")]
         public int IdTerapeuta { get; set; }
 
         [Required, StringLength(15)]
@@ -31,6 +30,7 @@ namespace ApiPrueba.Models
         [StringLength(20)]
         public string? TipoAmbiente { get; set; } // Calle u Oficina
         [JsonIgnore]
+        [ForeignKey("IdTerapeuta")]
         public Terapeuta? Terapeuta { get; set; }
     }
 }
