@@ -160,6 +160,29 @@ namespace ApiPrueba.Data
                 .HasForeignKey(n => n.IdPaciente)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            //  Configurar relación con Paciente (puede mantener cascada)
+            // Relación con Paciente (antes tenía Cascade)
+            modelBuilder.Entity<Diagnostico>()
+                .HasOne(d => d.Paciente)
+                .WithMany()
+                .HasForeignKey(d => d.IdPaciente)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
+            //  Configurar relación con Terapeuta (sin cascada para evitar conflicto)
+            modelBuilder.Entity<Diagnostico>()
+                .HasOne(d => d.Terapeuta)
+                .WithMany() // o .WithMany(t => t.Diagnosticos)
+                .HasForeignKey(d => d.IdTerapeuta)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            //  Opcional: relación con Tratamiento
+            modelBuilder.Entity<Diagnostico>()
+                .HasOne(d => d.Tratamiento)
+                .WithMany()
+                .HasForeignKey(d => d.IdTratamiento)
+                .OnDelete(DeleteBehavior.SetNull);
+
         }
 
         
