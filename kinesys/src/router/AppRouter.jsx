@@ -7,6 +7,7 @@ import FichaPaciente from '../pages/Gestionpaciente/FichaPaciente'
 import Treatments from '../pages/Treatments'
 import Agenda from '../pages/Agenda'
 import InicioSesion from '../pages/InicioSesion'
+import PacienteCardMini from '../pages/Gestionpaciente/components/PacienteCardMini'
 
 export default function AppRouter() {
   return (
@@ -20,7 +21,7 @@ export default function AppRouter() {
       {/* MÓDULO PACIENTES */}
         <Route path="/pacientes" element={<Pacientes />} />
         <Route path="/pacientes/nuevo" element={<FormPaciente />} />
-        <Route path="/pacientes/:id" element={<FichaPaciente />} />
+        <Route path="/pacientes/:id" element={<PacienteCardMini />} />
     </Routes>
   )
 }
