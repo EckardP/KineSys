@@ -25,5 +25,8 @@ namespace ApiPrueba.Models
         public ICollection<AlertaAgenda> AlertasAgenda { get; set; } = new List<AlertaAgenda>();
         [JsonIgnore]
         public ICollection<PlanTratamiento> PlanesTratamiento { get; set; } = new List<PlanTratamiento>();
+
+        [JsonIgnore]
+        public ICollection<Diagnostico> Diagnosticos { get; set; } = new List<Diagnostico>();
     }
 }

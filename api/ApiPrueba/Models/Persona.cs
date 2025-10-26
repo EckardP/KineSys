@@ -2,8 +2,7 @@
 
 namespace ApiPrueba.Models
 {
-    [JsonDerivedType(typeof(Paciente), typeDiscriminator: "paciente")]
-    [JsonDerivedType(typeof(Terapeuta), typeDiscriminator: "terapeuta")]
+    
     public abstract class Persona
     {
 
@@ -16,5 +15,8 @@ namespace ApiPrueba.Models
         public DateTime FechaNacimiento { get; set; }
         public string Genero { get; set; }
         public string Direccion { get; set; }
+
+        [JsonIgnore]
+        public Administrador? Administrador { get; set; }
     }
 }
