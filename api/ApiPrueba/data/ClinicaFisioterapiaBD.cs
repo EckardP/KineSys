@@ -37,6 +37,13 @@ namespace ApiPrueba.Data
         public DbSet<AlertaAgenda> AlertasAgenda { get; set; }
         public DbSet<NotaSesion> NotasSesion { get; set; }
 
+        public DbSet<Diagnostico> Diagnosticos { get; set; }
+        public DbSet<Administrador> Administradores { get; set; }
+
+        public DbSet<HistorialMedico> HistorialMedicos { get; set; }
+
+
+
         //tablas intermedias N:N
         public DbSet<EquipoSesion> EquiposSesion { get; set; }
         public DbSet<TerapeutaEspecialidad> TerapeutaEspecialidades { get; set; }
@@ -160,23 +167,18 @@ namespace ApiPrueba.Data
                 .HasForeignKey(n => n.IdPaciente)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            //  Configurar relación con Paciente (puede mantener cascada)
-            // Relación con Paciente (antes tenía Cascade)
             modelBuilder.Entity<Diagnostico>()
                 .HasOne(d => d.Paciente)
                 .WithMany()
                 .HasForeignKey(d => d.IdPaciente)
                 .OnDelete(DeleteBehavior.Restrict);
 
-
-            //  Configurar relación con Terapeuta (sin cascada para evitar conflicto)
             modelBuilder.Entity<Diagnostico>()
                 .HasOne(d => d.Terapeuta)
-                .WithMany() // o .WithMany(t => t.Diagnosticos)
+                .WithMany() 
                 .HasForeignKey(d => d.IdTerapeuta)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            //  Opcional: relación con Tratamiento
             modelBuilder.Entity<Diagnostico>()
                 .HasOne(d => d.Tratamiento)
                 .WithMany()
