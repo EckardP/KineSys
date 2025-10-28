@@ -22,8 +22,7 @@ namespace ApiPrueba.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-<<<<<<< HEAD
-=======
+
             modelBuilder.Entity("ApiPrueba.Models.Administrador", b =>
                 {
                     b.Property<int>("IdAdministrador")
@@ -75,7 +74,7 @@ namespace ApiPrueba.Migrations
                     b.ToTable("Administradores");
                 });
 
->>>>>>> 2907ba8bf4beb2d8501437db67d79a888e80a284
+
             modelBuilder.Entity("ApiPrueba.Models.AlertaAgenda", b =>
                 {
                     b.Property<int>("IdAlerta")
@@ -1088,8 +1087,7 @@ namespace ApiPrueba.Migrations
                     b.HasDiscriminator().HasValue("Terapeuta");
                 });
 
-<<<<<<< HEAD
-=======
+
             modelBuilder.Entity("ApiPrueba.Models.Administrador", b =>
                 {
                     b.HasOne("ApiPrueba.Models.Persona", "Persona")
@@ -1099,7 +1097,6 @@ namespace ApiPrueba.Migrations
                     b.Navigation("Persona");
                 });
 
->>>>>>> 2907ba8bf4beb2d8501437db67d79a888e80a284
             modelBuilder.Entity("ApiPrueba.Models.AlertaAgenda", b =>
                 {
                     b.HasOne("ApiPrueba.Models.Cita", "Cita")

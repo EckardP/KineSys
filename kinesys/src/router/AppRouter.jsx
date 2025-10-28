@@ -12,7 +12,7 @@ import AdminHome from "../pages/AdminHome/AdminHome";
 import Terapeuta from "../pages/GestionAdmin/GestionTerapeuta/Terapeuta";
 import AgendaAdmin from "../pages/GestionAdmin/GestionAgenda/AgendaAdmin";
 import Reportes from '../pages/GestionAdmin/GestionReporte/Reportes'
-
+import Citas from '../pages/GestionAdmin/GestionCita/Citas'
 
 export default function AppRouter() {
   return (
@@ -33,6 +33,7 @@ export default function AppRouter() {
          <Route path="/gestionterapeuta/terapeuta" element={<Terapeuta />} />
           <Route path="/gestionagenda/agendaadmin" element={<AgendaAdmin />} />
           <Route path="/gestionreporte/reportes" element={<Reportes />} />
+          <Route path="/gestioncita/citas" element={<Citas />} />
     </Routes>
   )
 }

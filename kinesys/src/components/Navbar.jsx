@@ -41,7 +41,7 @@ export default function Navbar() {
     <BsNavbar bg="dark" variant="dark" expand="lg">
       <Container>
         {/* Si está autenticado, lleva al dashboard, si no, a la home pública */}
-        <BsNavbar.Brand as={Link} to={isAuthenticated ? `/dashboard/${userRole.toLowerCase()}` : "/"}>KineSys</BsNavbar.Brand>
+        <BsNavbar.Brand as={Link} to={isAuthenticated ? `/gestionadmin` : "/"}>KineSys</BsNavbar.Brand>
         <BsNavbar.Toggle aria-controls="basic-navbar-nav" />
         
         <BsNavbar.Collapse id="basic-navbar-nav">
@@ -49,14 +49,13 @@ export default function Navbar() {
           {isAuthenticated && ( // Solo muestra enlaces internos si hay sesión simulada
             <Nav className="me-auto">
               {/* Ejemplo de condicional por rol si lo necesitas */}
-              {(userRole === ROLES.ADMIN || userRole === ROLES.TERAPEUTA) && (
-                <Nav.Link as={Link} to="/therapists">Terapeutas</Nav.Link>
-              )}
+              
               {userRole === ROLES.ADMIN && (
                 <Nav.Link as={Link} to="/pacientes">Pacientes</Nav.Link>
               )}
               <Nav.Link as={Link} to="/treatments">Terapias</Nav.Link>
-              <Nav.Link as={Link} to="/agenda">Agenda</Nav.Link>
+              <Nav.Link as={Link} to="/gestionagenda/agendaadmin">Agenda</Nav.Link>
+              <Nav.Link as={Link} to="/gestioncita/citas">Citas</Nav.Link>
               {/* Puedes añadir más enlaces y condicionales por rol aquí */}
             </Nav>
           )}

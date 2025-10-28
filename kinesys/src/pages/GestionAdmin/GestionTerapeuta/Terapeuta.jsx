@@ -76,7 +76,7 @@ const cargarTerapeutas = async () => {
       if (!datosTerapeuta.Id) delete datosTerapeuta.Id;
 
       if (modoEdicion) {
-        await actualizarTerapeuta(datosTerapeuta);
+        await actualizarTerapeuta(datosTerapeuta.Id, datosTerapeuta);
       } else {
         await crearTerapeuta(datosTerapeuta);
       }

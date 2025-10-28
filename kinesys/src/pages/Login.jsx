@@ -19,7 +19,7 @@ export default function Login() { // Renombrado a Login
     // Por ejemplo:
     if (email === 'admin@kinesys.com' && password === 'admin123') {
       loginUserTemp(ROLES.ADMIN);
-      navigate('/admin');
+      navigate('/gestionadmin');
     } else if (email === 'terapeuta@kinesys.com' && password === 'terapeuta123') {
       loginUserTemp(ROLES.TERAPEUTA);
       navigate('/terapeuta');

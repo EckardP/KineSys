@@ -6,12 +6,14 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { listarCitas } from '../../../services/citasService';
 import { listarTerapeutas } from '../../../services/terapeutasService';
+import { listarPacientes } from '../../../services/pacientesService';
 import { Spinner, Alert, Form } from 'react-bootstrap';
 import { Calendar as CalendarIcon, User } from 'lucide-react';
 
 const AgendaAdmin = () => {
   const [citas, setCitas] = useState([]);
   const [terapeutas, setTerapeutas] = useState([]);
+  const [pacientes, setPacientes] = useState([]); // ✅ ahora dentro del componente
   const [filtroTerapeuta, setFiltroTerapeuta] = useState('todos');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -20,12 +22,14 @@ const AgendaAdmin = () => {
     async function cargarDatos() {
       try {
         setLoading(true);
-        const [citasRes, terapeutasRes] = await Promise.all([
+        const [citasRes, terapeutasRes, pacientesRes] = await Promise.all([
           listarCitas(),
           listarTerapeutas(),
+          listarPacientes()
         ]);
         setCitas(citasRes || []);
         setTerapeutas(terapeutasRes || []);
+        setPacientes(pacientesRes || []);
       } catch (err) {
         setError('Error al cargar la agenda');
         console.error(err);
@@ -44,7 +48,7 @@ const AgendaAdmin = () => {
 
     return filtradas.map(cita => {
       const terapeuta = terapeutas.find(t => t.id === cita.idTerapeuta);
-      const paciente = cita.paciente;
+      const paciente = pacientes.find(p => p.id === cita.idPaciente); // ✅ busca el paciente por ID
 
       const colorMap = {
         programada: '#3b82f6',
@@ -54,17 +58,17 @@ const AgendaAdmin = () => {
       };
 
       return {
-        id: cita.id,
-        title: `${paciente?.nombreCompleto || 'Paciente'} - ${terapeuta?.nombres || 'Terapeuta'}`,
-        start: cita.fecha,
-        end: new Date(new Date(cita.fecha).getTime() + 60 * 60 * 1000),
+        id: cita.idCita, // ✅ campo correcto
+        title: `${paciente?.nombres || 'Paciente'} - ${terapeuta?.nombres || 'Terapeuta'}`,
+        start: cita.horaInicioReal, // ✅ propiedad del backend
+        end: cita.horaFinReal,      // ✅ propiedad del backend
         backgroundColor: colorMap[cita.estado] || '#6b7280',
         borderColor: colorMap[cita.estado] || '#6b7280',
         textColor: 'white',
         extendedProps: { estado: cita.estado, paciente, terapeuta },
       };
     });
-  }, [citas, terapeutas, filtroTerapeuta]);
+  }, [citas, terapeutas, pacientes, filtroTerapeuta]);
 
   const handleEventClick = (info) => {
     const { paciente, terapeuta, estado } = info.event.extendedProps;
@@ -78,7 +82,7 @@ const AgendaAdmin = () => {
 
     alert(
       `Cita #${info.event.id}\n` +
-      `Paciente: ${paciente?.nombreCompleto || 'N/A'}\n` +
+      `Paciente: ${paciente?.nombres || 'N/A'}\n` +
       `Terapeuta: ${terapeuta?.nombres || 'N/A'}\n` +
       `Fecha: ${fecha}\n` +
       `Estado: ${estado}`
@@ -103,7 +107,7 @@ const AgendaAdmin = () => {
   }
 
   return (
-    <div className="p-6 bg-gray-100" style={{ minWidth: "200vh" }}> 
+    <div className="p-6 bg-gray-100" style={{ minWidth: "200vh" }}>
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-3">
           <CalendarIcon size={32} /> Agenda General
