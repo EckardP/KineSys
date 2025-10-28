@@ -1,0 +1,90 @@
+// src/pages/AdminDashboard.jsx
+import React, { useEffect, useState } from "react"
+import { Users, CalendarDays, BarChart3 } from "lucide-react"
+import MetricCard from "../GestionAdmin/components/Cartas/MetricCard"
+import QuickAccessButton from "../GestionAdmin/components/Botones/QuickAccessButton"
+import { listarTerapeutas } from "../../services/terapeutasService.js"
+import { listarCitas } from "../../services/citasService.js" // 👈 Ya lo tienes
+import "./AdminDashboard.css"
+
+export default function AdminDashboard() {
+  const [totalTerapeutas, setTotalTerapeutas] = useState(0)
+  const [sesionesDia, setSesionesDia] = useState(0)
+  const [ocupacionAgenda, setOcupacionAgenda] = useState(0)
+
+  useEffect(() => {
+    async function cargarDatos() {
+      try {
+        // 🔹 Cargar terapeutas y citas en paralelo
+        const [terapeutas, citas] = await Promise.all([
+          listarTerapeutas(),
+          listarCitas() // 👈 Esto ya lo tienes
+        ])
+
+        setTotalTerapeutas(terapeutas.length)
+        
+        // 🔹 Calcular sesiones del día
+        const hoy = new Date().toDateString()
+        const sesionesHoy = citas.filter(cita => {
+          const fechaCita = cita.horaInicioReal ? new Date(cita.horaInicioReal).toDateString() : null
+          return fechaCita === hoy && cita.estado === 'confirmada'
+        }).length
+        setSesionesDia(sesionesHoy)
+
+        
+        // 🔹 Calcular ocupación de agenda (Opción simple)
+        const slotsDisponiblesTotales = terapeutas.length * 8 // 8 slots por terapeuta
+        const ocupacion = slotsDisponiblesTotales > 0 
+          ? Math.round((sesionesHoy / slotsDisponiblesTotales) * 100)
+          : 0
+        setOcupacionAgenda(ocupacion)
+        
+      } catch (error) {
+        console.error("Error al cargar datos del Dashboard:", error)
+      }
+    }
+
+    cargarDatos()
+  }, [])
+
+  return (
+    <div className="dashboard-container">
+      <div className="dashboard-content">
+        <h1 className="dashboard-title">Panel del Administrador</h1>
+
+        {/* Métricas globales */}
+        <div className="metrics-section">
+          <MetricCard title="Terapeutas Activos" value={totalTerapeutas} icon={<Users size={24} />} />
+          <MetricCard title="Sesiones del Día" value={sesionesDia} icon={<CalendarDays size={24} />} />
+          <MetricCard 
+            title="Ocupación de Agenda" 
+            value={`${ocupacionAgenda}%`} 
+            icon={<BarChart3 size={24} />} 
+          />
+        </div>
+
+        {/* Accesos rápidos */}
+        <div className="quick-access-section">
+          <h2 className="section-title">Accesos Rápidos</h2>
+          <div className="quick-access-buttons">
+            <QuickAccessButton
+              label="Gestionar Terapeutas"
+              path="/gestionterapeuta/terapeuta"
+              icon={<Users size={20} />}
+            />
+            <QuickAccessButton
+              label="Ver Agenda"
+              path="/gestionagenda/agendaadmin"
+              icon={<CalendarDays size={20} />}
+            />
+            <QuickAccessButton
+              label="Ver Reportes"
+              path="/gestionreporte/reportes"
+              icon={<BarChart3 size={20} />}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}

@@ -1,22 +1,50 @@
 // src/services/terapeutasService.js
-import * as terapeutasApi from "../api/terapeutasApi";
+import {terapeutasApi} from '../api/terapeutasApi';
 
 export async function listarTerapeutas() {
-  return await terapeutasApi.getAllTerapeutas();
+  try {
+    return await terapeutasApi.getAll(); // ✅ Usa getAll sin filtro
+  } catch (error) {
+    console.error('Error al listar terapeutas:', error);
+    throw error;
+  }
 }
 
-export async function obtenerTerapeutas(id) {
-  return await terapeutasApi.getTerapeutasById(id);
+export async function obtenerTerapeuta(id) {
+  try {
+    return await terapeutasApi.getById(id);
+  } catch (error) {
+    console.error(`Error al obtener terapeuta ${id}:`, error);
+    throw error;
+  }
 }
 
-export async function crearTerapeutas(data) {
-  return await terapeutasApi.createTerapeutas(data);
+export async function crearTerapeuta(data) {
+  try {
+    return await terapeutasApi.create(data);
+  } catch (error) {
+    if (error.message.includes('409') || error.message.includes('Conflict')) {
+      throw new Error('Ya existe un terapeuta con ese documento de identidad');
+    }
+    console.error('Error al crear terapeuta:', error);
+    throw error;
+  }
 }
 
-export async function actualizarTerapeutas(id, data) {
-  return await terapeutasApi.updateTerapeutas(id, data);
+export async function actualizarTerapeuta(id, data) {
+  try {
+    return await terapeutasApi.update(id, data);
+  } catch (error) {
+    console.error(`Error al actualizar terapeuta ${id}:`, error);
+    throw error;
+  }
 }
 
-export async function eliminarTerapeutas(id) {
-  return await terapeutasApi.deleteTerapeutas(id);
+export async function eliminarTerapeuta(id) {
+  try {
+    return await terapeutasApi.delete(id);
+  } catch (error) {
+    console.error(`Error al eliminar terapeuta ${id}:`, error);
+    throw error;
+  }
 }

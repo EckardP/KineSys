@@ -8,6 +8,11 @@ import Treatments from '../pages/Treatments'
 import Agenda from '../pages/Agenda'
 import InicioSesion from '../pages/InicioSesion'
 import PacienteCardMini from '../pages/Gestionpaciente/components/PacienteCardMini'
+import AdminHome from "../pages/AdminHome/AdminHome";
+import Terapeuta from "../pages/GestionAdmin/GestionTerapeuta/Terapeuta";
+import AgendaAdmin from "../pages/GestionAdmin/GestionAgenda/AgendaAdmin";
+import Reportes from '../pages/GestionAdmin/GestionReporte/Reportes'
+
 
 export default function AppRouter() {
   return (
@@ -22,6 +27,12 @@ export default function AppRouter() {
         <Route path="/pacientes" element={<Pacientes />} />
         <Route path="/pacientes/nuevo" element={<FormPaciente />} />
         <Route path="/pacientes/:id" element={<PacienteCardMini />} />
+
+        {/* MÓDULO ADMIN*/}
+         <Route path="/gestionadmin" element={<AdminHome />} />
+         <Route path="/gestionterapeuta/terapeuta" element={<Terapeuta />} />
+          <Route path="/gestionagenda/agendaadmin" element={<AgendaAdmin />} />
+          <Route path="/gestionreporte/reportes" element={<Reportes />} />
     </Routes>
   )
 }

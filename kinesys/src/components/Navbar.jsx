@@ -15,6 +15,7 @@ export default function Navbar() {
             <Nav.Link as={Link} to="/pacientes">Pacientes</Nav.Link>
             <Nav.Link as={Link} to="/treatments">Terapias</Nav.Link>
             <Nav.Link as={Link} to="/agenda">Agenda</Nav.Link>
+            <Nav.Link as={Link} to="/gestionadmin">Admin</Nav.Link>
             
             
           </Nav>

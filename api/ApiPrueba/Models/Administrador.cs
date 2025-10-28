@@ -13,6 +13,9 @@ namespace ApiPrueba.Models
         public string NombreAdministrador { get; set; }
 
         [Required]
+        public string CorreoElectronico { get; set; }
+
+        [Required]
         public string PasswordHash { get; set; }
 
         [Required]
@@ -28,10 +31,6 @@ namespace ApiPrueba.Models
         public int? IdPersona { get; set; }
         [JsonIgnore]
         public Persona? Persona { get; set; }
-
-        public int? IdTerapeuta { get; set; }
-        [JsonIgnore]
-        public Terapeuta? Terapeuta { get; set; }
 
         // Token de refresh para mantener sesión
         public string? RefreshToken { get; set; }

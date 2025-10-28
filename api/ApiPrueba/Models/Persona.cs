@@ -17,6 +17,6 @@ namespace ApiPrueba.Models
         public string Direccion { get; set; }
 
         [JsonIgnore]
-        public Administrador? Administrador { get; set; }
+        public Administrador? Usuario { get; set; }
     }
 }

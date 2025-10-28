@@ -134,7 +134,7 @@ namespace ApiPrueba.Data
             //Relacion 1:1 de Administrador con Persona
             modelBuilder.Entity<Administrador>()
                 .HasOne(a => a.Persona)
-                .WithOne(p => p.Administrador)
+                .WithOne(p => p.Usuario)
                 .HasForeignKey<Administrador>(a => a.IdPersona);
 
             modelBuilder.Entity<Tratamiento>()
