@@ -22,19 +22,19 @@ namespace ApiPrueba.Models
         //public NotaSesion? NotaSesion { get; set; }
 
         // Relaciones
-        [JsonPropertyName("pacienteId")]
+        
         public int IdPaciente { get; set; }
         [ForeignKey("IdPaciente")]
         [JsonIgnore]
         public Paciente? Paciente { get; set; }
 
-        [JsonPropertyName("terapeutaId")]
+        
         public int IdTerapeuta { get; set; }
         [ForeignKey("IdTerapeuta")]
         [JsonIgnore]
         public Terapeuta? Terapeuta { get; set; }
 
-        [JsonPropertyName("tratamientoId")]
+        
         public int? IdTratamiento { get; set; }
         [ForeignKey("IdTratamiento")]
         [JsonIgnore]

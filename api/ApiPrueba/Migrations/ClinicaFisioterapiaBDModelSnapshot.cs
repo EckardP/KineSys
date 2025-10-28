@@ -33,16 +33,17 @@ namespace ApiPrueba.Migrations
                     b.Property<bool>("Activo")
                         .HasColumnType("bit");
 
+                    b.Property<string>("CorreoElectronico")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("IdPersona")
                         .HasColumnType("int");
 
-                    b.Property<int?>("IdTerapeuta")
-                        .HasColumnType("int");
-
-                    b.Property<string>("NombreAdministrador")
+                    b.Property<string>("NombreUsuario")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -60,9 +61,6 @@ namespace ApiPrueba.Migrations
                     b.Property<int>("Rol")
                         .HasColumnType("int");
 
-                    b.Property<int?>("TerapeutaId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("UltimoAcceso")
                         .HasColumnType("datetime2");
 
@@ -71,8 +69,6 @@ namespace ApiPrueba.Migrations
                     b.HasIndex("IdPersona")
                         .IsUnique()
                         .HasFilter("[IdPersona] IS NOT NULL");
-
-                    b.HasIndex("TerapeutaId");
 
                     b.ToTable("Administradores");
                 });
@@ -146,16 +142,13 @@ namespace ApiPrueba.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("IdPaciente")
-                        .HasColumnType("int")
-                        .HasAnnotation("Relational:JsonPropertyName", "pacienteId");
+                        .HasColumnType("int");
 
                     b.Property<int>("IdTerapeuta")
-                        .HasColumnType("int")
-                        .HasAnnotation("Relational:JsonPropertyName", "terapeutaId");
+                        .HasColumnType("int");
 
                     b.Property<int?>("IdTratamiento")
-                        .HasColumnType("int")
-                        .HasAnnotation("Relational:JsonPropertyName", "tratamientoId");
+                        .HasColumnType("int");
 
                     b.Property<int?>("PacienteId")
                         .HasColumnType("int");
@@ -1047,13 +1040,7 @@ namespace ApiPrueba.Migrations
                         .WithOne("Administrador")
                         .HasForeignKey("ApiPrueba.Models.Administrador", "IdPersona");
 
-                    b.HasOne("ApiPrueba.Models.Terapeuta", "Terapeuta")
-                        .WithMany()
-                        .HasForeignKey("TerapeutaId");
-
                     b.Navigation("Persona");
-
-                    b.Navigation("Terapeuta");
                 });
 
             modelBuilder.Entity("ApiPrueba.Models.AlertaAgenda", b =>
