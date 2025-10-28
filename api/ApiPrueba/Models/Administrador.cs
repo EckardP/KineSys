@@ -10,7 +10,7 @@ namespace ApiPrueba.Models
 
         [Required]
         [StringLength(50)]
-        public string NombreAdministrador { get; set; }
+        public string NombreUsuario { get; set; }
 
         [Required]
         public string CorreoElectronico { get; set; }

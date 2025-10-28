@@ -22,6 +22,60 @@ namespace ApiPrueba.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+<<<<<<< HEAD
+=======
+            modelBuilder.Entity("ApiPrueba.Models.Administrador", b =>
+                {
+                    b.Property<int>("IdAdministrador")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdAdministrador"));
+
+                    b.Property<bool>("Activo")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("CorreoElectronico")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("IdPersona")
+                        .HasColumnType("int");
+
+                    b.Property<string>("NombreUsuario")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("RefreshTokenExpiracion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Rol")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UltimoAcceso")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("IdAdministrador");
+
+                    b.HasIndex("IdPersona")
+                        .IsUnique()
+                        .HasFilter("[IdPersona] IS NOT NULL");
+
+                    b.ToTable("Administradores");
+                });
+
+>>>>>>> 2907ba8bf4beb2d8501437db67d79a888e80a284
             modelBuilder.Entity("ApiPrueba.Models.AlertaAgenda", b =>
                 {
                     b.Property<int>("IdAlerta")
@@ -91,16 +145,13 @@ namespace ApiPrueba.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("IdPaciente")
-                        .HasColumnType("int")
-                        .HasAnnotation("Relational:JsonPropertyName", "pacienteId");
+                        .HasColumnType("int");
 
                     b.Property<int>("IdTerapeuta")
-                        .HasColumnType("int")
-                        .HasAnnotation("Relational:JsonPropertyName", "terapeutaId");
+                        .HasColumnType("int");
 
                     b.Property<int?>("IdTratamiento")
-                        .HasColumnType("int")
-                        .HasAnnotation("Relational:JsonPropertyName", "tratamientoId");
+                        .HasColumnType("int");
 
                     b.Property<int?>("PacienteId")
                         .HasColumnType("int");
@@ -1037,6 +1088,18 @@ namespace ApiPrueba.Migrations
                     b.HasDiscriminator().HasValue("Terapeuta");
                 });
 
+<<<<<<< HEAD
+=======
+            modelBuilder.Entity("ApiPrueba.Models.Administrador", b =>
+                {
+                    b.HasOne("ApiPrueba.Models.Persona", "Persona")
+                        .WithOne("Administrador")
+                        .HasForeignKey("ApiPrueba.Models.Administrador", "IdPersona");
+
+                    b.Navigation("Persona");
+                });
+
+>>>>>>> 2907ba8bf4beb2d8501437db67d79a888e80a284
             modelBuilder.Entity("ApiPrueba.Models.AlertaAgenda", b =>
                 {
                     b.HasOne("ApiPrueba.Models.Cita", "Cita")

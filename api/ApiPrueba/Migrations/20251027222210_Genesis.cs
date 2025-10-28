@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ApiPrueba.Migrations
 {
     /// <inheritdoc />
-    public partial class Inicial : Migration
+    public partial class Genesis : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -100,7 +100,8 @@ namespace ApiPrueba.Migrations
                     IdProtocolo = table.Column<int>(type: "int", nullable: true),
                     IdEquipo = table.Column<int>(type: "int", nullable: false),
                     CantidadUsada = table.Column<int>(type: "int", nullable: false),
-                    Observaciones = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false)
+                    Observaciones = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    IdProtocoloTratamiento = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -112,8 +113,8 @@ namespace ApiPrueba.Migrations
                         principalColumn: "IdEquipo",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_EquiposSesion_ProtocoloTratamientos_IdProtocolo",
-                        column: x => x.IdProtocolo,
+                        name: "FK_EquiposSesion_ProtocoloTratamientos_IdProtocoloTratamiento",
+                        column: x => x.IdProtocoloTratamiento,
                         principalTable: "ProtocoloTratamientos",
                         principalColumn: "IdProtocolo");
                 });
@@ -124,17 +125,21 @@ namespace ApiPrueba.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    NombreCompleto = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Nombres = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Apellidos = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DocumentoIdentidad = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CorreoElectronico = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FechaNacimiento = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Genero = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Direccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TipoPersona = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
-                    FechaNacimiento = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Genero = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Direccion = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    HistorialMedico = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IdSeguroMedico = table.Column<int>(type: "int", nullable: true),
-                    SeguroMedicoIdSeguro = table.Column<int>(type: "int", nullable: true)
+                    SeguroMedicoIdSeguro = table.Column<int>(type: "int", nullable: true),
+                    NoLicencia = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TituloAcademico = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AñosExperiencia = table.Column<int>(type: "int", nullable: true),
+                    FechaContratacion = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -174,6 +179,39 @@ namespace ApiPrueba.Migrations
                         principalTable: "TipoTerapias",
                         principalColumn: "IdTipoTerapia",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Administradores",
+                columns: table => new
+                {
+                    IdAdministrador = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NombreAdministrador = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Rol = table.Column<int>(type: "int", nullable: false),
+                    Activo = table.Column<bool>(type: "bit", nullable: false),
+                    FechaCreacion = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UltimoAcceso = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IdPersona = table.Column<int>(type: "int", nullable: true),
+                    IdTerapeuta = table.Column<int>(type: "int", nullable: true),
+                    TerapeutaId = table.Column<int>(type: "int", nullable: true),
+                    RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RefreshTokenExpiracion = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Administradores", x => x.IdAdministrador);
+                    table.ForeignKey(
+                        name: "FK_Administradores_Persona_IdPersona",
+                        column: x => x.IdPersona,
+                        principalTable: "Persona",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Administradores_Persona_TerapeutaId",
+                        column: x => x.TerapeutaId,
+                        principalTable: "Persona",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -272,6 +310,34 @@ namespace ApiPrueba.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "HistorialMedicos",
+                columns: table => new
+                {
+                    IdHistorial = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdPaciente = table.Column<int>(type: "int", nullable: false),
+                    Alergias = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EnfermedadesCronicas = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CirugiasAnteriores = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MedicamentosActuales = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AntecedentesHeredofamiliares = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Habitos = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ObservacionesGenerales = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FechaCreacion = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FechaActualizacion = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HistorialMedicos", x => x.IdHistorial);
+                    table.ForeignKey(
+                        name: "FK_HistorialMedicos_Persona_IdPaciente",
+                        column: x => x.IdPaciente,
+                        principalTable: "Persona",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TerapeutaEspecialidades",
                 columns: table => new
                 {
@@ -301,197 +367,6 @@ namespace ApiPrueba.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Tratamientos",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    NombreTratamiento = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DuracionDias = table.Column<int>(type: "int", nullable: false),
-                    FechaInicio = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FechaFin = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IdPaciente = table.Column<int>(type: "int", nullable: false),
-                    IdTerapeuta = table.Column<int>(type: "int", nullable: false),
-                    TerapeutaId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Tratamientos", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Tratamientos_Persona_IdPaciente",
-                        column: x => x.IdPaciente,
-                        principalTable: "Persona",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Tratamientos_Persona_IdTerapeuta",
-                        column: x => x.IdTerapeuta,
-                        principalTable: "Persona",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Tratamientos_Persona_TerapeutaId",
-                        column: x => x.TerapeutaId,
-                        principalTable: "Persona",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Citas",
-                columns: table => new
-                {
-                    IdCita = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    DuracionProgramadaMin = table.Column<int>(type: "int", nullable: false),
-                    HoraInicioReal = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    HoraFinReal = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CheckIn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CheckOut = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Confirmada = table.Column<bool>(type: "bit", nullable: false),
-                    Estado = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IdPaciente = table.Column<int>(type: "int", nullable: false),
-                    PacienteId = table.Column<int>(type: "int", nullable: false),
-                    IdTerapeuta = table.Column<int>(type: "int", nullable: false),
-                    IdTratamiento = table.Column<int>(type: "int", nullable: true),
-                    TerapeutaId = table.Column<int>(type: "int", nullable: true),
-                    TratamientoId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Citas", x => x.IdCita);
-                    table.ForeignKey(
-                        name: "FK_Citas_Persona_IdTerapeuta",
-                        column: x => x.IdTerapeuta,
-                        principalTable: "Persona",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Citas_Persona_PacienteId",
-                        column: x => x.PacienteId,
-                        principalTable: "Persona",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Citas_Persona_TerapeutaId",
-                        column: x => x.TerapeutaId,
-                        principalTable: "Persona",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Citas_Tratamientos_IdTratamiento",
-                        column: x => x.IdTratamiento,
-                        principalTable: "Tratamientos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Citas_Tratamientos_TratamientoId",
-                        column: x => x.TratamientoId,
-                        principalTable: "Tratamientos",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PlanTratamientos",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Objetivos = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DetallesSesiones = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DuracionDias = table.Column<int>(type: "int", nullable: false),
-                    Observaciones = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IdPaciente = table.Column<int>(type: "int", nullable: false),
-                    IdTerapeuta = table.Column<int>(type: "int", nullable: false),
-                    IdTratamiento = table.Column<int>(type: "int", nullable: false),
-                    TerapeutaId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PlanTratamientos", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PlanTratamientos_Persona_IdPaciente",
-                        column: x => x.IdPaciente,
-                        principalTable: "Persona",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_PlanTratamientos_Persona_IdTerapeuta",
-                        column: x => x.IdTerapeuta,
-                        principalTable: "Persona",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_PlanTratamientos_Persona_TerapeutaId",
-                        column: x => x.TerapeutaId,
-                        principalTable: "Persona",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_PlanTratamientos_Tratamientos_IdTratamiento",
-                        column: x => x.IdTratamiento,
-                        principalTable: "Tratamientos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TratamientoProtocolos",
-                columns: table => new
-                {
-                    IdTratamientoProtocolo = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    IdTratamiento = table.Column<int>(type: "int", nullable: false),
-                    IdProtocolo = table.Column<int>(type: "int", nullable: false),
-                    FechaAsignacion = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    OrdenAplicacion = table.Column<int>(type: "int", nullable: false),
-                    NotasAplicacion = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TratamientoProtocolos", x => x.IdTratamientoProtocolo);
-                    table.ForeignKey(
-                        name: "FK_TratamientoProtocolos_ProtocoloTratamientos_IdProtocolo",
-                        column: x => x.IdProtocolo,
-                        principalTable: "ProtocoloTratamientos",
-                        principalColumn: "IdProtocolo",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_TratamientoProtocolos_Tratamientos_IdTratamiento",
-                        column: x => x.IdTratamiento,
-                        principalTable: "Tratamientos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TratamientoTipoTerapias",
-                columns: table => new
-                {
-                    IdTratamientoTipoTerapia = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    IdTratamiento = table.Column<int>(type: "int", nullable: false),
-                    IdTipoTerapia = table.Column<int>(type: "int", nullable: false),
-                    NumeroSesionesAsignadas = table.Column<int>(type: "int", nullable: false),
-                    DuracionMinutosPorSesion = table.Column<int>(type: "int", nullable: false),
-                    Observaciones = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TratamientoTipoTerapias", x => x.IdTratamientoTipoTerapia);
-                    table.ForeignKey(
-                        name: "FK_TratamientoTipoTerapias_TipoTerapias_IdTipoTerapia",
-                        column: x => x.IdTipoTerapia,
-                        principalTable: "TipoTerapias",
-                        principalColumn: "IdTipoTerapia",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_TratamientoTipoTerapias_Tratamientos_IdTratamiento",
-                        column: x => x.IdTratamiento,
-                        principalTable: "Tratamientos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AlertasAgenda",
                 columns: table => new
                 {
@@ -508,16 +383,58 @@ namespace ApiPrueba.Migrations
                 {
                     table.PrimaryKey("PK_AlertasAgenda", x => x.IdAlerta);
                     table.ForeignKey(
-                        name: "FK_AlertasAgenda_Citas_IdCita",
-                        column: x => x.IdCita,
-                        principalTable: "Citas",
-                        principalColumn: "IdCita");
-                    table.ForeignKey(
                         name: "FK_AlertasAgenda_Persona_IdTerapeuta",
                         column: x => x.IdTerapeuta,
                         principalTable: "Persona",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Citas",
+                columns: table => new
+                {
+                    IdCita = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DuracionProgramadaMin = table.Column<int>(type: "int", nullable: false),
+                    HoraInicioReal = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    HoraFinReal = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CheckIn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CheckOut = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Confirmada = table.Column<bool>(type: "bit", nullable: false),
+                    Estado = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IdPaciente = table.Column<int>(type: "int", nullable: false),
+                    IdTerapeuta = table.Column<int>(type: "int", nullable: false),
+                    IdTratamiento = table.Column<int>(type: "int", nullable: true),
+                    PacienteId = table.Column<int>(type: "int", nullable: true),
+                    TerapeutaId = table.Column<int>(type: "int", nullable: true),
+                    TratamientoId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Citas", x => x.IdCita);
+                    table.ForeignKey(
+                        name: "FK_Citas_Persona_IdPaciente",
+                        column: x => x.IdPaciente,
+                        principalTable: "Persona",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Citas_Persona_IdTerapeuta",
+                        column: x => x.IdTerapeuta,
+                        principalTable: "Persona",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Citas_Persona_PacienteId",
+                        column: x => x.PacienteId,
+                        principalTable: "Persona",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Citas_Persona_TerapeutaId",
+                        column: x => x.TerapeutaId,
+                        principalTable: "Persona",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -583,6 +500,204 @@ namespace ApiPrueba.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Diagnosticos",
+                columns: table => new
+                {
+                    IdDiagnostico = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Observaciones = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FechaDiagnostico = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IdPaciente = table.Column<int>(type: "int", nullable: false),
+                    IdTerapeuta = table.Column<int>(type: "int", nullable: false),
+                    IdTratamiento = table.Column<int>(type: "int", nullable: true),
+                    PacienteId = table.Column<int>(type: "int", nullable: true),
+                    TerapeutaId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Diagnosticos", x => x.IdDiagnostico);
+                    table.ForeignKey(
+                        name: "FK_Diagnosticos_Persona_IdPaciente",
+                        column: x => x.IdPaciente,
+                        principalTable: "Persona",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Diagnosticos_Persona_IdTerapeuta",
+                        column: x => x.IdTerapeuta,
+                        principalTable: "Persona",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Diagnosticos_Persona_PacienteId",
+                        column: x => x.PacienteId,
+                        principalTable: "Persona",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Diagnosticos_Persona_TerapeutaId",
+                        column: x => x.TerapeutaId,
+                        principalTable: "Persona",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PlanTratamientos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Objetivos = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DetallesSesiones = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DuracionDias = table.Column<int>(type: "int", nullable: false),
+                    Observaciones = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IdPaciente = table.Column<int>(type: "int", nullable: false),
+                    IdTerapeuta = table.Column<int>(type: "int", nullable: false),
+                    IdTratamiento = table.Column<int>(type: "int", nullable: false),
+                    PacienteId = table.Column<int>(type: "int", nullable: true),
+                    TerapeutaId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PlanTratamientos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PlanTratamientos_Persona_IdPaciente",
+                        column: x => x.IdPaciente,
+                        principalTable: "Persona",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PlanTratamientos_Persona_IdTerapeuta",
+                        column: x => x.IdTerapeuta,
+                        principalTable: "Persona",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PlanTratamientos_Persona_PacienteId",
+                        column: x => x.PacienteId,
+                        principalTable: "Persona",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_PlanTratamientos_Persona_TerapeutaId",
+                        column: x => x.TerapeutaId,
+                        principalTable: "Persona",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Tratamientos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NombreTratamiento = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DuracionDias = table.Column<int>(type: "int", nullable: false),
+                    FechaInicio = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FechaFin = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IdPaciente = table.Column<int>(type: "int", nullable: false),
+                    IdTerapeuta = table.Column<int>(type: "int", nullable: false),
+                    PlanTratamientoId = table.Column<int>(type: "int", nullable: true),
+                    TerapeutaId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tratamientos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Tratamientos_Persona_IdPaciente",
+                        column: x => x.IdPaciente,
+                        principalTable: "Persona",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Tratamientos_Persona_IdTerapeuta",
+                        column: x => x.IdTerapeuta,
+                        principalTable: "Persona",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Tratamientos_Persona_TerapeutaId",
+                        column: x => x.TerapeutaId,
+                        principalTable: "Persona",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Tratamientos_PlanTratamientos_PlanTratamientoId",
+                        column: x => x.PlanTratamientoId,
+                        principalTable: "PlanTratamientos",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TratamientoProtocolos",
+                columns: table => new
+                {
+                    IdTratamientoProtocolo = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdTratamiento = table.Column<int>(type: "int", nullable: false),
+                    IdProtocolo = table.Column<int>(type: "int", nullable: false),
+                    FechaAsignacion = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    OrdenAplicacion = table.Column<int>(type: "int", nullable: false),
+                    NotasAplicacion = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TratamientoProtocolos", x => x.IdTratamientoProtocolo);
+                    table.ForeignKey(
+                        name: "FK_TratamientoProtocolos_ProtocoloTratamientos_IdProtocolo",
+                        column: x => x.IdProtocolo,
+                        principalTable: "ProtocoloTratamientos",
+                        principalColumn: "IdProtocolo",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TratamientoProtocolos_Tratamientos_IdTratamiento",
+                        column: x => x.IdTratamiento,
+                        principalTable: "Tratamientos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TratamientoTipoTerapias",
+                columns: table => new
+                {
+                    IdTratamientoTipoTerapia = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdTratamiento = table.Column<int>(type: "int", nullable: false),
+                    IdTipoTerapia = table.Column<int>(type: "int", nullable: false),
+                    NumeroSesionesAsignadas = table.Column<int>(type: "int", nullable: false),
+                    DuracionMinutosPorSesion = table.Column<int>(type: "int", nullable: false),
+                    Observaciones = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TratamientoTipoTerapias", x => x.IdTratamientoTipoTerapia);
+                    table.ForeignKey(
+                        name: "FK_TratamientoTipoTerapias_TipoTerapias_IdTipoTerapia",
+                        column: x => x.IdTipoTerapia,
+                        principalTable: "TipoTerapias",
+                        principalColumn: "IdTipoTerapia",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TratamientoTipoTerapias_Tratamientos_IdTratamiento",
+                        column: x => x.IdTratamiento,
+                        principalTable: "Tratamientos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Administradores_IdPersona",
+                table: "Administradores",
+                column: "IdPersona",
+                unique: true,
+                filter: "[IdPersona] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Administradores_TerapeutaId",
+                table: "Administradores",
+                column: "TerapeutaId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_AlertasAgenda_IdCita",
                 table: "AlertasAgenda",
@@ -592,6 +707,11 @@ namespace ApiPrueba.Migrations
                 name: "IX_AlertasAgenda_IdTerapeuta_Resuelta",
                 table: "AlertasAgenda",
                 columns: new[] { "IdTerapeuta", "Resuelta" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Citas_IdPaciente",
+                table: "Citas",
+                column: "IdPaciente");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Citas_IdTerapeuta_CheckIn",
@@ -624,6 +744,31 @@ namespace ApiPrueba.Migrations
                 column: "IdPaciente");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Diagnosticos_IdPaciente",
+                table: "Diagnosticos",
+                column: "IdPaciente");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Diagnosticos_IdTerapeuta",
+                table: "Diagnosticos",
+                column: "IdTerapeuta");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Diagnosticos_IdTratamiento",
+                table: "Diagnosticos",
+                column: "IdTratamiento");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Diagnosticos_PacienteId",
+                table: "Diagnosticos",
+                column: "PacienteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Diagnosticos_TerapeutaId",
+                table: "Diagnosticos",
+                column: "TerapeutaId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DisponibilidadesTerapeutas_IdTerapeuta_DiaSemana",
                 table: "DisponibilidadesTerapeutas",
                 columns: new[] { "IdTerapeuta", "DiaSemana" });
@@ -646,15 +791,25 @@ namespace ApiPrueba.Migrations
                 filter: "[IdProtocolo] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_EquiposSesion_IdProtocoloTratamiento",
+                table: "EquiposSesion",
+                column: "IdProtocoloTratamiento");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_EvolucionesPaciente_IdPaciente_Fecha",
                 table: "EvolucionesPaciente",
                 columns: new[] { "IdPaciente", "Fecha" });
 
             migrationBuilder.CreateIndex(
+                name: "IX_HistorialMedicos_IdPaciente",
+                table: "HistorialMedicos",
+                column: "IdPaciente",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_NotasSesion_IdCita",
                 table: "NotasSesion",
-                column: "IdCita",
-                unique: true);
+                column: "IdCita");
 
             migrationBuilder.CreateIndex(
                 name: "IX_NotasSesion_IdPaciente",
@@ -690,8 +845,12 @@ namespace ApiPrueba.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_PlanTratamientos_IdTratamiento",
                 table: "PlanTratamientos",
-                column: "IdTratamiento",
-                unique: true);
+                column: "IdTratamiento");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PlanTratamientos_PacienteId",
+                table: "PlanTratamientos",
+                column: "PacienteId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PlanTratamientos_TerapeutaId",
@@ -712,8 +871,7 @@ namespace ApiPrueba.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_ReservasCita_IdCita",
                 table: "ReservasCita",
-                column: "IdCita",
-                unique: true);
+                column: "IdCita");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TerapeutaEspecialidades_IdEspecialidad",
@@ -748,6 +906,11 @@ namespace ApiPrueba.Migrations
                 column: "IdTerapeuta");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Tratamientos_PlanTratamientoId",
+                table: "Tratamientos",
+                column: "PlanTratamientoId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Tratamientos_TerapeutaId",
                 table: "Tratamientos",
                 column: "TerapeutaId");
@@ -762,16 +925,92 @@ namespace ApiPrueba.Migrations
                 table: "TratamientoTipoTerapias",
                 columns: new[] { "IdTratamiento", "IdTipoTerapia" },
                 unique: true);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_AlertasAgenda_Citas_IdCita",
+                table: "AlertasAgenda",
+                column: "IdCita",
+                principalTable: "Citas",
+                principalColumn: "IdCita");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Citas_Tratamientos_IdTratamiento",
+                table: "Citas",
+                column: "IdTratamiento",
+                principalTable: "Tratamientos",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Citas_Tratamientos_TratamientoId",
+                table: "Citas",
+                column: "TratamientoId",
+                principalTable: "Tratamientos",
+                principalColumn: "Id");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Diagnosticos_Tratamientos_IdTratamiento",
+                table: "Diagnosticos",
+                column: "IdTratamiento",
+                principalTable: "Tratamientos",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.SetNull);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_PlanTratamientos_Tratamientos_IdTratamiento",
+                table: "PlanTratamientos",
+                column: "IdTratamiento",
+                principalTable: "Tratamientos",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_PlanTratamientos_Persona_IdPaciente",
+                table: "PlanTratamientos");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_PlanTratamientos_Persona_IdTerapeuta",
+                table: "PlanTratamientos");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_PlanTratamientos_Persona_PacienteId",
+                table: "PlanTratamientos");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_PlanTratamientos_Persona_TerapeutaId",
+                table: "PlanTratamientos");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Tratamientos_Persona_IdPaciente",
+                table: "Tratamientos");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Tratamientos_Persona_IdTerapeuta",
+                table: "Tratamientos");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Tratamientos_Persona_TerapeutaId",
+                table: "Tratamientos");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_PlanTratamientos_Tratamientos_IdTratamiento",
+                table: "PlanTratamientos");
+
+            migrationBuilder.DropTable(
+                name: "Administradores");
+
             migrationBuilder.DropTable(
                 name: "AlertasAgenda");
 
             migrationBuilder.DropTable(
                 name: "ContactosEmergencia");
+
+            migrationBuilder.DropTable(
+                name: "Diagnosticos");
 
             migrationBuilder.DropTable(
                 name: "DisponibilidadesTerapeutas");
@@ -786,10 +1025,10 @@ namespace ApiPrueba.Migrations
                 name: "EvolucionesPaciente");
 
             migrationBuilder.DropTable(
-                name: "NotasSesion");
+                name: "HistorialMedicos");
 
             migrationBuilder.DropTable(
-                name: "PlanTratamientos");
+                name: "NotasSesion");
 
             migrationBuilder.DropTable(
                 name: "ProtocoloTipoTerapias");
@@ -822,13 +1061,16 @@ namespace ApiPrueba.Migrations
                 name: "TipoTerapias");
 
             migrationBuilder.DropTable(
-                name: "Tratamientos");
-
-            migrationBuilder.DropTable(
                 name: "Persona");
 
             migrationBuilder.DropTable(
                 name: "SegurosMedicos");
+
+            migrationBuilder.DropTable(
+                name: "Tratamientos");
+
+            migrationBuilder.DropTable(
+                name: "PlanTratamientos");
         }
     }
 }
