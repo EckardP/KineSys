@@ -11,7 +11,7 @@ export default function PacienteCardMini() {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
 
-  // ✅ Cargar los datos del paciente al montar el componente
+  // Cargar los datos del paciente al montar el componente
   useEffect(() => {
     const fetchPaciente = async () => {
       try {

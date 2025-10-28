@@ -4,7 +4,7 @@ import { Users, CalendarDays, BarChart3 } from "lucide-react"
 import MetricCard from "../GestionAdmin/components/Cartas/MetricCard"
 import QuickAccessButton from "../GestionAdmin/components/Botones/QuickAccessButton"
 import { listarTerapeutas } from "../../services/terapeutasService.js"
-import { listarCitas } from "../../services/citasService.js" // 👈 Ya lo tienes
+import { listarCitas } from "../../services/citasService.js"
 import "./AdminDashboard.css"
 
 export default function AdminDashboard() {
@@ -15,10 +15,10 @@ export default function AdminDashboard() {
   useEffect(() => {
     async function cargarDatos() {
       try {
-        // 🔹 Cargar terapeutas y citas en paralelo
+        // 🔹 Cargar terapeutas y citas
         const [terapeutas, citas] = await Promise.all([
           listarTerapeutas(),
-          listarCitas() // 👈 Esto ya lo tienes
+          listarCitas() // 
         ])
 
         setTotalTerapeutas(terapeutas.length)
@@ -33,7 +33,7 @@ export default function AdminDashboard() {
 
         
         // 🔹 Calcular ocupación de agenda (Opción simple)
-        const slotsDisponiblesTotales = terapeutas.length * 8 // 8 slots por terapeuta
+        const slotsDisponiblesTotales = terapeutas.length * 8 
         const ocupacion = slotsDisponiblesTotales > 0 
           ? Math.round((sesionesHoy / slotsDisponiblesTotales) * 100)
           : 0

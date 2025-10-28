@@ -3,7 +3,7 @@ import {citasApi} from '../api/citasApi';
 
 export async function listarCitas() {
   try {
-    return await citasApi.getAll(); // ✅ Usa getAll sin filtro
+    return await citasApi.getAll(); 
   } catch (error) {
     console.error('Error al listar citas:', error);
     throw error;

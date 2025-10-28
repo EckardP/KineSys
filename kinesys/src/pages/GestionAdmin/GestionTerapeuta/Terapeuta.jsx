@@ -5,7 +5,7 @@ import {
   crearTerapeuta,
   actualizarTerapeuta,
   eliminarTerapeuta,
-} from "../../../services/terapeutasService"; // ✅ ruta ajustada
+} from "../../../services/terapeutasService"; 
 
 export default function Terapeutas() {
   const [terapeutas, setTerapeutas] = useState([]);

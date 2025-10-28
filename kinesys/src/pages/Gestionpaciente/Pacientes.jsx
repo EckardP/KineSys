@@ -32,7 +32,7 @@ export default function Pacientes() {
     idSeguroMedico: 0
   });
 
-  // ✅ Cargar pacientes al montar el componente
+  //  Cargar pacientes al montar el componente
   useEffect(() => {
     cargarPacientes();
   }, []);

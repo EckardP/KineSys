@@ -30,7 +30,7 @@ export default function FormPaciente() {
   const [exito, setExito] = useState(null);
   const [erroresValidacion, setErroresValidacion] = useState({});
 
-  // ✅ Si es edición, obtener datos del paciente
+  //  Si es edición, obtener datos del paciente
   useEffect(() => {
     if (esEdicion) {
       cargarPaciente();

@@ -3,7 +3,7 @@ import {terapeutasApi} from '../api/terapeutasApi';
 
 export async function listarTerapeutas() {
   try {
-    return await terapeutasApi.getAll(); // ✅ Usa getAll sin filtro
+    return await terapeutasApi.getAll(); 
   } catch (error) {
     console.error('Error al listar terapeutas:', error);
     throw error;
