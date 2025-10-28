@@ -3,11 +3,7 @@ using ApiPrueba.Models;
 
 namespace ApiPrueba.Data
 {
-    /// <summary>
-    /// Contexto principal de la base de datos para la clínica de fisioterapia.
-    /// Contiene todos los DbSet y configuraciones mínimas necesarias.
-    /// Las relaciones se infieren automáticamente desde las propiedades de navegación en los modelos.
-    /// </summary>
+    
     public class ClinicaFisioterapiaBD : DbContext
     {
         public ClinicaFisioterapiaBD(DbContextOptions<ClinicaFisioterapiaBD> options)
@@ -101,10 +97,6 @@ namespace ApiPrueba.Data
             modelBuilder.Entity<EquipoSesion>()
                 .HasIndex(es => new { es.IdProtocolo, es.IdEquipo })
                 .IsUnique();
-
-            // ========================================
-            // ÍNDICES ADICIONALES PARA RENDIMIENTO
-            // ========================================
 
             // Búsquedas frecuentes por documento de identidad
             modelBuilder.Entity<Persona>()
