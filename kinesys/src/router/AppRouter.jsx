@@ -6,7 +6,7 @@ import FormPaciente from '../pages/Gestionpaciente/FormPaciente'
 import FichaPaciente from '../pages/Gestionpaciente/FichaPaciente'
 import Treatments from '../pages/Treatments'
 import Agenda from '../pages/Agenda'
-import InicioSesion from '../pages/InicioSesion'
+import Login from '../pages/Login'
 import PacienteCardMini from '../pages/Gestionpaciente/components/PacienteCardMini'
 
 export default function AppRouter() {
@@ -16,7 +16,7 @@ export default function AppRouter() {
       <Route path="/therapists" element={<Therapists />} />
       <Route path="/treatments" element={<Treatments />} />
       <Route path="/agenda" element={<Agenda />} />
-      <Route path="/iniciosesion" element={<InicioSesion/>}/>
+      <Route path="/login" element={<Login/>}/>
 
       {/* MÓDULO PACIENTES */}
         <Route path="/pacientes" element={<Pacientes />} />

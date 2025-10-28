@@ -1,36 +1,68 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { Navbar as BsNavbar, Nav, Container } from 'react-bootstrap'
+// import React from 'react'
+// import { Link } from 'react-router-dom'
+// import { Navbar as BsNavbar, Nav, Container } from 'react-bootstrap'
+
+// export default function Navbar() {
+//   return (
+//     <BsNavbar bg="dark" variant="dark" expand="lg">  
+//       <Container>
+//         <BsNavbar.Brand as={Link} to="/">KineSys</BsNavbar.Brand>
+//         <BsNavbar.Toggle aria-controls="basic-navbar-nav" />
+//         <BsNavbar.Collapse id="basic-navbar-nav">
+//           <Nav className="me-auto">
+//             <Nav.Link as={Link} to="/Home">Inicio</Nav.Link>
+            
+//             <Nav.Link as={Link} to="/therapists">Terapeutas</Nav.Link>
+//             <Nav.Link as={Link} to="/pacientes">Pacientes</Nav.Link>
+//             <Nav.Link as={Link} to="/treatments">Terapias</Nav.Link>
+//             <Nav.Link as={Link} to="/agenda">Agenda</Nav.Link>
+            
+            
+//           </Nav>
+//         </BsNavbar.Collapse>
+//       </Container>
+//     </BsNavbar>
+//   )
+// }
+
+// src/components/Navbar.jsx
+import React from 'react';
+import { Link } from 'react-router-dom'; // Importar useNavigate
+import { Navbar as BsNavbar, Nav, Container } from 'react-bootstrap';
+import { checkAuthTemp, getUserRoleTemp, ROLES } from '../utils/auth'; // ¡Importa las funciones temporales!
 
 export default function Navbar() {
+  const isAuthenticated = checkAuthTemp(); // Verifica si hay sesión simulada
+  const userRole = getUserRoleTemp(); // Obtiene el rol simulado
+
+ 
+
   return (
-    <BsNavbar bg="dark" variant="dark" expand="lg">  
+    <BsNavbar bg="dark" variant="dark" expand="lg">
       <Container>
-        <BsNavbar.Brand as={Link} to="/">KineSys</BsNavbar.Brand>
+        {/* Si está autenticado, lleva al dashboard, si no, a la home pública */}
+        <BsNavbar.Brand as={Link} to={isAuthenticated ? `/dashboard/${userRole.toLowerCase()}` : "/"}>KineSys</BsNavbar.Brand>
         <BsNavbar.Toggle aria-controls="basic-navbar-nav" />
+        
         <BsNavbar.Collapse id="basic-navbar-nav">
-          <Nav className="me-auto">
-            <Nav.Link as={Link} to="/Home">Inicio</Nav.Link>
-            <Nav.Link as={Link} to="/therapists">Terapeutas</Nav.Link>
-            <Nav.Link as={Link} to="/pacientes">Pacientes</Nav.Link>
-            <Nav.Link as={Link} to="/treatments">Terapias</Nav.Link>
-            <Nav.Link as={Link} to="/agenda">Agenda</Nav.Link>
-            
-            
-          </Nav>
+          {isAuthenticated && ( // Solo muestra enlaces internos si hay sesión simulada
+            <Nav className="me-auto">
+              {/* Ejemplo de condicional por rol si lo necesitas */}
+              {(userRole === ROLES.ADMIN || userRole === ROLES.TERAPEUTA) && (
+                <Nav.Link as={Link} to="/therapists">Terapeutas</Nav.Link>
+              )}
+              {userRole === ROLES.ADMIN && (
+                <Nav.Link as={Link} to="/pacientes">Pacientes</Nav.Link>
+              )}
+              <Nav.Link as={Link} to="/treatments">Terapias</Nav.Link>
+              <Nav.Link as={Link} to="/agenda">Agenda</Nav.Link>
+              {/* Puedes añadir más enlaces y condicionales por rol aquí */}
+            </Nav>
+          )}
         </BsNavbar.Collapse>
-        <Nav className="me-auto">
-          <Nav.Link as={Link} to="/iniciosesion" aria-label="Iniciar Sesion">Iniciar Sesión
-          <img
-                src="src/assets/users_theuser_6177.png"        
-                alt="Iniciar sesión"
-                width="30"
-                height="30"
-                style={{ objectFit: 'contain' }}
-          /> 
-          </Nav.Link>
-        </Nav>
+
+          
       </Container>
     </BsNavbar>
-  )
+  );
 }
