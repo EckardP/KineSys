@@ -34,7 +34,7 @@ namespace ApiPrueba.Data
         public DbSet<NotaSesion> NotasSesion { get; set; }
 
         public DbSet<Diagnostico> Diagnosticos { get; set; }
-        public DbSet<Administrador> Administradores { get; set; }
+       
 
         public DbSet<HistorialMedico> HistorialMedicos { get; set; }
 
@@ -124,10 +124,10 @@ namespace ApiPrueba.Data
                 .HasIndex(a => new { a.IdTerapeuta, a.Resuelta });
 
             //Relacion 1:1 de Administrador con Persona
-            modelBuilder.Entity<Administrador>()
-                .HasOne(a => a.Persona)
-                .WithOne(p => p.Usuario)
-                .HasForeignKey<Administrador>(a => a.IdPersona);
+            //modelBuilder.Entity<Administrador>()
+            //    .HasOne(a => a.Persona)
+            //    .WithOne(p => p.Usuario)
+            //    .HasForeignKey<Administrador>(a => a.IdPersona);
 
             modelBuilder.Entity<Tratamiento>()
                 .HasOne(t => t.Terapeuta)

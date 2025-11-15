@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ApiPrueba.Data;
 using ApiPrueba.Models;
+using Microsoft.DotNet.Scaffolding.Shared.Messaging;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ApiPrueba.Controllers
 {
@@ -23,6 +25,7 @@ namespace ApiPrueba.Controllers
 
         // GET: api/Terapeutas
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Terapeuta>>> GetTerapeutas()
         {
             return await _context.Terapeutas.ToListAsync();
@@ -30,6 +33,7 @@ namespace ApiPrueba.Controllers
 
         // GET: api/Terapeutas/5
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<Terapeuta>> GetTerapeuta(int id)
         {
             var terapeuta = await _context.Terapeutas.FindAsync(id);
@@ -45,6 +49,7 @@ namespace ApiPrueba.Controllers
         // PUT: api/Terapeutas/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> PutTerapeuta(int id, Terapeuta terapeuta)
         {
             if (id != terapeuta.Id)
@@ -52,7 +57,19 @@ namespace ApiPrueba.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(terapeuta).State = EntityState.Modified;
+            var existeDocumento = await _context.Persona.AnyAsync(p => p.DocumentoIdentidad == terapeuta.DocumentoIdentidad && p.Id != id);
+
+            if (existeDocumento)
+            {
+                return Conflict(new
+                {
+                    message = "Ya existe una persona registrada con ese documento de identidad.",
+                    campo = "documentoIdentidad",
+                    valor = terapeuta.DocumentoIdentidad
+                });
+            }
+
+                _context.Entry(terapeuta).State = EntityState.Modified;
 
             try
             {
@@ -76,6 +93,7 @@ namespace ApiPrueba.Controllers
         // POST: api/Terapeutas
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<Terapeuta>> PostTerapeuta(Terapeuta terapeuta)
         {
             var existeDocumento = await _context.Terapeutas
@@ -98,6 +116,7 @@ namespace ApiPrueba.Controllers
 
         // DELETE: api/Terapeutas/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteTerapeuta(int id)
         {
             var terapeuta = await _context.Terapeutas.FindAsync(id);

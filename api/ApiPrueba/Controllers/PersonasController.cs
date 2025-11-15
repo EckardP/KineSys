@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ApiPrueba.Data;
 using ApiPrueba.Models;
+using static ApiPrueba.Models.Persona;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ApiPrueba.Controllers
 {
@@ -23,6 +26,7 @@ namespace ApiPrueba.Controllers
 
         // GET: api/Personas
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Persona>>> GetPersona()
         {
             return await _context.Persona.ToListAsync();
@@ -30,6 +34,7 @@ namespace ApiPrueba.Controllers
 
         // GET: api/Personas/5
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<Persona>> GetPersona(int id)
         {
             var persona = await _context.Persona.FindAsync(id);
@@ -45,6 +50,7 @@ namespace ApiPrueba.Controllers
         // PUT: api/Personas/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> PutPersona(int id, Persona persona)
         {
             if (id != persona.Id)
@@ -76,6 +82,7 @@ namespace ApiPrueba.Controllers
         // POST: api/Personas
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<Persona>> PostPersona(Persona persona)
         {
             _context.Persona.Add(persona);
@@ -84,8 +91,123 @@ namespace ApiPrueba.Controllers
             return CreatedAtAction("GetPersona", new { id = persona.Id }, persona);
         }
 
+
+        // POST: api/Personas/Register
+        [HttpPost("Register")]
+        public async Task<ActionResult<Persona>> PostRegistroPersona(RegistroDto registro)
+        {
+            if (PersonaExistsByUser(registro.User))
+                return BadRequest("El usuario ya existe");
+
+            if (!string.IsNullOrEmpty(registro.DocumentoIdentidad) && PersonaExistsByDocumento(registro.DocumentoIdentidad))
+                return Conflict(new
+                {
+                    message = "Ya existe una persona registrada con este documento de identidad",
+                    campo = "documentoIdentidad",
+                    valor = registro.DocumentoIdentidad
+                });
+
+            var PasswordHash = BCrypt.Net.BCrypt.HashPassword(registro.Password);
+
+            Persona tipoUsuario;
+
+            switch (registro.rol)
+            {
+                case Rol.Paciente:
+                    tipoUsuario = new Paciente
+                    {
+                        User = registro.User,
+                        Password = PasswordHash,
+                        Nombres = registro.Nombres,
+                        Apellidos = registro.Apellidos,
+                        DocumentoIdentidad = registro.DocumentoIdentidad,
+                        Rol = Rol.Paciente
+                    };
+                    break;
+                case Rol.Terapeuta:
+                    tipoUsuario = new Terapeuta
+                    {
+                        User = registro.User,
+                        Password = PasswordHash,
+                        Nombres = registro.Nombres,
+                        Apellidos = registro.Apellidos,
+                        DocumentoIdentidad = registro.DocumentoIdentidad,
+                        Rol = Rol.Terapeuta
+                    };
+                    break;
+                //case Rol.Administrador:
+                //    tipoUsuario = new Administrador
+                //    {
+                //        User = registro.User,
+                //        Password = PasswordHash,
+                //        Nombres = registro.Nombres,
+                //        Apellidos = registro.Apellidos,
+                //        Rol = Rol.Administrador
+                //    };
+                //    break;
+
+                case Rol.Despachadora:
+                    return BadRequest("Quizás.... algún día... tengamos una depachadora... de pronto así mi hijo se case... ojalá");
+
+                default:
+                    return BadRequest("Rol no válido");
+
+            }
+
+            _context.Persona.Add(tipoUsuario);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                if (PersonaExistsByUser(registro.User))
+                {
+                    return Conflict();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return CreatedAtAction("GetPersona", new { id = tipoUsuario.Id }, new LoginResponseDto
+            {
+                Id = tipoUsuario.Id,
+                User = tipoUsuario.User,
+                Nombres = tipoUsuario.Nombres,
+                Apellidos = tipoUsuario.Apellidos,
+                Rol = tipoUsuario.Rol
+            });
+
+
+        }
+
+        // POST: api/Personas/Login
+        [HttpPost("Login")]
+        public async Task<ActionResult<Persona>> PostLoginPersona(LoginDto login)
+        {
+            var loginUser = _context.Persona.FirstOrDefault(u => u.User == login.User);
+                
+
+            if (loginUser == null || !BCrypt.Net.BCrypt.Verify(login.Password, loginUser.Password))
+                return BadRequest("Usuario o contraseña incorrectos");
+
+            return Ok(new LoginResponseDto
+            {
+                Id = loginUser.Id,
+                User = loginUser.User,
+                Nombres = loginUser.Nombres,
+                Apellidos = loginUser.Apellidos,
+                Rol = loginUser.Rol
+            });
+           
+        }
+
+
         // DELETE: api/Personas/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeletePersona(int id)
         {
             var persona = await _context.Persona.FindAsync(id);
@@ -103,6 +225,16 @@ namespace ApiPrueba.Controllers
         private bool PersonaExists(int id)
         {
             return _context.Persona.Any(e => e.Id == id);
+        }
+
+        private bool PersonaExistsByUser(string user)
+        {
+            return _context.Persona.Any(e => e.User == user);
+        }
+
+        private bool PersonaExistsByDocumento(string documentoIdentidad)
+        {
+            return _context.Persona.Any(e => e.DocumentoIdentidad == documentoIdentidad);
         }
     }
 }

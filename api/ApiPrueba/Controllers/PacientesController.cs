@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ApiPrueba.Data;
 using ApiPrueba.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ApiPrueba.Controllers
 {
@@ -23,13 +24,16 @@ namespace ApiPrueba.Controllers
 
         // GET: api/Pacientes
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Paciente>>> GetPacientes()
         {
             return await _context.Pacientes.ToListAsync();
         }
 
         // GET: api/Pacientes/5
+
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<Paciente>> GetPaciente(int id)
         {
             var paciente = await _context.Pacientes.FindAsync(id);
@@ -45,11 +49,25 @@ namespace ApiPrueba.Controllers
         // PUT: api/Pacientes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> PutPaciente(int id, Paciente paciente)
         {
             if (id != paciente.Id)
             {
                 return BadRequest();
+            }
+
+            var existePaciente = await _context.Persona
+        .AnyAsync(p => p.DocumentoIdentidad == paciente.DocumentoIdentidad);
+
+            if (existePaciente)
+            {
+                return Conflict(new
+                {
+                    message = "Ya existe un paciente con ese documento de identidad.",
+                    campo = "documentoIdentidad",
+                    valor = paciente.DocumentoIdentidad
+                });
             }
 
             _context.Entry(paciente).State = EntityState.Modified;
@@ -76,9 +94,10 @@ namespace ApiPrueba.Controllers
         // POST: api/Pacientes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<Paciente>> PostPaciente(Paciente paciente)
         {
-            var existePaciente = await _context.Pacientes
+            var existePaciente = await _context.Persona
         .AnyAsync(p => p.DocumentoIdentidad == paciente.DocumentoIdentidad);
 
             if (existePaciente)
@@ -98,6 +117,7 @@ namespace ApiPrueba.Controllers
 
         // DELETE: api/Pacientes/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeletePaciente(int id)
         {
             var paciente = await _context.Pacientes.FindAsync(id);

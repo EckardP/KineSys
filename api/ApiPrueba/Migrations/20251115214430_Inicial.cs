@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ApiPrueba.Migrations
 {
     /// <inheritdoc />
-    public partial class Genesis : Migration
+    public partial class Inicial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -179,39 +179,6 @@ namespace ApiPrueba.Migrations
                         principalTable: "TipoTerapias",
                         principalColumn: "IdTipoTerapia",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Administradores",
-                columns: table => new
-                {
-                    IdAdministrador = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    NombreAdministrador = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Rol = table.Column<int>(type: "int", nullable: false),
-                    Activo = table.Column<bool>(type: "bit", nullable: false),
-                    FechaCreacion = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UltimoAcceso = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IdPersona = table.Column<int>(type: "int", nullable: true),
-                    IdTerapeuta = table.Column<int>(type: "int", nullable: true),
-                    TerapeutaId = table.Column<int>(type: "int", nullable: true),
-                    RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RefreshTokenExpiracion = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Administradores", x => x.IdAdministrador);
-                    table.ForeignKey(
-                        name: "FK_Administradores_Persona_IdPersona",
-                        column: x => x.IdPersona,
-                        principalTable: "Persona",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Administradores_Persona_TerapeutaId",
-                        column: x => x.TerapeutaId,
-                        principalTable: "Persona",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -687,18 +654,6 @@ namespace ApiPrueba.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Administradores_IdPersona",
-                table: "Administradores",
-                column: "IdPersona",
-                unique: true,
-                filter: "[IdPersona] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Administradores_TerapeutaId",
-                table: "Administradores",
-                column: "TerapeutaId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_AlertasAgenda_IdCita",
                 table: "AlertasAgenda",
                 column: "IdCita");
@@ -999,9 +954,6 @@ namespace ApiPrueba.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_PlanTratamientos_Tratamientos_IdTratamiento",
                 table: "PlanTratamientos");
-
-            migrationBuilder.DropTable(
-                name: "Administradores");
 
             migrationBuilder.DropTable(
                 name: "AlertasAgenda");

@@ -13,6 +13,7 @@ namespace ApiPrueba.Models
         public DateTime FechaContratacion { get; set; }
 
         //Relaciones
+
         [JsonIgnore]
         public ICollection<Cita> Citas { get; set; } = new List<Cita>();
         [JsonIgnore]

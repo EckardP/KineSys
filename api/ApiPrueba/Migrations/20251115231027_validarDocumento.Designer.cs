@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiPrueba.Migrations
 {
     [DbContext(typeof(ClinicaFisioterapiaBD))]
-    [Migration("20251028041538_Usuario")]
-    partial class Usuario
+    [Migration("20251115231027_validarDocumento")]
+    partial class validarDocumento
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -94,16 +94,13 @@ namespace ApiPrueba.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("IdPaciente")
-                        .HasColumnType("int")
-                        .HasAnnotation("Relational:JsonPropertyName", "pacienteId");
+                        .HasColumnType("int");
 
                     b.Property<int>("IdTerapeuta")
-                        .HasColumnType("int")
-                        .HasAnnotation("Relational:JsonPropertyName", "terapeutaId");
+                        .HasColumnType("int");
 
                     b.Property<int?>("IdTratamiento")
-                        .HasColumnType("int")
-                        .HasAnnotation("Relational:JsonPropertyName", "tratamientoId");
+                        .HasColumnType("int");
 
                     b.Property<int?>("PacienteId")
                         .HasColumnType("int");
@@ -531,34 +528,36 @@ namespace ApiPrueba.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Apellidos")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CorreoElectronico")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Direccion")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DocumentoIdentidad")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("FechaNacimiento")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Genero")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nombres")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Password")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Rol")
+                        .HasColumnType("int");
+
                     b.Property<string>("Telefono")
-                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TipoDocumento")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TipoPersona")
@@ -566,10 +565,14 @@ namespace ApiPrueba.Migrations
                         .HasMaxLength(13)
                         .HasColumnType("nvarchar(13)");
 
+                    b.Property<string>("User")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("DocumentoIdentidad")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[DocumentoIdentidad] IS NOT NULL");
 
                     b.ToTable("Persona");
 
@@ -953,57 +956,6 @@ namespace ApiPrueba.Migrations
                     b.ToTable("TratamientoTipoTerapias");
                 });
 
-            modelBuilder.Entity("ApiPrueba.Models.Usuario", b =>
-                {
-                    b.Property<int>("IdAdministrador")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdAdministrador"));
-
-                    b.Property<bool>("Activo")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("CorreoElectronico")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("FechaCreacion")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("IdPersona")
-                        .HasColumnType("int");
-
-                    b.Property<string>("NombreAdministrador")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RefreshToken")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("RefreshTokenExpiracion")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Rol")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UltimoAcceso")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("IdAdministrador");
-
-                    b.HasIndex("IdPersona")
-                        .IsUnique()
-                        .HasFilter("[IdPersona] IS NOT NULL");
-
-                    b.ToTable("Administradores");
-                });
-
             modelBuilder.Entity("ApiPrueba.Models.Paciente", b =>
                 {
                     b.HasBaseType("ApiPrueba.Models.Persona");
@@ -1375,15 +1327,6 @@ namespace ApiPrueba.Migrations
                     b.Navigation("Tratamiento");
                 });
 
-            modelBuilder.Entity("ApiPrueba.Models.Usuario", b =>
-                {
-                    b.HasOne("ApiPrueba.Models.Persona", "Persona")
-                        .WithOne("Usuario")
-                        .HasForeignKey("ApiPrueba.Models.Usuario", "IdPersona");
-
-                    b.Navigation("Persona");
-                });
-
             modelBuilder.Entity("ApiPrueba.Models.Paciente", b =>
                 {
                     b.HasOne("ApiPrueba.Models.SeguroMedico", "SeguroMedico")
@@ -1406,11 +1349,6 @@ namespace ApiPrueba.Migrations
             modelBuilder.Entity("ApiPrueba.Models.Especialidad", b =>
                 {
                     b.Navigation("TerapeutaEspecialidades");
-                });
-
-            modelBuilder.Entity("ApiPrueba.Models.Persona", b =>
-                {
-                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("ApiPrueba.Models.ProtocoloTratamiento", b =>
