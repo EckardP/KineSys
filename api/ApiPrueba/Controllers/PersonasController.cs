@@ -11,6 +11,8 @@ using static ApiPrueba.Models.Persona;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using ApiPrueba.JWT;
+using NuGet.Protocol;
+using NuGet.Common;
 
 namespace ApiPrueba.Controllers
 {
@@ -96,6 +98,7 @@ namespace ApiPrueba.Controllers
 
 
         // POST: api/Personas/Register
+        [Authorize]
         [HttpPost("Register")]
         public async Task<ActionResult<Persona>> PostRegistroPersona(RegistroDto registro)
         {
@@ -114,7 +117,7 @@ namespace ApiPrueba.Controllers
 
             Persona tipoUsuario;
 
-            switch (registro.rol)
+            switch (registro.Rol)
             {
                 case Rol.Paciente:
                     tipoUsuario = new Paciente
@@ -123,7 +126,13 @@ namespace ApiPrueba.Controllers
                         Password = PasswordHash,
                         Nombres = registro.Nombres,
                         Apellidos = registro.Apellidos,
+                        TipoDocumento = registro.TipoDocumento,
                         DocumentoIdentidad = registro.DocumentoIdentidad,
+                        Telefono = registro.Telefono,
+                        CorreoElectronico = registro.CorreoElectronico,
+                        FechaNacimiento = registro.FechaNacimiento,
+                        Genero = registro.Genero,
+                        Direccion = registro.Direccion,
                         Rol = Rol.Paciente
                     };
                     break;
@@ -134,7 +143,13 @@ namespace ApiPrueba.Controllers
                         Password = PasswordHash,
                         Nombres = registro.Nombres,
                         Apellidos = registro.Apellidos,
+                        TipoDocumento = registro.TipoDocumento,
                         DocumentoIdentidad = registro.DocumentoIdentidad,
+                        Telefono = registro.Telefono,
+                        CorreoElectronico = registro.CorreoElectronico,
+                        FechaNacimiento = registro.FechaNacimiento,
+                        Genero = registro.Genero,
+                        Direccion = registro.Direccion,
                         Rol = Rol.Terapeuta
                     };
                     break;
@@ -176,10 +191,10 @@ namespace ApiPrueba.Controllers
 
             return CreatedAtAction("GetPersona", new { id = tipoUsuario.Id }, new LoginResponseDto
             {
-                Id = tipoUsuario.Id,
+               // Id = tipoUsuario.Id,
                 User = tipoUsuario.User,
-                Nombres = tipoUsuario.Nombres,
-                Apellidos = tipoUsuario.Apellidos,
+               // Nombres = tipoUsuario.Nombres,
+                //Apellidos = tipoUsuario.Apellidos,
                 Rol = tipoUsuario.Rol
             });
 
@@ -196,9 +211,18 @@ namespace ApiPrueba.Controllers
             if (loginUser == null || !BCrypt.Net.BCrypt.Verify(login.Password, loginUser.Password))
                 return BadRequest("Usuario o contraseña incorrectos");
 
-            var token = _JwTokenGenerator.GenerateToken(login.User);
+            var token = _JwTokenGenerator.GenerateToken(loginUser);
 
-            return Ok(token);
+            return Ok(new
+            {
+                Id = loginUser.Id,
+                Nombres = loginUser.Nombres,
+                Apellidos = loginUser.Apellidos,
+                //User = loginUser.User,
+                Rol = loginUser.Rol,
+                Token = token
+            });
+
             //return Ok(new LoginResponseDto
             //{
             //    Id = loginUser.Id,
@@ -206,8 +230,9 @@ namespace ApiPrueba.Controllers
             //    Nombres = loginUser.Nombres,
             //    Apellidos = loginUser.Apellidos,
             //    Rol = loginUser.Rol
-            //});
-           
+
+            //});   
+
         }
 
 

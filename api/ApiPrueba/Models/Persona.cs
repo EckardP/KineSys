@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using NuGet.Common;
+using System.Text.Json.Serialization;
 
 namespace ApiPrueba.Models
 {
@@ -18,6 +19,8 @@ namespace ApiPrueba.Models
         public DateTime FechaNacimiento { get; set; }
         public string? Genero { get; set; }
         public string? Direccion { get; set; }
+        public bool Activo { get; set; }
+        public DateTime FechaRegistro { get; set; }
         public Rol Rol { get; set; }
 
 
@@ -28,8 +31,14 @@ namespace ApiPrueba.Models
             public string? Password { get; set; }
             public string? Nombres { get; set; }
             public string? Apellidos { get; set; }
+            public string? TipoDocumento { get; set; }
             public string? DocumentoIdentidad { get; set; }
-            public Rol rol { get; set; }
+            public string? Telefono { get; set; }
+            public string? CorreoElectronico { get; set; }
+            public DateTime FechaNacimiento { get; set; }
+            public string? Genero { get; set; }
+            public string? Direccion { get; set; }
+            public Rol Rol { get; set; }
         }
 
         public class LoginDto
@@ -40,11 +49,13 @@ namespace ApiPrueba.Models
 
         public class LoginResponseDto
         {
-            public int Id { get; set; }
+            //public int Id { get; set; }
             public string? User { get; set; }
-            public string? Nombres { get; set; }
-            public string? Apellidos { get; set; }
+            //public string? Nombres { get; set; }
+            //public string? Apellidos { get; set; }
             public Rol Rol { get; set; }
+
+            public Token? Token { get; set; }
         }
 
         //[JsonIgnore]

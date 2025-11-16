@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using ApiPrueba.Models;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -15,13 +16,20 @@ namespace ApiPrueba.JWT
             _config = config;
         }
 
-        public string GenerateToken (string user)
+        public string GenerateToken (Persona user)
         {
             var key = Encoding.UTF8.GetBytes(_config["JwtSettings:Key"]);
+
+            // Claims incluyendo el ROL
             var Claims = new[]
             {
-                new Claim(ClaimTypes.Name, user)
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.User),
+                new Claim(ClaimTypes.Role, user.Rol.ToString()),
+                new Claim("FullName", $"{user.Nombres} {user.Apellidos}"),
+                new Claim("Email", user.CorreoElectronico ?? string.Empty)
             };
+
             var token = new JwtSecurityToken(
                 issuer: _config["JwtSettings:Issuer"],
                 audience: _config["JwtSettings:Audience"],
