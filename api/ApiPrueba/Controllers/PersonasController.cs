@@ -10,6 +10,7 @@ using ApiPrueba.Models;
 using static ApiPrueba.Models.Persona;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using ApiPrueba.JWT;
 
 namespace ApiPrueba.Controllers
 {
@@ -18,23 +19,25 @@ namespace ApiPrueba.Controllers
     public class PersonasController : ControllerBase
     {
         private readonly ClinicaFisioterapiaBD _context;
+        private readonly JwtTokenGenerator _JwTokenGenerator;
 
-        public PersonasController(ClinicaFisioterapiaBD context)
+        public PersonasController(ClinicaFisioterapiaBD context, JwtTokenGenerator jwtTokenGenerator)
         {
             _context = context;
+            _JwTokenGenerator = jwtTokenGenerator;
         }
 
         // GET: api/Personas
-        [HttpGet]
         [Authorize]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<Persona>>> GetPersona()
         {
             return await _context.Persona.ToListAsync();
         }
 
         // GET: api/Personas/5
-        [HttpGet("{id}")]
         [Authorize]
+        [HttpGet("{id}")]
         public async Task<ActionResult<Persona>> GetPersona(int id)
         {
             var persona = await _context.Persona.FindAsync(id);
@@ -49,8 +52,8 @@ namespace ApiPrueba.Controllers
 
         // PUT: api/Personas/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
         [Authorize]
+        [HttpPut("{id}")]
         public async Task<IActionResult> PutPersona(int id, Persona persona)
         {
             if (id != persona.Id)
@@ -81,8 +84,8 @@ namespace ApiPrueba.Controllers
 
         // POST: api/Personas
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
         [Authorize]
+        [HttpPost]
         public async Task<ActionResult<Persona>> PostPersona(Persona persona)
         {
             _context.Persona.Add(persona);
@@ -193,21 +196,24 @@ namespace ApiPrueba.Controllers
             if (loginUser == null || !BCrypt.Net.BCrypt.Verify(login.Password, loginUser.Password))
                 return BadRequest("Usuario o contraseña incorrectos");
 
-            return Ok(new LoginResponseDto
-            {
-                Id = loginUser.Id,
-                User = loginUser.User,
-                Nombres = loginUser.Nombres,
-                Apellidos = loginUser.Apellidos,
-                Rol = loginUser.Rol
-            });
+            var token = _JwTokenGenerator.GenerateToken(login.User);
+
+            return Ok(token);
+            //return Ok(new LoginResponseDto
+            //{
+            //    Id = loginUser.Id,
+            //    User = loginUser.User,
+            //    Nombres = loginUser.Nombres,
+            //    Apellidos = loginUser.Apellidos,
+            //    Rol = loginUser.Rol
+            //});
            
         }
 
 
         // DELETE: api/Personas/5
-        [HttpDelete("{id}")]
         [Authorize]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePersona(int id)
         {
             var persona = await _context.Persona.FindAsync(id);

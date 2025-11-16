@@ -24,16 +24,16 @@ namespace ApiPrueba.Controllers
         }
 
         // GET: api/Terapeutas
-        [HttpGet]
         [Authorize]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<Terapeuta>>> GetTerapeutas()
         {
             return await _context.Terapeutas.ToListAsync();
         }
 
         // GET: api/Terapeutas/5
-        [HttpGet("{id}")]
         [Authorize]
+        [HttpGet("{id}")]
         public async Task<ActionResult<Terapeuta>> GetTerapeuta(int id)
         {
             var terapeuta = await _context.Terapeutas.FindAsync(id);
@@ -48,8 +48,8 @@ namespace ApiPrueba.Controllers
 
         // PUT: api/Terapeutas/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
         [Authorize]
+        [HttpPut("{id}")]
         public async Task<IActionResult> PutTerapeuta(int id, Terapeuta terapeuta)
         {
             if (id != terapeuta.Id)
@@ -92,8 +92,8 @@ namespace ApiPrueba.Controllers
 
         // POST: api/Terapeutas
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
         [Authorize]
+        [HttpPost]
         public async Task<ActionResult<Terapeuta>> PostTerapeuta(Terapeuta terapeuta)
         {
             var existeDocumento = await _context.Terapeutas
@@ -115,8 +115,8 @@ namespace ApiPrueba.Controllers
         }
 
         // DELETE: api/Terapeutas/5
-        [HttpDelete("{id}")]
         [Authorize]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTerapeuta(int id)
         {
             var terapeuta = await _context.Terapeutas.FindAsync(id);

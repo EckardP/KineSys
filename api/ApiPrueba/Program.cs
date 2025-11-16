@@ -1,34 +1,51 @@
 using ApiPrueba.Data;
+using ApiPrueba.JWT;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1 Configuración de conexión SQL Server
+
 builder.Services.AddDbContext<ClinicaFisioterapiaBD>(opciones =>
     opciones.UseSqlServer(builder.Configuration.GetConnectionString("ClinicaFisioterapiaBD")));
 
-// 2 Configurar CORS
+
+builder.Services.AddScoped<JwtTokenGenerator>();
+
+
+// Configurar CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("PermitirTodo", policy =>
-    {
-        policy.AllowAnyOrigin()      // Permite cualquier origen (frontend)
-              .AllowAnyMethod()      // Permite GET, POST, PUT, DELETE, etc.
-              .AllowAnyHeader();     // Permite cualquier encabezado
-    });
+    options.AddPolicy("PoliticaCors", policy => policy.AllowAnyHeader()
+    .AllowAnyMethod()
+    .AllowAnyOrigin()
+    .WithOrigins(""));
 });
 
-// 3 Controladores y Swagger
+
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer("Bearer", options => options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"]))
+    });
+
+builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// 4 Inyección de dependencias (si las usas más adelante)
+
 builder.Services.AddScoped<ClinicaFisioterapiaBD>();
 
 var app = builder.Build();
 
-// 5 Configuración del entorno
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -37,12 +54,14 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// 6 Activar la política CORS (antes de Authorization)
-app.UseCors("PermitirTodo");
+app.UseCors(permitir => permitir.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin());
 
+//app.UseCors("PermitirTodo");
+
+app.UseAuthentication();
 app.UseAuthorization();
 
-// 7 Mapear controladores
+
 app.MapControllers();
 
 app.Run();
