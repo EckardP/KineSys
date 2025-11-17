@@ -4,6 +4,7 @@ using ApiPrueba.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiPrueba.Migrations
 {
     [DbContext(typeof(ClinicaFisioterapiaBD))]
-    partial class ClinicaFisioterapiaBDModelSnapshot : ModelSnapshot
+    [Migration("20251117030448_AjustesModelo2")]
+    partial class AjustesModelo2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -957,13 +960,6 @@ namespace ApiPrueba.Migrations
                         .IsUnique();
 
                     b.ToTable("TratamientoTipoTerapias");
-                });
-
-            modelBuilder.Entity("ApiPrueba.Models.Administrador", b =>
-                {
-                    b.HasBaseType("ApiPrueba.Models.Persona");
-
-                    b.HasDiscriminator().HasValue("Administrador");
                 });
 
             modelBuilder.Entity("ApiPrueba.Models.Paciente", b =>

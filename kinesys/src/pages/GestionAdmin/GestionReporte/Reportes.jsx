@@ -1,4 +1,4 @@
-// src/pages/GestionAdmin/Reportes.jsx
+// src/pages/GestionAdmin/GestionReporte/Reportes.jsx
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Card, Form, Button, Spinner } from 'react-bootstrap';
 import {
@@ -21,7 +21,7 @@ import * as XLSX from 'xlsx';
 import { listarPacientes } from '../../../services/pacientesService.js';
 import { listarTerapeutas } from '../../../services/terapeutasService.js';
 import { listarCitas } from '../../../services/citasService.js';
-import '../../AdminHome/AdminDashBoard.css';
+import '../../AdminHome/AdminDashboard.css';
 
 const Reportes = () => {
   const [citas, setCitas] = useState([]);

@@ -1,18 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using ApiPrueba.Data;
+using ApiPrueba.Filters;
+using ApiPrueba.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ApiPrueba.Data;
-using ApiPrueba.Models;
-using Microsoft.AspNetCore.Authorization;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ApiPrueba.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [AuthorizeByRole("Administrador", "Terapeuta")] // ✅ Solo este cambio
     public class PacientesController : ControllerBase
     {
         private readonly ClinicaFisioterapiaBD _context;
@@ -23,7 +25,7 @@ namespace ApiPrueba.Controllers
         }
 
         // GET: api/Pacientes
-        [Authorize]
+        //[Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Paciente>>> GetPacientes()
         {
@@ -31,7 +33,7 @@ namespace ApiPrueba.Controllers
         }
 
         // GET: api/Pacientes/5
-        [Authorize]
+        //[Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<Paciente>> GetPaciente(int id)
         {
@@ -47,7 +49,7 @@ namespace ApiPrueba.Controllers
 
         // PUT: api/Pacientes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [Authorize]
+        //[Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPaciente(int id, Paciente paciente)
         {
@@ -92,7 +94,7 @@ namespace ApiPrueba.Controllers
 
         // POST: api/Pacientes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [Authorize]
+        //[Authorize]
         [HttpPost]
         public async Task<ActionResult<Paciente>> PostPaciente(Paciente paciente)
         {
@@ -115,7 +117,8 @@ namespace ApiPrueba.Controllers
         }
 
         // DELETE: api/Pacientes/5
-        [Authorize]
+        //[Authorize]
+        [AuthorizeByRole("Administrador")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePaciente(int id)
         {

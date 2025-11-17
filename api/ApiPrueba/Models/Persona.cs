@@ -1,5 +1,6 @@
 ﻿using NuGet.Common;
 using System.Text.Json.Serialization;
+using ApiPrueba.Models;
 
 namespace ApiPrueba.Models
 {
@@ -60,5 +61,11 @@ namespace ApiPrueba.Models
 
         //[JsonIgnore]
         //public Administrador? Usuario { get; set; }
+    }
+
+    // Agrega la clase Administrador que hereda de Persona
+    public class Administrador : Persona
+    {
+        // Puedes agregar propiedades específicas del administrador aquí si es necesario
     }
 }

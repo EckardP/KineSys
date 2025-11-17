@@ -25,6 +25,7 @@ namespace ApiPrueba.JWT
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.User),
+                new Claim("role", user.Rol.ToString()),
                 new Claim(ClaimTypes.Role, user.Rol.ToString()),
                 new Claim("FullName", $"{user.Nombres} {user.Apellidos}"),
                 new Claim("Email", user.CorreoElectronico ?? string.Empty)

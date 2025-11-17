@@ -4,10 +4,19 @@ export function crearApiCliente(ruta){
     const URL_BASE = getEndpoint(ruta);
 
     async function respuesta(url = "", opciones = {}) {
+        const token = localStorage.getItem('authToken');
+        
+        const headers = {
+            'Content-Type': 'application/json',
+            ...opciones.headers
+        };
+
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
         const respuesta = await fetch(`${URL_BASE}${url}`, {
-            headers: {
-                'Content-Type': 'application/json', ...opciones.headers
-            },
+            headers,
             ...opciones,
         });
         

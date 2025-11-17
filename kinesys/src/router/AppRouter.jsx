@@ -7,6 +7,7 @@ import FichaPaciente from '../pages/Gestionpaciente/FichaPaciente'
 import Treatments from '../pages/Treatments'
 import Agenda from '../pages/Agenda'
 import Login from '../pages/Login'
+import Dashboard from '../pages/Dashboard'
 import PacienteCardMini from '../pages/Gestionpaciente/components/PacienteCardMini'
 import AdminHome from "../pages/AdminHome/AdminHome";
 import Terapeuta from "../pages/GestionAdmin/GestionTerapeuta/Terapeuta";
@@ -22,6 +23,7 @@ export default function AppRouter() {
       <Route path="/treatments" element={<Treatments />} />
       <Route path="/agenda" element={<Agenda />} />
       <Route path="/login" element={<Login/>}/>
+      <Route path="/dashboard" element={<Dashboard />} />
 
       {/* MÓDULO PACIENTES */}
         <Route path="/pacientes" element={<Pacientes />} />

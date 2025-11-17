@@ -74,7 +74,8 @@ namespace ApiPrueba.Data
             modelBuilder.Entity<Persona>()
                 .HasDiscriminator<string>("TipoPersona")
                 .HasValue<Paciente>("Paciente")
-                .HasValue<Terapeuta>("Terapeuta");
+                .HasValue<Terapeuta>("Terapeuta")
+                .HasValue<Administrador>("Administrador");
 
             //tablas intermedias N:N con índices únicos
 
