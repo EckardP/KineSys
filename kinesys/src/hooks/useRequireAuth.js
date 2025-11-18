@@ -1,11 +1,12 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './useAuth';
+import { ROLES } from '../utils/constants';
 
 /**
  * Hook para proteger rutas que requieren autenticación
  * Si el usuario no está autenticado, redirige a /login
- * @param {array} rolesPermitidos - Array de roles permitidos (ej: ['Administrador', 'Terapeuta'])
+ * @param {array} rolesPermitidos - Array de roles permitidos
  */
 export function useRequireAuth(rolesPermitidos = []) {
   const navigate = useNavigate();

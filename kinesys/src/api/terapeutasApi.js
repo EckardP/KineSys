@@ -1,4 +1,4 @@
 
 import { crearApiCliente } from "./apiCliente";
 
-export const terapeutasApi = crearApiCliente('terapeutas');
+export const terapeutasApi = crearApiCliente('Terapeutas');
