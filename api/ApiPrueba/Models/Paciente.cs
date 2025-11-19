@@ -31,5 +31,8 @@ namespace ApiPrueba.Models
 
         [JsonIgnore]
         public ICollection<Diagnostico> Diagnosticos { get; set; } = new List<Diagnostico>();
+
+        [JsonIgnore]
+        public ICollection<Factura> Facturas { get; set; } = new List<Factura>();
     }
 }

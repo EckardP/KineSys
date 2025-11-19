@@ -31,5 +31,6 @@ namespace ApiPrueba.Models
         public ICollection<TratamientoProtocolo> TratamientoProtocolos { get; set; } = new List<TratamientoProtocolo>();
         [JsonIgnore]
         public ICollection<TratamientoTipoTerapia> TratamientoTipoTerapias { get; set; } = new List<TratamientoTipoTerapia>();
+
     }
 }

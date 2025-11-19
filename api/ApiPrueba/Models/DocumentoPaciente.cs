@@ -15,8 +15,8 @@ namespace ApiPrueba.Models
         [Required]
         public int IdPaciente { get; set; }
 
-        [Required, StringLength(50)]
-        public string TipoDocumento { get; set; }
+        [Required]
+        public TipoDocumentoEnum TipoDocumento { get; set; }
 
         [Required, StringLength(120)]
         public string NombreArchivo { get; set; }
@@ -27,12 +27,29 @@ namespace ApiPrueba.Models
         [StringLength(50)]
         public string? MimeType { get; set; }
 
+        [Required]
+        public long TamañoArchivo { get; set; } // En bytes
+
         public DateTime FechaSubida { get; set; }
 
-        [StringLength(80)]
-        public string? SubidoPor { get; set; }
+        public int? IdUsuarioSubida { get; set; }
+
+        [StringLength(300)]
+        public string? Descripcion { get; set; }
+
         [JsonIgnore]
         [ForeignKey("IdPaciente")]
         public Paciente? Paciente { get; set; }
+    }
+
+   
+    public enum TipoDocumentoEnum
+    {
+        OrdenMedica = 1,
+        Diagnostico = 2,
+        Imagen = 3,
+        Laboratorio = 4,
+        HistorialClinico = 5,
+        Otro = 6
     }
 }
