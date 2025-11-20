@@ -9,6 +9,7 @@ using ApiPrueba.Data;
 using ApiPrueba.Models;
 using ApiPrueba.Services;
 using ApiPrueba.DTOs;
+using static ApiPrueba.DTOs.FacturaDTO;
 
 namespace ApiPrueba.Controllers
 {

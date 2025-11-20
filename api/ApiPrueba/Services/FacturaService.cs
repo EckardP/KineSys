@@ -1,6 +1,7 @@
 ﻿using ApiPrueba.DTOs;
 using ApiPrueba.Models;
 using Microsoft.EntityFrameworkCore;
+using static ApiPrueba.DTOs.FacturaDTO;
 
 namespace ApiPrueba.Services
 {

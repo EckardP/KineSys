@@ -33,4 +33,6 @@ namespace ApiPrueba.Models
         [ForeignKey("IdPaciente")]
         public Paciente? Paciente { get; set; }
     }
+
+
 }

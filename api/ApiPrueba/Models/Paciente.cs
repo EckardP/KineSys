@@ -5,6 +5,9 @@ namespace ApiPrueba.Models
     public class Paciente : Persona
     {
 
+        public string? EPS { get; set; }
+        public int NumeroDeAfiliacion { get; set; }
+
         // Relaciones
         public int? IdSeguroMedico { get; set; }
         [JsonIgnore]

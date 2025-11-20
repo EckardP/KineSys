@@ -40,10 +40,10 @@ namespace ApiPrueba.Models
         public decimal Total { get; set; }
 
         [Required, StringLength(50)]
-        public string Estado { get; set; } // Pendiente, Pagada, Vencida, Cancelada
+        public string Estado { get; set; }
 
         [StringLength(50)]
-        public string? MetodoPago { get; set; } // Efectivo, Tarjeta, Transferencia, etc.
+        public string? MetodoPago { get; set; }
 
         public DateTime? FechaPago { get; set; }
 
@@ -70,9 +70,7 @@ namespace ApiPrueba.Models
         public ICollection<DetalleFactura> Detalles { get; set; } = new List<DetalleFactura>();
     }
 
-    /// <summary>
-    /// Detalle de conceptos incluidos en una factura
-    /// </summary>
+
     public class DetalleFactura
     {
         [Key]
@@ -104,3 +102,6 @@ namespace ApiPrueba.Models
         public Factura? Factura { get; set; }
     }
 }
+        
+
+
