@@ -188,5 +188,9 @@ namespace ApiPrueba.Data
         
 
         public DbSet<ApiPrueba.Models.Persona> Persona { get; set; } = default!;
+    
+public DbSet<ApiPrueba.Models.Factura> Factura { get; set; } = default!;
+    
+public DbSet<ApiPrueba.Models.Auditoria> Auditoria { get; set; } = default!;
     }
 }

@@ -13,8 +13,12 @@ namespace ApiPrueba.Models
         public int DuracionDias { get; set; }
         public DateTime FechaInicio { get; set; }
         public DateTime? FechaFin { get; set; }
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal? PrecioTratamiento { get; set; }
 
         // Relaciones
+
+
         public int IdPaciente { get; set; }
         [JsonIgnore]
         [ForeignKey("IdPaciente")]

@@ -55,4 +55,25 @@
         public DateTime? FechaPago { get; set; }
         public string? MetodoPago { get; set; }
     }
+
+    /// <summary>
+    /// DTO para resumen de costos de citas o tratamientos
+    /// </summary>
+    public class ResumenCostosDTO
+    {
+        public int Cantidad { get; set; }
+        public decimal Total { get; set; }
+        public List<ItemCostoDTO> Items { get; set; } = new List<ItemCostoDTO>();
+    }
+
+    /// <summary>
+    /// DTO para item individual de costo
+    /// </summary>
+    public class ItemCostoDTO
+    {
+        public int Id { get; set; }
+        public string? Descripcion { get; set; }
+        public DateTime Fecha { get; set; }
+        public decimal Precio { get; set; }
+    }
 }
