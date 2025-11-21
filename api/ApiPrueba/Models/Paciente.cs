@@ -6,7 +6,7 @@ namespace ApiPrueba.Models
     {
 
 
-
+        public int NumeroDeAfiliacion { get; set; }
 
         // Relaciones
         public int? EpsId { get; set; }

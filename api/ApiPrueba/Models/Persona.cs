@@ -23,7 +23,6 @@ namespace ApiPrueba.Models
         public string? Direccion { get; set; }
         public string? Ciudad { get; set; }
         public string? Departamento { get; set; }
-        public int MyProperty { get; set; }
         public bool Activo { get; set; }
         public DateTime FechaRegistro { get; set; }
         public Rol Rol { get; set; }
