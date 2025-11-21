@@ -13,8 +13,12 @@ namespace ApiPrueba.Models
         public int DuracionDias { get; set; }
         public DateTime FechaInicio { get; set; }
         public DateTime? FechaFin { get; set; }
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal? PrecioTratamiento { get; set; }
 
         // Relaciones
+
+
         public int IdPaciente { get; set; }
         [JsonIgnore]
         [ForeignKey("IdPaciente")]
@@ -31,5 +35,6 @@ namespace ApiPrueba.Models
         public ICollection<TratamientoProtocolo> TratamientoProtocolos { get; set; } = new List<TratamientoProtocolo>();
         [JsonIgnore]
         public ICollection<TratamientoTipoTerapia> TratamientoTipoTerapias { get; set; } = new List<TratamientoTipoTerapia>();
+
     }
 }

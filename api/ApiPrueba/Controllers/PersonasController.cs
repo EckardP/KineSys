@@ -156,6 +156,12 @@ namespace ApiPrueba.Controllers
                         FechaNacimiento = registro.FechaNacimiento,
                         Genero = registro.Genero,
                         Direccion = registro.Direccion,
+                        EPS = registro.EPS,
+                        NumeroDeAfiliacion = registro.NumeroDeAfiliacion,
+                        Ciudad = registro.Ciudad,
+                        Departamento = registro.Departamento,
+                        Activo = registro.Activo,
+                        FechaRegistro = registro.FechaRegistro,
                         Rol = Rol.Paciente
                     };
                     break;
@@ -174,7 +180,16 @@ namespace ApiPrueba.Controllers
                         FechaNacimiento = registro.FechaNacimiento,
                         Genero = registro.Genero,
                         Direccion = registro.Direccion,
-                        Rol = Rol.Terapeuta
+                        Ciudad = registro.Ciudad,
+                        Departamento = registro.Departamento,
+                        Activo = registro.Activo,
+                        FechaRegistro = registro.FechaRegistro,
+                        Rol = Rol.Terapeuta,
+                        // Propiedades específicas del Terapeuta
+                        NoLicencia = registro.NoLicencia,
+                        TituloAcademico = registro.TituloAcademico,
+                        AñosExperiencia = registro.AñosExperiencia,
+                        FechaContratacion = registro.FechaContratacion
                     };
                     break;
 
@@ -185,6 +200,8 @@ namespace ApiPrueba.Controllers
                         Password = passwordHash,
                         Nombres = registro.Nombres,
                         Apellidos = registro.Apellidos,
+                        Activo = registro.Activo,
+                        FechaRegistro = registro.FechaRegistro,
                         Rol = Rol.Administrador
                     };
                     break;
@@ -202,6 +219,113 @@ namespace ApiPrueba.Controllers
                 Rol = tipoUsuario.Rol
             });
         }
+
+        //[HttpPost("Register")]
+        //public async Task<ActionResult<Persona>> PostRegistroPersona(RegistroDto registro)
+        //{
+        //    // Verificar si ya existe algún administrador
+        //    bool existeAdmin = _context.Persona.Any(p => p.Rol == Rol.Administrador);
+
+        //    // Si NO existe admin y quieres registrar uno, PERMITIR
+        //    if (registro.Rol != Rol.Administrador && !User.Identity.IsAuthenticated)
+        //    {
+        //        // Si NO está autenticado y quiere registrar un rol diferente de admin
+        //        return Unauthorized("Debe autenticarse para registrar este tipo de usuario");
+        //    }
+
+        //    // Si ya existe admin y no estás autenticado → bloquear siempre
+        //    if (existeAdmin && !User.Identity.IsAuthenticated)
+        //    {
+        //        return Unauthorized("Debe autenticarse para registrar usuarios");
+        //    }
+
+        //    // Evitar que registren múltiples admins si no lo deseas
+        //    if (registro.Rol == Rol.Administrador && existeAdmin)
+        //    {
+        //        return BadRequest("Ya existe un administrador registrado");
+        //    }
+
+        //    // Validaciones existentes
+        //    if (PersonaExistsByUser(registro.User))
+        //        return BadRequest("El usuario ya existe");
+
+        //    if (!string.IsNullOrEmpty(registro.DocumentoIdentidad)
+        //        && PersonaExistsByDocumento(registro.DocumentoIdentidad))
+        //    {
+        //        return Conflict(new
+        //        {
+        //            message = "Ya existe una persona registrada con este documento de identidad",
+        //            campo = "documentoIdentidad",
+        //            valor = registro.DocumentoIdentidad
+        //        });
+        //    }
+
+        //    var passwordHash = BCrypt.Net.BCrypt.HashPassword(registro.Password);
+
+        //    Persona tipoUsuario;
+
+        //    switch (registro.Rol)
+        //    {
+        //        case Rol.Paciente:
+        //            tipoUsuario = new Paciente
+        //            {
+        //                User = registro.User,
+        //                Password = passwordHash,
+        //                Nombres = registro.Nombres,
+        //                Apellidos = registro.Apellidos,
+        //                TipoDocumento = registro.TipoDocumento,
+        //                DocumentoIdentidad = registro.DocumentoIdentidad,
+        //                Telefono = registro.Telefono,
+        //                CorreoElectronico = registro.CorreoElectronico,
+        //                FechaNacimiento = registro.FechaNacimiento,
+        //                Genero = registro.Genero,
+        //                Direccion = registro.Direccion,
+        //                Rol = Rol.Paciente
+        //            };
+        //            break;
+
+        //        case Rol.Terapeuta:
+        //            tipoUsuario = new Terapeuta
+        //            {
+        //                User = registro.User,
+        //                Password = passwordHash,
+        //                Nombres = registro.Nombres,
+        //                Apellidos = registro.Apellidos,
+        //                TipoDocumento = registro.TipoDocumento,
+        //                DocumentoIdentidad = registro.DocumentoIdentidad,
+        //                Telefono = registro.Telefono,
+        //                CorreoElectronico = registro.CorreoElectronico,
+        //                FechaNacimiento = registro.FechaNacimiento,
+        //                Genero = registro.Genero,
+        //                Direccion = registro.Direccion,
+        //                Rol = Rol.Terapeuta
+        //            };
+        //            break;
+
+        //        case Rol.Administrador:
+        //            tipoUsuario = new Administrador
+        //            {
+        //                User = registro.User,
+        //                Password = passwordHash,
+        //                Nombres = registro.Nombres,
+        //                Apellidos = registro.Apellidos,
+        //                Rol = Rol.Administrador
+        //            };
+        //            break;
+
+        //        default:
+        //            return BadRequest("Rol no válido");
+        //    }
+
+        //    _context.Persona.Add(tipoUsuario);
+        //    await _context.SaveChangesAsync();
+
+        //    return CreatedAtAction("GetPersona", new { id = tipoUsuario.Id }, new LoginResponseDto
+        //    {
+        //        User = tipoUsuario.User,
+        //        Rol = tipoUsuario.Rol
+        //    });
+        //}
 
         // POST: api/Personas/Register
         //[Authorize]
@@ -312,7 +436,7 @@ namespace ApiPrueba.Controllers
         public async Task<ActionResult<Persona>> PostLoginPersona(LoginDto login)
         {
             var loginUser = _context.Persona.FirstOrDefault(u => u.User == login.User);
-                
+
 
             if (loginUser == null || !BCrypt.Net.BCrypt.Verify(login.Password, loginUser.Password))
                 return BadRequest("Usuario o contraseña incorrectos");
@@ -325,7 +449,7 @@ namespace ApiPrueba.Controllers
                 Nombres = loginUser.Nombres,
                 Apellidos = loginUser.Apellidos,
                 //User = loginUser.User,
-               // Rol = loginUser.Rol,
+                // Rol = loginUser.Rol,
                 Token = token
             });
 

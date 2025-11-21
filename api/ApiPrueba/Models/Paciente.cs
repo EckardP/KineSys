@@ -5,6 +5,9 @@ namespace ApiPrueba.Models
     public class Paciente : Persona
     {
 
+        public string? EPS { get; set; }
+        public int NumeroDeAfiliacion { get; set; }
+
         // Relaciones
         public int? IdSeguroMedico { get; set; }
         [JsonIgnore]
@@ -31,5 +34,8 @@ namespace ApiPrueba.Models
 
         [JsonIgnore]
         public ICollection<Diagnostico> Diagnosticos { get; set; } = new List<Diagnostico>();
+
+        [JsonIgnore]
+        public ICollection<Factura> Facturas { get; set; } = new List<Factura>();
     }
 }

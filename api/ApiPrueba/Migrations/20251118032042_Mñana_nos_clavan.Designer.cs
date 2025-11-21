@@ -4,6 +4,7 @@ using ApiPrueba.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiPrueba.Migrations
 {
     [DbContext(typeof(ClinicaFisioterapiaBD))]
-    partial class ClinicaFisioterapiaBDModelSnapshot : ModelSnapshot
+    [Migration("20251118032042_Mñana_nos_clavan")]
+    partial class Mñana_nos_clavan
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -61,63 +64,6 @@ namespace ApiPrueba.Migrations
                     b.ToTable("AlertasAgenda");
                 });
 
-            modelBuilder.Entity("ApiPrueba.Models.Auditoria", b =>
-                {
-                    b.Property<int>("IdAuditoria")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdAuditoria"));
-
-                    b.Property<string>("Accion")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("DireccionIP")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Entidad")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<bool>("Exitoso")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("FechaHora")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("IdEntidad")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("IdPersona")
-                        .HasColumnType("int");
-
-                    b.Property<string>("MensajeError")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("NombreUsuario")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Observaciones")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("ValoresAnteriores")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ValoresNuevos")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("IdAuditoria");
-
-                    b.ToTable("Auditoria");
-                });
-
             modelBuilder.Entity("ApiPrueba.Models.Cita", b =>
                 {
                     b.Property<int>("IdCita")
@@ -156,14 +102,8 @@ namespace ApiPrueba.Migrations
                     b.Property<int?>("IdTratamiento")
                         .HasColumnType("int");
 
-                    b.Property<string>("Motivo")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("PacienteId")
                         .HasColumnType("int");
-
-                    b.Property<decimal?>("PrecioCita")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int?>("TerapeutaId")
                         .HasColumnType("int");
@@ -227,42 +167,6 @@ namespace ApiPrueba.Migrations
                     b.HasIndex("IdPaciente");
 
                     b.ToTable("ContactosEmergencia");
-                });
-
-            modelBuilder.Entity("ApiPrueba.Models.DetalleFactura", b =>
-                {
-                    b.Property<int>("IdDetalle")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdDetalle"));
-
-                    b.Property<int>("Cantidad")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Concepto")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Descripcion")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<int>("IdFactura")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("PrecioUnitario")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("Subtotal")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("IdDetalle");
-
-                    b.HasIndex("IdFactura");
-
-                    b.ToTable("DetalleFactura");
                 });
 
             modelBuilder.Entity("ApiPrueba.Models.Diagnostico", b =>
@@ -357,17 +261,10 @@ namespace ApiPrueba.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdDocumento"));
 
-                    b.Property<string>("Descripcion")
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
                     b.Property<DateTime>("FechaSubida")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("IdPaciente")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("IdUsuarioSubida")
                         .HasColumnType("int");
 
                     b.Property<string>("MimeType")
@@ -384,11 +281,14 @@ namespace ApiPrueba.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<long>("TamañoArchivo")
-                        .HasColumnType("bigint");
+                    b.Property<string>("SubidoPor")
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
 
-                    b.Property<int>("TipoDocumento")
-                        .HasColumnType("int");
+                    b.Property<string>("TipoDocumento")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("IdDocumento");
 
@@ -517,78 +417,6 @@ namespace ApiPrueba.Migrations
                     b.ToTable("EvolucionesPaciente");
                 });
 
-            modelBuilder.Entity("ApiPrueba.Models.Factura", b =>
-                {
-                    b.Property<int>("IdFactura")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdFactura"));
-
-                    b.Property<decimal?>("Descuento")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Estado")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<DateTime>("FechaCreacion")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("FechaEmision")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("FechaPago")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("FechaVencimiento")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("IdPaciente")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("IdTratamiento")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("IdUsuarioCreador")
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("Impuesto")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("MetodoPago")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("NumeroFactura")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Observaciones")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("RutaArchivoPDF")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<decimal>("Subtotal")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("Total")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("IdFactura");
-
-                    b.HasIndex("IdPaciente");
-
-                    b.HasIndex("IdTratamiento");
-
-                    b.ToTable("Factura");
-                });
-
             modelBuilder.Entity("ApiPrueba.Models.HistorialMedico", b =>
                 {
                     b.Property<int>("IdHistorial")
@@ -705,16 +533,7 @@ namespace ApiPrueba.Migrations
                     b.Property<string>("Apellidos")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Celular")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Ciudad")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("CorreoElectronico")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Departamento")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Direccion")
@@ -731,9 +550,6 @@ namespace ApiPrueba.Migrations
 
                     b.Property<string>("Genero")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("MyProperty")
-                        .HasColumnType("int");
 
                     b.Property<string>("Nombres")
                         .HasColumnType("nvarchar(max)");
@@ -1062,9 +878,6 @@ namespace ApiPrueba.Migrations
                     b.Property<int?>("PlanTratamientoId")
                         .HasColumnType("int");
 
-                    b.Property<decimal?>("PrecioTratamiento")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<int?>("TerapeutaId")
                         .HasColumnType("int");
 
@@ -1160,13 +973,7 @@ namespace ApiPrueba.Migrations
                 {
                     b.HasBaseType("ApiPrueba.Models.Persona");
 
-                    b.Property<string>("EPS")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("IdSeguroMedico")
-                        .HasColumnType("int");
-
-                    b.Property<int>("NumeroDeAfiliacion")
                         .HasColumnType("int");
 
                     b.Property<int?>("SeguroMedicoIdSeguro")
@@ -1264,17 +1071,6 @@ namespace ApiPrueba.Migrations
                     b.Navigation("Paciente");
                 });
 
-            modelBuilder.Entity("ApiPrueba.Models.DetalleFactura", b =>
-                {
-                    b.HasOne("ApiPrueba.Models.Factura", "Factura")
-                        .WithMany("Detalles")
-                        .HasForeignKey("IdFactura")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Factura");
-                });
-
             modelBuilder.Entity("ApiPrueba.Models.Diagnostico", b =>
                 {
                     b.HasOne("ApiPrueba.Models.Paciente", "Paciente")
@@ -1357,23 +1153,6 @@ namespace ApiPrueba.Migrations
                         .IsRequired();
 
                     b.Navigation("Paciente");
-                });
-
-            modelBuilder.Entity("ApiPrueba.Models.Factura", b =>
-                {
-                    b.HasOne("ApiPrueba.Models.Paciente", "Paciente")
-                        .WithMany("Facturas")
-                        .HasForeignKey("IdPaciente")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ApiPrueba.Models.Tratamiento", "Tratamiento")
-                        .WithMany()
-                        .HasForeignKey("IdTratamiento");
-
-                    b.Navigation("Paciente");
-
-                    b.Navigation("Tratamiento");
                 });
 
             modelBuilder.Entity("ApiPrueba.Models.HistorialMedico", b =>
@@ -1585,11 +1364,6 @@ namespace ApiPrueba.Migrations
                     b.Navigation("TerapeutaEspecialidades");
                 });
 
-            modelBuilder.Entity("ApiPrueba.Models.Factura", b =>
-                {
-                    b.Navigation("Detalles");
-                });
-
             modelBuilder.Entity("ApiPrueba.Models.ProtocoloTratamiento", b =>
                 {
                     b.Navigation("EquiposSesion");
@@ -1631,8 +1405,6 @@ namespace ApiPrueba.Migrations
                     b.Navigation("Documentos");
 
                     b.Navigation("Evoluciones");
-
-                    b.Navigation("Facturas");
 
                     b.Navigation("HistorialMedico");
 

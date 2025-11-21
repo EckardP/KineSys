@@ -1,68 +1,86 @@
-// import React from 'react'
-// import { Link } from 'react-router-dom'
-// import { Navbar as BsNavbar, Nav, Container } from 'react-bootstrap'
-
-// export default function Navbar() {
-//   return (
-//     <BsNavbar bg="dark" variant="dark" expand="lg">  
-//       <Container>
-//         <BsNavbar.Brand as={Link} to="/">KineSys</BsNavbar.Brand>
-//         <BsNavbar.Toggle aria-controls="basic-navbar-nav" />
-//         <BsNavbar.Collapse id="basic-navbar-nav">
-//           <Nav className="me-auto">
-//             <Nav.Link as={Link} to="/Home">Inicio</Nav.Link>
-            
-//             <Nav.Link as={Link} to="/therapists">Terapeutas</Nav.Link>
-//             <Nav.Link as={Link} to="/pacientes">Pacientes</Nav.Link>
-//             <Nav.Link as={Link} to="/treatments">Terapias</Nav.Link>
-//             <Nav.Link as={Link} to="/agenda">Agenda</Nav.Link>
-            
-            
-//           </Nav>
-//         </BsNavbar.Collapse>
-//       </Container>
-//     </BsNavbar>
-//   )
-// }
-
-// src/components/Navbar.jsx
 import React from 'react';
-import { Link } from 'react-router-dom'; // Importar useNavigate
-import { Navbar as BsNavbar, Nav, Container } from 'react-bootstrap';
-import { checkAuthTemp, getUserRoleTemp, ROLES } from '../utils/auth'; // ¡Importa las funciones temporales!
+import { Link, useNavigate } from 'react-router-dom';
+import { Navbar as BsNavbar, Nav, Container, Button } from 'react-bootstrap';
+import { useAuth } from '../hooks/useAuth';
+import { ROLES } from '../utils/constants';
 
 export default function Navbar() {
-  const isAuthenticated = checkAuthTemp(); // Verifica si hay sesión simulada
-  const userRole = getUserRoleTemp(); // Obtiene el rol simulado
+  const { isAuthenticated, usuario, logout } = useAuth();
+  const navigate = useNavigate();
 
- 
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   return (
-    <BsNavbar bg="dark" variant="dark" expand="lg">
+    <BsNavbar bg="dark" variant="dark" expand="lg" sticky="top" className="shadow-sm">
       <Container>
-        {/* Si está autenticado, lleva al dashboard, si no, a la home pública */}
-        <BsNavbar.Brand as={Link} to={isAuthenticated ? `/gestionadmin` : "/"}>KineSys</BsNavbar.Brand>
+        <BsNavbar.Brand as={Link} to={isAuthenticated ? "/dashboard" : "/"} className="fw-bold">
+          KineSys
+        </BsNavbar.Brand>
         <BsNavbar.Toggle aria-controls="basic-navbar-nav" />
         
         <BsNavbar.Collapse id="basic-navbar-nav">
-
-          {isAuthenticated && ( // Solo muestra enlaces internos si hay sesión simulada
+          {isAuthenticated && (
             <Nav className="me-auto">
-              {/* Ejemplo de condicional por rol si lo necesitas */}
-              
-              {userRole === ROLES.ADMIN && (
-                <Nav.Link as={Link} to="/pacientes">Pacientes</Nav.Link>
+              {usuario?.rol === ROLES.ADMINISTRADOR && (
+                <>
+                  <Nav.Link as={Link} to="/gestionadmin">Dashboard</Nav.Link>
+                  <Nav.Link as={Link} to="/pacientes">Pacientes</Nav.Link>
+                  <Nav.Link as={Link} to="/gestionterapeuta/terapeuta">Terapeutas</Nav.Link>
+                  <Nav.Link as={Link} to="/gestionagenda/agendaadmin">Agenda</Nav.Link>
+                  <Nav.Link as={Link} to="/gestioncita/citas">Citas</Nav.Link>
+                  <Nav.Link as={Link} to="/gestionreporte/reportes">Reportes</Nav.Link>
+                </>
               )}
-              <Nav.Link as={Link} to="/treatments">Terapias</Nav.Link>
-              <Nav.Link as={Link} to="/gestionagenda/agendaadmin">Agenda</Nav.Link>
-              <Nav.Link as={Link} to="/gestioncita/citas">Citas</Nav.Link>
-              {/* Puedes añadir más enlaces y condicionales por rol aquí */}
+              
+              {usuario?.rol === ROLES.TERAPEUTA && (
+                <>
+                  <Nav.Link as={Link} to="/dashboard">Dashboard</Nav.Link>
+                  <Nav.Link as={Link} to="/pacientes">Mis Pacientes</Nav.Link>
+                  <Nav.Link as={Link} to="/gestionagenda/agendaadmin">Mi Agenda</Nav.Link>
+                  <Nav.Link as={Link} to="/gestioncita/citas">Mis Citas</Nav.Link>
+                </>
+              )}
+
+              {usuario?.rol === ROLES.PACIENTE && (
+                <>
+                  <Nav.Link as={Link} to="/dashboard">Inicio</Nav.Link>
+                  <Nav.Link as={Link} to="/gestioncita/citas">Mis Citas</Nav.Link>
+                  <Nav.Link as={Link} to="/agenda">Agendar</Nav.Link>
+                </>
+              )}
             </Nav>
           )}
 
+          <Nav className="ms-auto align-items-center gap-2">
+            {isAuthenticated ? (
+              <>
+                <span className="text-light me-2">
+                  <span className="fw-semibold">{usuario?.nombre} {usuario?.apellidos}</span>
+                  <span className="text-muted ms-2">({usuario?.rol})</span>
+                </span>
+                <Button 
+                  variant="outline-light" 
+                  size="sm"
+                  onClick={handleLogout}
+                >
+                  Cerrar Sesión
+                </Button>
+              </>
+            ) : (
+              <Button 
+                as={Link} 
+                to="/login" 
+                variant="light" 
+                size="sm"
+              >
+                Iniciar Sesión
+              </Button>
+            )}
+          </Nav>
         </BsNavbar.Collapse>
-
-          
       </Container>
     </BsNavbar>
   );

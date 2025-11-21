@@ -4,7 +4,7 @@ using ApiPrueba.Models;
 
 namespace ApiPrueba.Models
 {
-    
+
     public abstract class Persona
     {
 
@@ -16,14 +16,17 @@ namespace ApiPrueba.Models
         public string? TipoDocumento { get; set; }
         public string? DocumentoIdentidad { get; set; }
         public string? Telefono { get; set; }
+        public string? Celular { get; set; }
         public string? CorreoElectronico { get; set; }
         public DateTime FechaNacimiento { get; set; }
         public string? Genero { get; set; }
         public string? Direccion { get; set; }
+        public string? Ciudad { get; set; }
+        public string? Departamento { get; set; }
+        public int MyProperty { get; set; }
         public bool Activo { get; set; }
         public DateTime FechaRegistro { get; set; }
         public Rol Rol { get; set; }
-
 
         public class RegistroDto
         {
@@ -39,8 +42,39 @@ namespace ApiPrueba.Models
             public DateTime FechaNacimiento { get; set; }
             public string? Genero { get; set; }
             public string? Direccion { get; set; }
+            public bool Activo { get; set; }
+            public DateTime FechaRegistro { get; set; }
             public Rol Rol { get; set; }
+            public string? Ciudad { get; set; }
+            public string? Departamento { get; set; }
+
+            // Propiedades específicas del Terapeuta
+            public string? NoLicencia { get; set; }
+            public string? TituloAcademico { get; set; }
+            public int AñosExperiencia { get; set; }
+            public DateTime FechaContratacion { get; set; }
+
+            // Propiedades específicas del Paciente
+            public string? EPS { get; set; }
+            public int NumeroDeAfiliacion { get; set; }
         }
+
+        //public class RegistroDto
+        //{
+        //    public int Id { get; set; }
+        //    public string? User { get; set; }
+        //    public string? Password { get; set; }
+        //    public string? Nombres { get; set; }
+        //    public string? Apellidos { get; set; }
+        //    public string? TipoDocumento { get; set; }
+        //    public string? DocumentoIdentidad { get; set; }
+        //    public string? Telefono { get; set; }
+        //    public string? CorreoElectronico { get; set; }
+        //    public DateTime FechaNacimiento { get; set; }
+        //    public string? Genero { get; set; }
+        //    public string? Direccion { get; set; }
+        //    public Rol Rol { get; set; }
+        //}
 
         public class LoginDto
         {
@@ -50,10 +84,7 @@ namespace ApiPrueba.Models
 
         public class LoginResponseDto
         {
-            //public int Id { get; set; }
             public string? User { get; set; }
-            //public string? Nombres { get; set; }
-            //public string? Apellidos { get; set; }
             public Rol Rol { get; set; }
 
             public Token? Token { get; set; }

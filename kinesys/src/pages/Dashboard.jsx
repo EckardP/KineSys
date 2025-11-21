@@ -7,14 +7,8 @@ import '../styles/dashboard.css';
 export default function Dashboard() {
   useRequireAuth();
   const navigate = useNavigate();
-  const { usuario, logout } = useAuth();
+  const { usuario } = useAuth();
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
-
-  // Menú específico según rol
   const getMenuOptions = () => {
     switch (usuario?.rol) {
       case 'Administrador':
@@ -56,28 +50,16 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard-container">
-      <nav className="navbar">
-        <div className="navbar-brand">KineSys - Clínica de Fisioterapia</div>
-        <div className="navbar-user">
-          <span className="user-info">
-            {usuario?.nombre} {usuario?.apellidos}
-            <span className="user-role">{usuario?.rol}</span>
-          </span>
-          <button onClick={handleLogout} className="logout-btn">
-            Cerrar Sesión
-          </button>
-        </div>
-      </nav>
-
+      
       <div className="dashboard-content">
         <h1>Bienvenido, {usuario?.nombre}</h1>
         <p className="welcome-subtitle">Panel de {usuario?.rol}</p>
-        
+
         <div className="menu-grid">
           {menuOptions.map((option, index) => (
-            <div 
-              key={index} 
-              className="menu-card" 
+            <div
+              key={index}
+              className="menu-card"
               onClick={() => navigate(option.path)}
             >
               <h2>{option.title}</h2>

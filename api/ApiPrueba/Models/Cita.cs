@@ -15,14 +15,19 @@ namespace ApiPrueba.Models
         public DateTime? CheckOut { get; set; }
         public bool Confirmada { get; set; }
 
+        public string? Motivo { get; set; }
+
         public string? Estado { get; set; }
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal? PrecioCita { get; set; }
 
         // Relación con reserva y nota (opcional)
         //public ReservaCita? Reserva { get; set; }
         //public NotaSesion? NotaSesion { get; set; }
 
         // Relaciones
-        
+
         public int IdPaciente { get; set; }
         [ForeignKey("IdPaciente")]
         [JsonIgnore]

@@ -4,6 +4,7 @@ using ApiPrueba.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiPrueba.Migrations
 {
     [DbContext(typeof(ClinicaFisioterapiaBD))]
-    partial class ClinicaFisioterapiaBDModelSnapshot : ModelSnapshot
+    [Migration("20251120032915_AuditoriayFactura")]
+    partial class AuditoriayFactura
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -705,16 +708,7 @@ namespace ApiPrueba.Migrations
                     b.Property<string>("Apellidos")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Celular")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Ciudad")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("CorreoElectronico")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Departamento")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Direccion")
@@ -731,9 +725,6 @@ namespace ApiPrueba.Migrations
 
                     b.Property<string>("Genero")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("MyProperty")
-                        .HasColumnType("int");
 
                     b.Property<string>("Nombres")
                         .HasColumnType("nvarchar(max)");
@@ -1160,13 +1151,7 @@ namespace ApiPrueba.Migrations
                 {
                     b.HasBaseType("ApiPrueba.Models.Persona");
 
-                    b.Property<string>("EPS")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("IdSeguroMedico")
-                        .HasColumnType("int");
-
-                    b.Property<int>("NumeroDeAfiliacion")
                         .HasColumnType("int");
 
                     b.Property<int?>("SeguroMedicoIdSeguro")

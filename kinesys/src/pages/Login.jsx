@@ -9,7 +9,9 @@ export default function Login() {
   const [cargando, setCargando] = useState(false);
   const [mostrarContrasena, setMostrarContrasena] = useState(false);
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
+
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,7 +32,6 @@ export default function Login() {
       setCargando(false);
     }
   };
-
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       {/* Botón volver al inicio */}
@@ -49,6 +50,8 @@ export default function Login() {
             <h1 className="text-4xl lg:text-5xl font-bold mb-4 text-white">KineSys</h1>
             <p className="text-xl text-gray-300">Sistema de Gestión para Clínicas de Fisioterapia</p>
           </div>
+        </div>
+      </div>
 
           <div className="space-y-6">
             <div className="flex items-start space-x-4 group hover:transform hover:translate-x-2 transition-transform duration-200">
@@ -81,6 +84,22 @@ export default function Login() {
               </div>
             </div>
           </div>
+          
+          <form onSubmit={handleSubmit} className="login-form">
+            <div className="form-group">
+              <label htmlFor="usuario">Usuario</label>
+              <input
+                id="usuario"
+                type="text"
+                value={usuario}
+                onChange={(e) => setUsuario(e.target.value)}
+                placeholder="Ingrese su usuario"
+                required
+                disabled={cargando}
+                autoComplete="username"
+                className="form-input"
+              />
+            </div>
 
           <div className="mt-12 pt-8 border-t border-gray-700">
             <p className="text-gray-400 text-sm">

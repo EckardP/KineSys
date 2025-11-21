@@ -4,8 +4,6 @@ import { Link } from "react-router-dom";
 const Home = () => {
   return (
     <div>
-      
-
       {/* Hero Section */}
       <section className="text-center py-5 bg-white">
         <div className="container">
