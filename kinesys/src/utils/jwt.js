@@ -36,18 +36,31 @@ export function extraerDatosUsuario(token) {
     return null;
   }
 
-  // ASP.NET usa URLs completas para los claims estándar
-  // Basado en JwtTokenGenerator.cs
+  console.log('Payload completo del token:', payload); // Para debug
+
+  // Los claims de ASP.NET usan URLs completas, necesitamos mapearlos correctamente
   return {
-    id: payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] || payload.sub,
-    usuario: payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || payload.name,
-    nombreCompleto: payload['FullName'] || '',
-    email: payload['Email'] || payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] || payload.email,
-    rol: payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || payload.role,
+    id: payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] || 
+        payload.nameid || 
+        payload.sub,
+    
+    usuario: payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || 
+             payload.unique_name || 
+             payload.name,
+    
+    // ESTA ES LA CLAVE - El FullName está en un claim personalizado sin namespace
+    nombreCompleto: payload.FullName || 
+                   `${payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname']} ${payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname']}`,
+    
+    email: payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] || 
+           payload.email,
+    
+    rol: payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || 
+          payload.role,
+    
     exp: payload.exp
   };
 }
-
 /**
  * Verifica si un token ha expirado
  * @param {string} token - El token JWT

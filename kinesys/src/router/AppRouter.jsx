@@ -14,6 +14,7 @@ import Terapeuta from "../pages/GestionAdmin/GestionTerapeuta/Terapeuta";
 import AgendaAdmin from "../pages/GestionAdmin/GestionAgenda/AgendaAdmin";
 import Reportes from '../pages/GestionAdmin/GestionReporte/Reportes'
 import Citas from '../pages/GestionAdmin/GestionCita/Citas'
+import TerapeutaHome from '../pages/TerapeutaHome/TerapeutaHome'
 
 export default function AppRouter() {
   return (
@@ -23,7 +24,7 @@ export default function AppRouter() {
       <Route path="/treatments" element={<Treatments />} />
       <Route path="/agenda" element={<Agenda />} />
       <Route path="/login" element={<Login/>}/>
-      <Route path="/dashboard" element={<Dashboard />} />
+     {/*<Route path="/dashboard" element={<Dashboard />} />*/}
 
       {/* MÓDULO PACIENTES */}
         <Route path="/pacientes" element={<Pacientes />} />
@@ -36,6 +37,11 @@ export default function AppRouter() {
           <Route path="/gestionagenda/agendaadmin" element={<AgendaAdmin />} />
           <Route path="/gestionreporte/reportes" element={<Reportes />} />
           <Route path="/gestioncita/citas" element={<Citas />} />
+
+      {/* MÓDULO TERAPEUTA */}
+     {/* <Route path="/terapeuta/home" element={<TerapeutaHome />} /> */}
+      <Route path="/dashboard" element={<TerapeutaHome />} />
+
     </Routes>
   )
 }

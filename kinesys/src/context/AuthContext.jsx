@@ -38,13 +38,11 @@ export function AuthProvider({ children }) {
    */
   const login = async (usuario, contrasena) => {
     try {
-      // Endpoint correcto según PersonasController
       const respuesta = await fetch(`${API_BASE_URL}/Personas/Login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        // Body con estructura User y Password como espera la API
         body: JSON.stringify({ 
           User: usuario, 
           Password: contrasena 
@@ -56,23 +54,27 @@ export function AuthProvider({ children }) {
         throw new Error(errorData.message || 'Credenciales inválidas');
       }
 
-      // La API retorna: { Id, Nombres, Apellidos, Token }
       const datos = await respuesta.json();
       const nuevoToken = datos.Token || datos.token;
 
-      // Extraer rol y otros datos del token JWT
+      // Extraer datos del token JWT - CORREGIDO
       const datosDelToken = extraerDatosUsuario(nuevoToken);
 
-      // Combinar datos de la respuesta con datos del token
+      console.log('Datos del token:', datosDelToken); // Para debug
+
+      // Combinar datos - USAR LOS DATOS DEL TOKEN QUE SÍ TIENEN LA INFORMACIÓN
       const datosUsuario = {
-        id: datos.Id,
-        nombre: datos.Nombres,
-        apellidos: datos.Apellidos,
-        nombreCompleto: `${datos.Nombres} ${datos.Apellidos}`,
+        id: datos.Id || datosDelToken.id,
+        nombre: datos.Nombres || datosDelToken.nombre, 
+        apellidos: datos.Apellidos || datosDelToken.apellidos,
+        // USAR EL FullName DEL TOKEN QUE SÍ CONTIENE LOS DATOS CORRECTOS
+        nombreCompleto: datosDelToken.nombreCompleto || `${datos.Nombres} ${datos.Apellidos}`,
         usuario: usuario,
-        rol: datosDelToken.rol, // El rol viene en el token
-        email: datosDelToken.email // El email viene en el token
+        rol: datosDelToken.rol,
+        email: datosDelToken.email
       };
+
+      console.log('Datos usuario a guardar:', datosUsuario); // Para debug
 
       // Guardar en localStorage
       localStorage.setItem('authToken', nuevoToken);
@@ -115,4 +117,12 @@ export function AuthProvider({ children }) {
       {children}
     </AuthContext.Provider>
   );
+}
+
+export function useAuth() {
+  const context = React.useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth debe usarse dentro de un AuthProvider");
+  }
+  return context;
 }

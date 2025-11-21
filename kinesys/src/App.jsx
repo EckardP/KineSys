@@ -10,7 +10,7 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <div className="app-layout">
-          <Navbar />
+          
           <main className="main-content">
             <AppRouter />
           </main>

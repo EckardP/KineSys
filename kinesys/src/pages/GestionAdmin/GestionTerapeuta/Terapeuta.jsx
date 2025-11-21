@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./Terapeuta.css";
+import { registrarUsuario} from "../../../services/RegistrarService";
 import {
   listarTerapeutas,
   crearTerapeuta,
@@ -11,19 +12,24 @@ export default function Terapeutas() {
   const [terapeutas, setTerapeutas] = useState([]);
   const [modoEdicion, setModoEdicion] = useState(false);
   const [formData, setFormData] = useState({
-    NoLicencia: "",
-    TituloAcademico: "",
-    AñosExperiencia: "",
-    FechaContratacion: "",
-    Id: "",
-    Nombres: "",
-    Apellidos: "",
-    DocumentoIdentidad: "",
-    Telefono: "",
-    CorreoElectronico: "",
-    FechaNacimiento: "",
-    Genero: "",
-    Direccion: "",
+    user: "",
+    password: "",
+    nombres: "",
+    apellidos: "",
+    tipoDocumento: "",
+    documentoIdentidad: "",
+    telefono: "",
+    correoElectronico: "",
+    fechaNacimiento: "",
+    genero: "",
+    direccion: "",
+    activo: true,
+    fechaRegistro: new Date().toISOString(),
+    rol: 2, // 1 = Terapeuta
+    noLicencia: "",
+    tituloAcademico: "",
+    añosExperiencia: "",
+    fechaContratacion: "",
   });
 
   // 🔹 Cargar terapeutas al iniciar
@@ -31,31 +37,34 @@ export default function Terapeutas() {
     cargarTerapeutas();
   }, []);
 
-const cargarTerapeutas = async () => {
-  try {
-    const data = await listarTerapeutas();
-    const normalizados = (data || []).map(t => ({
-      Id: t.id,
-      Nombres: t.nombres,
-      Apellidos: t.apellidos,
-      DocumentoIdentidad: t.documentoIdentidad,
-      Telefono: t.telefono,
-      CorreoElectronico: t.correoElectronico,
-      FechaNacimiento: t.fechaNacimiento,
-      Genero: t.genero,
-      Direccion: t.direccion,
-      NoLicencia: t.noLicencia,
-      TituloAcademico: t.tituloAcademico,
-      AñosExperiencia: t.añosExperiencia,
-      FechaContratacion: t.fechaContratacion,
-    }));
-    setTerapeutas(normalizados);
-  } catch (error) {
-    console.error("Error al listar terapeutas:", error);
-  }
-};
-
-
+  const cargarTerapeutas = async () => {
+    try {
+      const data = await listarTerapeutas();
+      const normalizados = (data || []).map(t => ({
+        id: t.id,
+        user: t.user,
+        nombres: t.nombres,
+        apellidos: t.apellidos,
+        tipoDocumento: t.tipoDocumento,
+        documentoIdentidad: t.documentoIdentidad,
+        telefono: t.telefono,
+        correoElectronico: t.correoElectronico,
+        fechaNacimiento: t.fechaNacimiento,
+        genero: t.genero,
+        direccion: t.direccion,
+        activo: t.activo,
+        fechaRegistro: t.fechaRegistro,
+        rol: t.rol,
+        noLicencia: t.noLicencia,
+        tituloAcademico: t.tituloAcademico,
+        añosExperiencia: t.añosExperiencia,
+        fechaContratacion: t.fechaContratacion,
+      }));
+      setTerapeutas(normalizados);
+    } catch (error) {
+      console.error("Error al listar terapeutas:", error);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -67,18 +76,33 @@ const cargarTerapeutas = async () => {
     e.preventDefault();
     try {
       const datosTerapeuta = {
-        ...formData,
-        AñosExperiencia: Number(formData.AñosExperiencia),
-        FechaContratacion: formData.FechaContratacion || new Date().toISOString(),
-        FechaNacimiento: formData.FechaNacimiento || new Date().toISOString(),
+        user: formData.user,
+        password: formData.password,
+        nombres: formData.nombres,
+        apellidos: formData.apellidos,
+        tipoDocumento: formData.tipoDocumento,
+        documentoIdentidad: formData.documentoIdentidad,
+        telefono: formData.telefono,
+        correoElectronico: formData.correoElectronico,
+        fechaNacimiento: formData.fechaNacimiento ? new Date(formData.fechaNacimiento).toISOString() : new Date().toISOString(),
+        genero: formData.genero,
+        direccion: formData.direccion,
+        activo: true, // Siempre true al crear
+        fechaRegistro: new Date().toISOString(),
+        rol: 2, // Siempre 1 para Terapeuta
+        noLicencia: formData.noLicencia,
+        tituloAcademico: formData.tituloAcademico,
+        añosExperiencia: Number(formData.añosExperiencia) || 0,
+        fechaContratacion: formData.fechaContratacion ? new Date(formData.fechaContratacion).toISOString() : new Date().toISOString(),
       };
 
-      if (!datosTerapeuta.Id) delete datosTerapeuta.Id;
-
-      if (modoEdicion) {
-        await actualizarTerapeuta(datosTerapeuta.Id, datosTerapeuta);
+      if (modoEdicion && formData.id) {
+        // Para actualizar, usa el ID y no envíes password ni campos de registro
+        const { password, fechaRegistro, rol, ...datosActualizacion } = datosTerapeuta;
+        await actualizarTerapeuta(formData.id, datosActualizacion);
       } else {
-        await crearTerapeuta(datosTerapeuta);
+        // Para crear nuevo terapeuta
+        await registrarUsuario(datosTerapeuta);
       }
 
       // 🔹 Recargar lista completa para mostrar tabla actualizada
@@ -92,26 +116,36 @@ const cargarTerapeutas = async () => {
 
   const limpiarFormulario = () => {
     setFormData({
-      NoLicencia: "",
-      TituloAcademico: "",
-      AñosExperiencia: "",
-      FechaContratacion: "",
-      Id: "",
-      Nombres: "",
-      Apellidos: "",
-      DocumentoIdentidad: "",
-      Telefono: "",
-      CorreoElectronico: "",
-      FechaNacimiento: "",
-      Genero: "",
-      Direccion: "",
+      user: "",
+      password: "",
+      nombres: "",
+      apellidos: "",
+      tipoDocumento: "",
+      documentoIdentidad: "",
+      telefono: "",
+      correoElectronico: "",
+      fechaNacimiento: "",
+      genero: "",
+      direccion: "",
+      activo: true,
+      fechaRegistro: new Date().toISOString(),
+      rol: 2,
+      noLicencia: "",
+      tituloAcademico: "",
+      añosExperiencia: "",
+      fechaContratacion: "",
     });
     setModoEdicion(false);
   };
 
   // 🔹 Editar terapeuta
   const handleEdit = (terapeuta) => {
-    setFormData({ ...terapeuta });
+    setFormData({ 
+      ...terapeuta,
+      fechaNacimiento: terapeuta.fechaNacimiento ? terapeuta.fechaNacimiento.split('T')[0] : "",
+      fechaContratacion: terapeuta.fechaContratacion ? terapeuta.fechaContratacion.split('T')[0] : "",
+      password: "" // No mostramos la password en edición por seguridad
+    });
     setModoEdicion(true);
   };
 
@@ -140,41 +174,71 @@ const cargarTerapeutas = async () => {
         <h2>{modoEdicion ? "Editar Terapeuta" : "Registrar Terapeuta"}</h2>
 
         <form onSubmit={handleSubmit} className="terapeuta-form">
+          {/* Campos de autenticación */}
           <input
             type="text"
-            name="Nombres"
+            name="user"
+            placeholder="Usuario"
+            value={formData.user}
+            onChange={handleChange}
+            required
+          />
+          
+          {!modoEdicion && (
+            <input
+              type="password"
+              name="password"
+              placeholder="Contraseña"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
+          )}
+
+          {/* Información personal */}
+          <input
+            type="text"
+            name="nombres"
             placeholder="Nombres"
-            value={formData.Nombres}
+            value={formData.nombres}
             onChange={handleChange}
             required
           />
           <input
             type="text"
-            name="Apellidos"
+            name="apellidos"
             placeholder="Apellidos"
-            value={formData.Apellidos}
+            value={formData.apellidos}
             onChange={handleChange}
             required
           />
+
+          <select name="tipoDocumento" value={formData.tipoDocumento} onChange={handleChange}>
+            <option value="">Tipo de Documento</option>
+            <option value="DNI">DNI</option>
+            <option value="Cédula">Cédula</option>
+            <option value="Pasaporte">Pasaporte</option>
+          </select>
+
           <input
             type="text"
-            name="DocumentoIdentidad"
+            name="documentoIdentidad"
             placeholder="Documento de Identidad"
-            value={formData.DocumentoIdentidad}
+            value={formData.documentoIdentidad}
             onChange={handleChange}
           />
           <input
             type="text"
-            name="Telefono"
+            name="telefono"
             placeholder="Teléfono"
-            value={formData.Telefono}
+            value={formData.telefono}
             onChange={handleChange}
           />
           <input
             type="email"
-            name="CorreoElectronico"
+            name="correoElectronico"
             placeholder="Correo Electrónico"
-            value={formData.CorreoElectronico}
+            value={formData.correoElectronico}
             onChange={handleChange}
           />
 
@@ -182,54 +246,60 @@ const cargarTerapeutas = async () => {
             <label>Fecha de Nacimiento</label>
             <input
               type="date"
-              name="FechaNacimiento"
-              value={formData.FechaNacimiento}
+              name="fechaNacimiento"
+              value={formData.fechaNacimiento}
               onChange={handleChange}
             />
           </div>
 
-          <select name="Genero" value={formData.Genero} onChange={handleChange}>
+          <select name="genero" value={formData.genero} onChange={handleChange}>
             <option value="">Seleccionar Género</option>
             <option value="Masculino">Masculino</option>
             <option value="Femenino">Femenino</option>
             <option value="Otro">Otro</option>
+            <option value="Prefiero no decir">Prefiero no decir</option>
           </select>
 
           <input
             type="text"
-            name="Direccion"
+            name="direccion"
             placeholder="Dirección"
-            value={formData.Direccion}
+            value={formData.direccion}
             onChange={handleChange}
           />
+
+          {/* Campos específicos del terapeuta */}
           <input
             type="text"
-            name="NoLicencia"
+            name="noLicencia"
             placeholder="Número de Licencia"
-            value={formData.NoLicencia}
+            value={formData.noLicencia}
             onChange={handleChange}
+            required
           />
           <input
             type="text"
-            name="TituloAcademico"
+            name="tituloAcademico"
             placeholder="Título Académico"
-            value={formData.TituloAcademico}
+            value={formData.tituloAcademico}
             onChange={handleChange}
+            required
           />
           <input
             type="number"
-            name="AñosExperiencia"
+            name="añosExperiencia"
             placeholder="Años de Experiencia"
-            value={formData.AñosExperiencia}
+            value={formData.añosExperiencia}
             onChange={handleChange}
+            min="0"
           />
 
           <div className="input-group">
             <label>Fecha de Contratación</label>
             <input
               type="date"
-              name="FechaContratacion"
-              value={formData.FechaContratacion}
+              name="fechaContratacion"
+              value={formData.fechaContratacion}
               onChange={handleChange}
             />
           </div>
@@ -262,6 +332,7 @@ const cargarTerapeutas = async () => {
             <table>
               <thead>
                 <tr>
+                  <th>Usuario</th>
                   <th>Nombre</th>
                   <th>Licencia</th>
                   <th>Título</th>
@@ -274,12 +345,13 @@ const cargarTerapeutas = async () => {
               <tbody>
                 {terapeutas.map((t, i) => (
                   <tr key={i}>
-                    <td>{t.Nombres} {t.Apellidos}</td>
-                    <td>{t.NoLicencia}</td>
-                    <td>{t.TituloAcademico}</td>
-                    <td>{t.AñosExperiencia} años</td>
-                    <td>{t.Telefono}</td>
-                    <td>{t.CorreoElectronico}</td>
+                    <td>{t.user}</td>
+                    <td>{t.nombres} {t.apellidos}</td>
+                    <td>{t.noLicencia}</td>
+                    <td>{t.tituloAcademico}</td>
+                    <td>{t.añosExperiencia} años</td>
+                    <td>{t.telefono}</td>
+                    <td>{t.correoElectronico}</td>
                     <td>
                       <button
                         className="action-btn edit"
@@ -289,7 +361,7 @@ const cargarTerapeutas = async () => {
                       </button>
                       <button
                         className="action-btn delete"
-                        onClick={() => handleDelete(t.Id)}
+                        onClick={() => handleDelete(t.id)}
                       >
                         Eliminar
                       </button>
