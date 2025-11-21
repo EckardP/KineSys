@@ -23,7 +23,6 @@ namespace ApiPrueba.Models
         public string? Direccion { get; set; }
         public string? Ciudad { get; set; }
         public string? Departamento { get; set; }
-        public int MyProperty { get; set; }
         public bool Activo { get; set; }
         public DateTime FechaRegistro { get; set; }
         public Rol Rol { get; set; }
@@ -53,10 +52,6 @@ namespace ApiPrueba.Models
             public string? TituloAcademico { get; set; }
             public int AñosExperiencia { get; set; }
             public DateTime FechaContratacion { get; set; }
-
-            // Propiedades específicas del Paciente
-            public string? EPS { get; set; }
-            public int NumeroDeAfiliacion { get; set; }
         }
 
         //public class RegistroDto

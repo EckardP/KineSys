@@ -156,8 +156,6 @@ namespace ApiPrueba.Controllers
                         FechaNacimiento = registro.FechaNacimiento,
                         Genero = registro.Genero,
                         Direccion = registro.Direccion,
-                        EPS = registro.EPS,
-                        NumeroDeAfiliacion = registro.NumeroDeAfiliacion,
                         Ciudad = registro.Ciudad,
                         Departamento = registro.Departamento,
                         Activo = registro.Activo,

@@ -4,6 +4,7 @@ using ApiPrueba.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiPrueba.Migrations
 {
     [DbContext(typeof(ClinicaFisioterapiaBD))]
-    partial class ClinicaFisioterapiaBDModelSnapshot : ModelSnapshot
+    [Migration("20251121152428_EPS")]
+    partial class EPS
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -409,6 +412,9 @@ namespace ApiPrueba.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("NumeroDeAfiliacion")
+                        .HasColumnType("int");
+
                     b.HasKey("EPSId");
 
                     b.ToTable("Epss");
@@ -748,6 +754,9 @@ namespace ApiPrueba.Migrations
 
                     b.Property<string>("Genero")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("MyProperty")
+                        .HasColumnType("int");
 
                     b.Property<string>("Nombres")
                         .HasColumnType("nvarchar(max)");
@@ -1178,9 +1187,6 @@ namespace ApiPrueba.Migrations
                         .HasColumnType("int");
 
                     b.Property<int?>("IdSeguroMedico")
-                        .HasColumnType("int");
-
-                    b.Property<int>("NumeroDeAfiliacion")
                         .HasColumnType("int");
 
                     b.Property<int?>("SeguroMedicoIdSeguro")
