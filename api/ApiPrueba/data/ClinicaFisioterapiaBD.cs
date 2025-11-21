@@ -18,6 +18,9 @@ namespace ApiPrueba.Data
         public DbSet<Especialidad> Especialidades { get; set; }
         public DbSet<TipoTerapia> TipoTerapias { get; set; }
         public DbSet<SeguroMedico> SegurosMedicos { get; set; }
+        public DbSet<EPS> Epss { get; set; }
+        public DbSet<Factura> facturas { get; set; }
+        public DbSet<Auditoria> auditorias { get; set; }
 
         public DbSet<ContactoEmergencia> ContactosEmergencia { get; set; }
         public DbSet<DocumentoPaciente> DocumentosPaciente { get; set; }

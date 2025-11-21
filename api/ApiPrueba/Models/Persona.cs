@@ -53,10 +53,6 @@ namespace ApiPrueba.Models
             public string? TituloAcademico { get; set; }
             public int AñosExperiencia { get; set; }
             public DateTime FechaContratacion { get; set; }
-
-            // Propiedades específicas del Paciente
-            public string? EPS { get; set; }
-            public int NumeroDeAfiliacion { get; set; }
         }
 
         //public class RegistroDto
