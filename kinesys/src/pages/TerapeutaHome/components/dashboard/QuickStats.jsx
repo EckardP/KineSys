@@ -15,28 +15,6 @@ export default function QuickStats() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  // Función para normalizar fechas (maneja diferentes formatos)
-  const normalizarFecha = (fecha) => {
-    if (!fecha) return null
-    
-    try {
-      // Si ya está en formato YYYY-MM-DD
-      if (typeof fecha === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(fecha)) {
-        return fecha
-      }
-      
-      // Si es una fecha completa con tiempo
-      const dateObj = new Date(fecha)
-      if (!isNaN(dateObj.getTime())) {
-        return dateObj.toISOString().split('T')[0]
-      }
-      
-      return null
-    } catch {
-      return null
-    }
-  }
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -51,15 +29,15 @@ export default function QuickStats() {
         const hoy = new Date().toISOString().split('T')[0]
         
         const citasHoy = citasData?.filter(cita => {
-          const fechaCita = normalizarFecha(cita.fecha)
+          const fechaCita = cita.fecha ? cita.fecha.split('T')[0] : null
           return fechaCita === hoy
         }).length || 0
 
         setStats({
           pacientes: totalPacientes,
           citasHoy: citasHoy,
-          historias: 142, // Estático por ahora
-          facturasPendientes: 5 // Estático por ahora
+          historias: 142,
+          facturasPendientes: 5
         })
 
       } catch (err) {
@@ -86,6 +64,14 @@ export default function QuickStats() {
     { icon: CreditCard, label: "Facturas Pendientes", value: stats.facturasPendientes, color: "bg-orange-500" },
   ]
 
+  if (error) {
+    return (
+      <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+        <p className="text-red-700">{error}</p>
+      </div>
+    )
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       {statItems.map((stat, index) => {
@@ -95,13 +81,14 @@ export default function QuickStats() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-600 text-sm font-medium">{stat.label}</p>
-                <p className="text-3xl font-bold mt-2 text-gray-900">
-                  {loading && index < 2 ? ( // Solo los primeros 2 cargan de la API
+                {/* CORREGIDO: Cambiamos el p por div para evitar el error de nesting */}
+                <div className="text-3xl font-bold mt-2 text-gray-900">
+                  {loading && index < 2 ? (
                     <div className="animate-pulse bg-gray-200 h-8 w-12 rounded"></div>
                   ) : (
                     stat.value
                   )}
-                </p>
+                </div>
               </div>
               <div className={`${stat.color} p-3 rounded-full`}>
                 <Icon className="text-white" size={24} />
