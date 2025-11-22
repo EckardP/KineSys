@@ -6,8 +6,11 @@ namespace ApiPrueba.Models
     {
 
 
-        public int NumeroDeAfiliacion { get; set; }
-
+        public int? NumeroDeAfiliacion { get; set; }
+        public string? TipoAfiliado { get; set; }
+        public bool? EstadoAfiliacion { get; set; }
+        public DateTime? FechaAfiliacion { get; set; }
+        public string? Regimen { get; set; }
         // Relaciones
         public int? EpsId { get; set; }
         [JsonIgnore]

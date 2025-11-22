@@ -15,6 +15,8 @@ export function crearApiCliente(ruta){
             headers['Authorization'] = `Bearer ${token}`;
         }
 
+        console.log("🌐 URL de la solicitud:", `${URL_BASE}${url}`);
+
         const respuesta = await fetch(`${URL_BASE}${url}`, {
             headers,
             ...opciones,
@@ -35,13 +37,17 @@ export function crearApiCliente(ruta){
     return {
         getAll: () => respuesta(),
         getById: (id) => respuesta(`/${id}`),
-        create: (data) => respuesta("", {
+        create: (url = "", data) => respuesta(url, {
             method: 'POST',
-            body: JSON.stringify(data)}),
-        update: (id, data) => respuesta(`/${id}`, {
+            body: JSON.stringify(data)
+        }),
+        // 🔥 CORREGIDO: El método update debe aceptar la URL completa
+        update: (url, data) => respuesta(url, {  // Cambiado de (id, data) a (url, data)
             method: 'PUT',
-            body: JSON.stringify(data)}),
+            body: JSON.stringify(data)
+        }),
         delete: (id) => respuesta(`/${id}`, {
-            method: 'DELETE'}),
+            method: 'DELETE'
+        }),
     };
 }

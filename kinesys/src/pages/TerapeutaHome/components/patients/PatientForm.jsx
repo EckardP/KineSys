@@ -8,41 +8,136 @@ import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { listarSeguros, crearSeguros } from "../../../../services/segurosService"
+import { listarEPS, crearEPS } from "../../../../services/epsService"
+
+// 🔥 FUNCIÓN MOVIDA AL PRINCIPIO
+const formatDateForInput = (dateString) => {
+  if (!dateString) return '';
+  
+  // Si ya está en formato yyyy-MM-dd, devolverlo tal cual
+  if (typeof dateString === 'string' && dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
+    return dateString;
+  }
+  
+  // Si viene en formato ISO, extraer solo la parte de la fecha
+  if (typeof dateString === 'string' && dateString.includes('T')) {
+    return dateString.split('T')[0];
+  }
+  
+  // Si es un objeto Date
+  if (dateString instanceof Date) {
+    return dateString.toISOString().split('T')[0];
+  }
+  
+  return '';
+};
 
 export default function PatientForm({ onSubmit, onCancel, initialData }) {
-  const [formData, setFormData] = useState(
-    initialData || {
-      nombres: "",
-      apellidos: "",
-      tipoDocumento: "CC",
-      documentoIdentidad: "",
-      telefono: "",
-      correoElectronico: "",
-      fechaNacimiento: "",
-      genero: "",
-      direccion: "",
-      idSeguroMedico: "",
-    },
-  )
+  const [formData, setFormData] = useState({
+    nombres: "",
+    apellidos: "",
+    tipoDocumento: "CC",
+    documentoIdentidad: "",
+    telefono: "",
+    celular: "",
+    correoElectronico: "",
+    fechaNacimiento: "",
+    genero: "",
+    direccion: "",
+    ciudad: "",
+    departamento: "",
+    idSeguroMedico: "",
+    epsId: "",
+    numeroDeAfiliacion: "",
+    tipoAfiliado: "",
+    estadoAfiliacion: true,
+    fechaAfiliacion: "",
+    regimen: "",
+    rol: 1
+  });
+
+  // Efecto para cargar datos iniciales cuando hay edición
+ useEffect(() => {
+    if (initialData) {
+      console.log("📥 Cargando datos iniciales para edición:", initialData);
+      
+      const formattedData = {
+        ...initialData,
+        // Formatear fechas
+        fechaNacimiento: formatDateForInput(initialData.fechaNacimiento),
+        fechaAfiliacion: formatDateForInput(initialData.fechaAfiliacion),
+        // Asegurar que campos numéricos no sean undefined
+        numeroDeAfiliacion: initialData.numeroDeAfiliacion || "",
+        epsId: initialData.epsId || "",
+        idSeguroMedico: initialData.idSeguroMedico || "",
+        // Asegurar que todos los campos string tengan valor
+        telefono: initialData.telefono || "",
+        celular: initialData.celular || "",
+        direccion: initialData.direccion || "",
+        ciudad: initialData.ciudad || "",
+        departamento: initialData.departamento || "",
+        tipoAfiliado: initialData.tipoAfiliado || "",
+        regimen: initialData.regimen || "",
+        // ✅ AGREGAR ESTA LÍNEA: Asegurar que estadoAfiliacion tenga valor
+        estadoAfiliacion: initialData.estadoAfiliacion ?? true
+      };
+      
+      console.log("📤 Datos formateados:", formattedData);
+      setFormData(formattedData);
+    }
+  }, [initialData]);
+
   const [seguros, setSeguros] = useState([])
+  const [epsList, setEpsList] = useState([])
   const [loadingSeguros, setLoadingSeguros] = useState(false)
+  const [loadingEPS, setLoadingEPS] = useState(false)
   const [showSeguroForm, setShowSeguroForm] = useState(false)
+  const [showEPSForm, setShowEPSForm] = useState(false)
   const [nuevoSeguro, setNuevoSeguro] = useState({
     nombreAseguradora: "",
     numeroPoliza: "",
     cobertura: ""
   })
+  const [nuevaEPS, setNuevaEPS] = useState({
+    nombreEPS: ""
+  })
   const [creandoSeguro, setCreandoSeguro] = useState(false)
+  const [creandoEPS, setCreandoEPS] = useState(false)
+
+  // ✅ FUNCIÓN ÚNICA DE MANEJO DE CAMBIOS
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    
+    // Para campos numéricos, convertir a número o string vacío
+    if (name === 'epsId' || name === 'idSeguroMedico' || name === 'numeroDeAfiliacion') {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value === "" ? "" : Number(value)
+      }));
+    } 
+    // Para checkboxes
+    else if (type === 'checkbox') {
+      setFormData(prev => ({
+        ...prev,
+        [name]: checked
+      }));
+    }
+    // Para todos los demás campos
+    else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
+  };
 
   // Cargar seguros disponibles
- const cargarSeguros = async () => {
+  const cargarSeguros = async () => {
     try {
       console.log("🔄 PatientForm: Ejecutando cargarSeguros...");
       setLoadingSeguros(true);
       const segurosData = await listarSeguros();
       console.log("📦 PatientForm: Datos recibidos de listarSeguros:", segurosData);
-      console.log("📊 PatientForm: Tipo de datos:", typeof segurosData);
-      console.log("🔢 PatientForm: Es array?", Array.isArray(segurosData));
 
       const segurosArray = Array.isArray(segurosData) ? segurosData : [];
       console.log("🎯 PatientForm: Seguros a guardar en estado:", segurosArray);
@@ -55,18 +150,39 @@ export default function PatientForm({ onSubmit, onCancel, initialData }) {
     }
   };
 
+  // Cargar EPS disponibles
+  const cargarEPS = async () => {
+    try {
+      console.log("🔄 PatientForm: Ejecutando cargarEPS...");
+      setLoadingEPS(true);
+      const epsData = await listarEPS();
+      console.log("📦 PatientForm: Datos recibidos de listarEPS:", epsData);
+
+      const epsArray = Array.isArray(epsData) ? epsData : [];
+      console.log("🎯 PatientForm: EPS a guardar en estado:", epsArray);
+      setEpsList(epsArray);
+    } catch (error) {
+      console.error('❌ PatientForm: Error cargando EPS:', error);
+      setEpsList([]);
+    } finally {
+      setLoadingEPS(false);
+    }
+  };
+
   useEffect(() => {
-    console.log("🚀 PatientForm: Montando componente, cargando seguros...");
+    console.log("🚀 PatientForm: Montando componente, cargando datos...");
     cargarSeguros();
+    cargarEPS();
   }, []);
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
 
   const handleSeguroChange = (e) => {
     const { name, value } = e.target
     setNuevoSeguro((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const handleEPSChange = (e) => {
+    const { name, value } = e.target
+    setNuevaEPS((prev) => ({ ...prev, [name]: value }))
   }
 
   const handleAgregarSeguro = async () => {
@@ -82,10 +198,8 @@ export default function PatientForm({ onSubmit, onCancel, initialData }) {
         activo: true
       })
       
-      // Recargar la lista de seguros para incluir el nuevo
       await cargarSeguros()
       
-      // Seleccionar automáticamente el nuevo seguro - usar idSeguro
       if (seguroCreado && seguroCreado.idSeguro) {
         setFormData(prev => ({ 
           ...prev, 
@@ -93,7 +207,6 @@ export default function PatientForm({ onSubmit, onCancel, initialData }) {
         }))
       }
       
-      // Limpiar y cerrar el formulario de seguro
       setNuevoSeguro({
         nombreAseguradora: "",
         numeroPoliza: "",
@@ -108,51 +221,128 @@ export default function PatientForm({ onSubmit, onCancel, initialData }) {
     }
   }
 
-  const handleSubmit = (e) => {
+  const handleAgregarEPS = async () => {
+    if (!nuevaEPS.nombreEPS) {
+      alert("Por favor ingrese el nombre de la EPS")
+      return
+    }
+    try {
+      setCreandoEPS(true)
+      const epsCreada = await crearEPS({
+        nombreEPS: nuevaEPS.nombreEPS
+      })
+      
+      await cargarEPS()
+      
+      if (epsCreada && epsCreada.epsId) {
+        setFormData(prev => ({ 
+          ...prev, 
+          epsId: epsCreada.epsId.toString() 
+        }))
+      }
+      
+      setNuevaEPS({ nombreEPS: "" })
+      setShowEPSForm(false)
+      
+    } catch (error) {
+      alert(error.message || "Error al crear la EPS")
+    } finally {
+      setCreandoEPS(false)
+    }
+  }
+
+ const handleSubmit = (e) => {
     e.preventDefault()
-    if (!formData.documentoIdentidad || !formData.nombres || !formData.apellidos) {
+    console.log("🔄 handleSubmit: Iniciando envío del formulario...")
+    
+    // Validaciones básicas
+    if (!formData.documentoIdentidad || !formData.nombres || !formData.apellidos || !formData.tipoDocumento) {
+      console.log("❌ Validación fallida: Campos obligatorios incompletos")
       alert("Por favor complete los campos obligatorios")
       return
     }
 
-    // Preparar datos para el endpoint
-    const datosParaEnviar = {
-      user: formData.documentoIdentidad,
-      password: formData.documentoIdentidad,
+    // Validación de EPS: si se selecciona EPS, los campos de afiliación son obligatorios
+    if (formData.epsId && formData.epsId.trim() !== "") {
+      if (!formData.numeroDeAfiliacion || !formData.tipoAfiliado || !formData.fechaAfiliacion || !formData.regimen) {
+        console.log("❌ Validación fallida: Campos de EPS incompletos")
+        alert("Por favor complete todos los campos de afiliación EPS")
+        return
+      }
+    }
+
+    console.log("✅ Todas las validaciones pasaron")
+
+    // Datos comunes para creación y actualización
+    const datosComunes = {
       nombres: formData.nombres,
       apellidos: formData.apellidos,
       tipoDocumento: formData.tipoDocumento,
       documentoIdentidad: formData.documentoIdentidad,
       telefono: formData.telefono,
+      celular: formData.celular || "",
       correoElectronico: formData.correoElectronico,
       fechaNacimiento: formData.fechaNacimiento ? new Date(formData.fechaNacimiento).toISOString() : null,
       genero: formData.genero,
       direccion: formData.direccion,
+      ciudad: formData.ciudad || "",
+      departamento: formData.departamento || "",
       activo: true,
-      fechaRegistro: new Date().toISOString(),
-      rol: 4,
-      // Usar idSeguroMedico que ahora contiene el idSeguro
-      idSeguroMedico: formData.idSeguroMedico ? parseInt(formData.idSeguroMedico) : null
+      rol: 1, // Siempre 1 para Paciente
+      // Campos específicos de Paciente
+      idSeguroMedico: formData.idSeguroMedico ? parseInt(formData.idSeguroMedico) : null,
+      epsId: formData.epsId ? parseInt(formData.epsId) : null,
+      numeroDeAfiliacion: formData.epsId ? parseInt(formData.numeroDeAfiliacion) || 0 : 0,
+      tipoAfiliado: formData.epsId ? formData.tipoAfiliado : "",
+      estadoAfiliacion: formData.epsId ? (formData.estadoAfiliacion === "true" || formData.estadoAfiliacion === true) : true,
+      fechaAfiliacion: formData.epsId && formData.fechaAfiliacion ? new Date(formData.fechaAfiliacion).toISOString() : null,
+      regimen: formData.epsId ? formData.regimen : ""
     }
+
+    // Para creación, agregar user y password
+    const datosParaEnviar = initialData 
+      ? datosComunes
+      : {
+          ...datosComunes,
+          user: formData.documentoIdentidad,
+          password: formData.documentoIdentidad,
+          fechaRegistro: new Date().toISOString()
+        };
+
+    console.log("📤 Datos preparados para enviar:", datosParaEnviar)
+    console.log("🎯 Llamando a onSubmit...")
 
     onSubmit(datosParaEnviar)
   }
 
-  // Filtrar seguros válidos para el Select
-  // En PatientForm, modifica la parte de segurosValidos:
-// En PatientForm, reemplaza la función de segurosValidos:
-const segurosValidos = Array.isArray(seguros) 
-  ? seguros.filter(seguro => {
-      console.log("🔍 Analizando seguro:", seguro);
-      // Usar idSeguro en lugar de id
-      const tieneId = seguro?.idSeguro != null && seguro.idSeguro.toString().trim() !== "";
-      const tieneNombre = seguro?.nombreAseguradora && seguro.nombreAseguradora.trim() !== "";
-      console.log(`   ✅ Tiene ID: ${tieneId}, Tiene nombre: ${tieneNombre}`);
-      return tieneId && tieneNombre;
-    })
-  : [];
+  // Filtrar seguros válidos
+  const segurosValidos = Array.isArray(seguros) 
+    ? seguros.filter(seguro => {
+        const tieneId = seguro?.idSeguro != null && seguro.idSeguro.toString().trim() !== "";
+        const tieneNombre = seguro?.nombreAseguradora && seguro.nombreAseguradora.trim() !== "";
+        return tieneId && tieneNombre;
+      })
+    : []
 
-console.log("🎯 Seguros válidos después del filtro:", segurosValidos);
+  // Filtrar EPS válidas
+  const epsValidas = Array.isArray(epsList) 
+    ? epsList.filter(eps => {
+        const tieneId = eps?.epsId != null && eps.epsId.toString().trim() !== "";
+        const tieneNombre = eps?.nombreEPS && eps.nombreEPS.trim() !== "";
+        return tieneId && tieneNombre;
+      })
+    : []
+
+  // Determinar si mostrar sección de afiliación EPS
+ const mostrarAfiliacionEPS = formData.epsId != null && formData.epsId !== "" && formData.epsId !== 0;
+
+  // 🔍 DEBUG: Agrega esto justo antes del return
+  console.log("🔍 Estado actual de formData:", {
+    epsId: formData.epsId,
+    tipoEpsId: typeof formData.epsId,
+    fechaNacimiento: formData.fechaNacimiento,
+    fechaAfiliacion: formData.fechaAfiliacion
+  });
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm border">
@@ -242,14 +432,14 @@ console.log("🎯 Seguros válidos después del filtro:", segurosValidos);
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
             <div>
               <Label htmlFor="fechaNacimiento" className="text-gray-700">Fecha Nacimiento</Label>
               <Input
                 id="fechaNacimiento"
                 name="fechaNacimiento"
                 type="date"
-                value={formData.fechaNacimiento}
+                value={formData.fechaNacimiento || ""}
                 onChange={handleChange}
                 className="border-gray-300"
               />
@@ -265,13 +455,24 @@ console.log("🎯 Seguros válidos después del filtro:", segurosValidos);
                 className="border-gray-300"
               />
             </div>
+            <div>
+              <Label htmlFor="celular" className="text-gray-700">Celular</Label>
+              <Input 
+                id="celular" 
+                name="celular" 
+                type="tel" 
+                value={formData.celular} 
+                onChange={handleChange} 
+                className="border-gray-300"
+              />
+            </div>
           </div>
         </div>
 
-        {/* Contacto */}
+        {/* Contacto y Ubicación */}
         <div>
-          <h3 className="text-lg font-semibold mb-4 text-gray-900">Contacto</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <h3 className="text-lg font-semibold mb-4 text-gray-900">Contacto y Ubicación</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <Label htmlFor="telefono" className="text-gray-700">Teléfono</Label>
               <Input 
@@ -284,16 +485,219 @@ console.log("🎯 Seguros válidos después del filtro:", segurosValidos);
               />
             </div>
             <div>
-              <Label htmlFor="direccion" className="text-gray-700">Dirección</Label>
+              <Label htmlFor="ciudad" className="text-gray-700">Ciudad</Label>
               <Input 
-                id="direccion" 
-                name="direccion" 
-                value={formData.direccion} 
+                id="ciudad" 
+                name="ciudad" 
+                value={formData.ciudad} 
+                onChange={handleChange} 
+                className="border-gray-300"
+              />
+            </div>
+            <div>
+              <Label htmlFor="departamento" className="text-gray-700">Departamento</Label>
+              <Input 
+                id="departamento" 
+                name="departamento" 
+                value={formData.departamento} 
                 onChange={handleChange} 
                 className="border-gray-300"
               />
             </div>
           </div>
+          <div className="mt-4">
+            <Label htmlFor="direccion" className="text-gray-700">Dirección Completa</Label>
+            <Input 
+              id="direccion" 
+              name="direccion" 
+              value={formData.direccion} 
+              onChange={handleChange} 
+              className="border-gray-300"
+            />
+          </div>
+        </div>
+
+        {/* EPS */}
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-900">EPS</h3>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setShowEPSForm(!showEPSForm)}
+              className="border-gray-300"
+              disabled={creandoEPS}
+            >
+              <Plus size={16} className="mr-2" />
+              {showEPSForm ? "Cancelar" : "Agregar EPS"}
+            </Button>
+          </div>
+
+          {/* Formulario para nueva EPS */}
+          {showEPSForm && (
+            <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-4">
+              <h4 className="font-medium text-gray-900 mb-3">Nueva EPS</h4>
+              <div>
+                <Label htmlFor="nombreEPS" className="text-gray-700">Nombre de la EPS *</Label>
+                <Input
+                  id="nombreEPS"
+                  name="nombreEPS"
+                  value={nuevaEPS.nombreEPS}
+                  onChange={handleEPSChange}
+                  placeholder="Ingrese el nombre de la EPS"
+                  className="border-gray-300"
+                  disabled={creandoEPS}
+                />
+              </div>
+              <div className="mt-4 flex justify-end space-x-3">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setShowEPSForm(false)
+                    setNuevaEPS({ nombreEPS: "" })
+                  }}
+                  className="border-gray-300"
+                  disabled={creandoEPS}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  type="button"
+                  onClick={handleAgregarEPS}
+                  className="bg-gray-900 hover:bg-gray-800 text-white"
+                  disabled={creandoEPS}
+                >
+                  {creandoEPS ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      Guardando...
+                    </>
+                  ) : (
+                    'Guardar EPS'
+                  )}
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Selector de EPS existentes */}
+          <div>
+            <Label htmlFor="epsId" className="text-gray-700">Seleccionar EPS</Label>
+            <Select
+              value={formData.epsId || ""}
+              onValueChange={(value) => setFormData((prev) => ({ ...prev, epsId: value }))}
+            >
+              <SelectTrigger className="border-gray-300">
+                <SelectValue placeholder={
+                  loadingEPS ? "Cargando EPS..." : 
+                  epsValidas.length === 0 ? "No hay EPS registradas" : 
+                  "Seleccionar EPS"
+                } />
+              </SelectTrigger>
+              <SelectContent>
+                {epsValidas.map((eps) => {
+                  // ✅ CORREGIDO: usa optional chaining
+                  const epsId = eps?.epsId?.toString() || '';
+                  const epsNombre = eps?.nombreEPS || 'Sin nombre';
+                  
+                  return (
+                    <SelectItem 
+                      key={epsId} 
+                      value={epsId}
+                    >
+                      {epsNombre}
+                    </SelectItem>
+                  );
+                })}
+              </SelectContent>
+            </Select>
+            {epsValidas.length === 0 && !loadingEPS && (
+              <p className="text-sm text-gray-500 mt-2">
+                No hay EPS registradas. Puede agregar una nueva.
+              </p>
+            )}
+          </div>
+
+          {/* Sección de Afiliación EPS (solo si se selecciona EPS) */}
+          {mostrarAfiliacionEPS && (
+            <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <h4 className="font-semibold text-blue-900 mb-4">Información de Afiliación EPS</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="numeroDeAfiliacion" className="text-gray-700">Número de Afiliación *</Label>
+                  <Input
+                    id="numeroDeAfiliacion"
+                    name="numeroDeAfiliacion"
+                    type="number"
+                    value={formData.numeroDeAfiliacion || ""}
+                    onChange={handleChange}
+                    placeholder="Número de afiliación"
+                    className="border-gray-300"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="tipoAfiliado" className="text-gray-700">Tipo de Afiliado *</Label>
+                  <Select
+                    value={formData.tipoAfiliado}
+                    onValueChange={(value) => setFormData((prev) => ({ ...prev, tipoAfiliado: value }))}
+                  >
+                    <SelectTrigger className="border-gray-300">
+                      <SelectValue placeholder="Seleccionar tipo" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Cotizante">Cotizante</SelectItem>
+                      <SelectItem value="Beneficiario">Beneficiario</SelectItem>
+                      <SelectItem value="Subsidiado">Subsidiado</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="fechaAfiliacion" className="text-gray-700">Fecha de Afiliación *</Label>
+                  <Input
+                    id="fechaAfiliacion"
+                    name="fechaAfiliacion"
+                    type="date"
+                    value={formData.fechaAfiliacion || ""}
+                    onChange={handleChange}
+                    className="border-gray-300"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="regimen" className="text-gray-700">Régimen *</Label>
+                  <Select
+                    value={formData.regimen}
+                    onValueChange={(value) => setFormData((prev) => ({ ...prev, regimen: value }))}
+                  >
+                    <SelectTrigger className="border-gray-300">
+                      <SelectValue placeholder="Seleccionar régimen" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Contributivo">Contributivo</SelectItem>
+                      <SelectItem value="Subsidiado">Subsidiado</SelectItem>
+                      <SelectItem value="Especial">Especial</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div className="mt-4">
+                <Label htmlFor="estadoAfiliacion" className="text-gray-700">Estado de Afiliación</Label>
+                <Select
+                  value={formData.estadoAfiliacion?.toString() || "true"} // ← AGREGA ?. Y || "true"
+                  onValueChange={(value) => setFormData((prev) => ({ ...prev, estadoAfiliacion: value === "true" }))}
+                >
+                  <SelectTrigger className="border-gray-300">
+                    <SelectValue placeholder="Seleccionar estado" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="true">Activo</SelectItem>
+                    <SelectItem value="false">Inactivo</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Seguro Médico */}
@@ -396,7 +800,7 @@ console.log("🎯 Seguros válidos después del filtro:", segurosValidos);
           <div>
             <Label htmlFor="idSeguroMedico" className="text-gray-700">Seleccionar Seguro Existente</Label>
             <Select
-              value={formData.idSeguroMedico}
+              value={formData.idSeguroMedico || ""}
               onValueChange={(value) => setFormData((prev) => ({ ...prev, idSeguroMedico: value }))}
             >
               <SelectTrigger className="border-gray-300">
@@ -407,14 +811,11 @@ console.log("🎯 Seguros válidos después del filtro:", segurosValidos);
                 } />
               </SelectTrigger>
               <SelectContent>
-                {segurosValidos.map((seguro, index) => {
-                  console.log(`🔄 Mapeando seguro ${index}:`, seguro);
-                  // Usar idSeguro en lugar de id
-                  const seguroId = seguro.idSeguro.toString();
-                  const seguroNombre = seguro.nombreAseguradora || 'Sin nombre';
-                  const seguroPoliza = seguro.numeroPoliza || 'Sin póliza';
-                  
-                  console.log(`   📋 ID: ${seguroId}, Nombre: ${seguroNombre}, Póliza: ${seguroPoliza}`);
+                {segurosValidos.map((seguro) => {
+                  // ✅ CORREGIDO: usa optional chaining
+                  const seguroId = seguro?.idSeguro?.toString() || '';
+                  const seguroNombre = seguro?.nombreAseguradora || 'Sin nombre';
+                  const seguroPoliza = seguro?.numeroPoliza || 'Sin póliza';
                   
                   return (
                     <SelectItem 
@@ -442,14 +843,14 @@ console.log("🎯 Seguros válidos después del filtro:", segurosValidos);
             variant="outline" 
             onClick={onCancel}
             className="border-gray-300 text-gray-700 hover:bg-gray-100"
-            disabled={creandoSeguro}
+            disabled={creandoSeguro || creandoEPS}
           >
             Cancelar
           </Button>
           <Button 
             type="submit"
             className="bg-gray-900 hover:bg-gray-800 text-white"
-            disabled={creandoSeguro}
+            disabled={creandoSeguro || creandoEPS}
           >
             {initialData ? "Actualizar" : "Guardar Paciente"}
           </Button>

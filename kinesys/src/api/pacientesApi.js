@@ -1,4 +1,5 @@
+// src/api/pacientesApi.js
 import { crearApiCliente } from "./apiCliente";
 
-// Exporta directamente el cliente, no como propiedad
-export default crearApiCliente('Pacientes');
+// Usamos el endpoint de Personas, no de Pacientes
+export default crearApiCliente('Personas');

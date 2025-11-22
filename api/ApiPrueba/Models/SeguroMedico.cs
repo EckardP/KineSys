@@ -8,8 +8,6 @@ namespace ApiPrueba.Models
         [Key]
         public int IdSeguro { get; set; }
         public string NombreAseguradora { get; set; }
-        public string NumeroPoliza { get; set; }
-        public string Cobertura { get; set; }
         public bool Activo { get; set; }
 
         [JsonIgnore]

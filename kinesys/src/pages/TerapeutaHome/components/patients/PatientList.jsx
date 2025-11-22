@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { Search, Plus, Edit, Trash2, Eye } from "lucide-react"
 import PatientForm from "./PatientForm"
 import PatientDetail from "./PatientDetail"
-import { listarPacientes, eliminarPaciente } from "../../../../services/pacientesService"
+import { listarPacientes, crearPaciente, actualizarPaciente, eliminarPaciente } from "../../../../services/pacientesService"
 
 export default function PatientList() {
   const [patients, setPatients] = useState([])
@@ -20,11 +20,12 @@ export default function PatientList() {
     try {
       setLoading(true)
       setError(null)
+      console.log("🔄 PatientList: Cargando pacientes...")
       const pacientesData = await listarPacientes()
-      console.log("📦 Pacientes cargados:", pacientesData)
+      console.log("📦 PatientList: Datos recibidos de listarPacientes:", pacientesData)
       setPatients(pacientesData || [])
     } catch (err) {
-      console.error('Error cargando pacientes:', err)
+      console.error('❌ PatientList: Error cargando pacientes:', err)
       setError('Error al cargar los pacientes')
       setPatients([])
     } finally {
@@ -43,13 +44,29 @@ export default function PatientList() {
       p.documentoIdentidad?.includes(searchTerm)
   )
 
-  const handleAddPatient = async (newPatient) => {
+  const handleAddPatient = async (patientData) => {
     try {
-      await cargarPacientes() // Recargar la lista después de agregar/editar
+      console.log("🔄 PatientList: handleAddPatient llamado con datos:", patientData)
+      
+      if (editingPatient) {
+        console.log("📝 Editando paciente existente...")
+        await actualizarPaciente(editingPatient.id, patientData)
+      } else {
+        console.log("➕ Creando nuevo paciente...")
+        const resultado = await crearPaciente(patientData)
+        console.log("✅ Paciente creado:", resultado)
+      }
+      
+      // Recargar la lista después de guardar
+      await cargarPacientes()
       setShowForm(false)
       setEditingPatient(null)
+      
+      console.log("🎉 Paciente guardado y lista actualizada")
+      
     } catch (error) {
-      console.error('Error recargando pacientes:', error)
+      console.error("❌ Error en handleAddPatient:", error)
+      alert(error.message || "Error al guardar el paciente")
     }
   }
 
@@ -57,7 +74,7 @@ export default function PatientList() {
     if (confirm("¿Está seguro que desea eliminar este paciente?")) {
       try {
         await eliminarPaciente(id)
-        await cargarPacientes() // Recargar la lista después de eliminar
+        await cargarPacientes()
       } catch (error) {
         alert(error.message || "Error al eliminar el paciente")
       }

@@ -32,28 +32,228 @@ namespace ApiPrueba.Controllers
         // GET: api/Personas
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Persona>>> GetPersona()
+        public async Task<ActionResult<IEnumerable<object>>> GetPersona()
         {
-            return await _context.Persona.ToListAsync();
+            try
+            {
+                var personas = await _context.Persona
+                    .Select(p => new
+                    {
+                        // Campos comunes de Persona
+                        p.Id,
+                        p.User,
+                        p.Password,
+                        p.Nombres,
+                        p.Apellidos,
+                        p.TipoDocumento,
+                        p.DocumentoIdentidad,
+                        p.Telefono,
+                        p.Celular,
+                        p.CorreoElectronico,
+                        p.FechaNacimiento,
+                        p.Genero,
+                        p.Direccion,
+                        p.Ciudad,
+                        p.Departamento,
+                        p.Activo,
+                        p.FechaRegistro,
+                        p.Rol,
+
+                        // Campos específicos de Paciente - USANDO OPERADOR AS
+                        EpsId = (p as Paciente) != null ? ((Paciente)p).EpsId : (int?)null,
+                        IdSeguroMedico = (p as Paciente) != null ? ((Paciente)p).IdSeguroMedico : (int?)null,
+                        NumeroDeAfiliacion = (p as Paciente) != null ? ((Paciente)p).NumeroDeAfiliacion : (int?)null,
+                        TipoAfiliado = (p as Paciente) != null ? ((Paciente)p).TipoAfiliado : null,
+                        EstadoAfiliacion = (p as Paciente) != null ? ((Paciente)p).EstadoAfiliacion : (bool?)null,
+                        FechaAfiliacion = (p as Paciente) != null ? ((Paciente)p).FechaAfiliacion : (DateTime?)null,
+                        Regimen = (p as Paciente) != null ? ((Paciente)p).Regimen : null,
+
+                        // Campos específicos de Terapeuta - USANDO OPERADOR AS
+                        NoLicencia = (p as Terapeuta) != null ? ((Terapeuta)p).NoLicencia : null,
+                        TituloAcademico = (p as Terapeuta) != null ? ((Terapeuta)p).TituloAcademico : null,
+                        AñosExperiencia = (p as Terapeuta) != null ? ((Terapeuta)p).AñosExperiencia : (int?)null,
+                        FechaContratacion = (p as Terapeuta) != null ? ((Terapeuta)p).FechaContratacion : (DateTime?)null
+                    })
+                    .ToListAsync();
+
+                return Ok(personas);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ ERROR en GetPersona: {ex.Message}");
+                Console.WriteLine($"📋 StackTrace: {ex.StackTrace}");
+                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+            }
         }
 
         // GET: api/Personas/5
         [Authorize]
         [HttpGet("{id}")]
-        public async Task<ActionResult<Persona>> GetPersona(int id)
+        public async Task<ActionResult<object>> GetPersona(int id)
         {
-            var persona = await _context.Persona.FindAsync(id);
-
-            if (persona == null)
+            try
             {
-                return NotFound();
+                var persona = await _context.Persona
+                    .Where(p => p.Id == id)
+                    .Select(p => new
+                    {
+                        // Campos comunes de Persona
+                        p.Id,
+                        p.User,
+                        p.Password,
+                        p.Nombres,
+                        p.Apellidos,
+                        p.TipoDocumento,
+                        p.DocumentoIdentidad,
+                        p.Telefono,
+                        p.Celular,
+                        p.CorreoElectronico,
+                        p.FechaNacimiento,
+                        p.Genero,
+                        p.Direccion,
+                        p.Ciudad,
+                        p.Departamento,
+                        p.Activo,
+                        p.FechaRegistro,
+                        p.Rol,
+
+                        // Campos específicos de Paciente - USANDO OPERADOR AS
+                        EpsId = (p as Paciente) != null ? ((Paciente)p).EpsId : (int?)null,
+                        IdSeguroMedico = (p as Paciente) != null ? ((Paciente)p).IdSeguroMedico : (int?)null,
+                        NumeroDeAfiliacion = (p as Paciente) != null ? ((Paciente)p).NumeroDeAfiliacion : (int?)null,
+                        TipoAfiliado = (p as Paciente) != null ? ((Paciente)p).TipoAfiliado : null,
+                        EstadoAfiliacion = (p as Paciente) != null ? ((Paciente)p).EstadoAfiliacion : (bool?)null,
+                        FechaAfiliacion = (p as Paciente) != null ? ((Paciente)p).FechaAfiliacion : (DateTime?)null,
+                        Regimen = (p as Paciente) != null ? ((Paciente)p).Regimen : null,
+
+                        // Campos específicos de Terapeuta - USANDO OPERADOR AS
+                        NoLicencia = (p as Terapeuta) != null ? ((Terapeuta)p).NoLicencia : null,
+                        TituloAcademico = (p as Terapeuta) != null ? ((Terapeuta)p).TituloAcademico : null,
+                        AñosExperiencia = (p as Terapeuta) != null ? ((Terapeuta)p).AñosExperiencia : (int?)null,
+                        FechaContratacion = (p as Terapeuta) != null ? ((Terapeuta)p).FechaContratacion : (DateTime?)null
+                    })
+                    .FirstOrDefaultAsync();
+
+                if (persona == null)
+                {
+                    return NotFound();
+                }
+
+                return persona;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ ERROR en GetPersona({id}): {ex.Message}");
+                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+            }
+        }
+
+        [HttpPut("Update/{id}")]
+        public async Task<ActionResult<Persona>> PutActualizarPersona(int id, ActualizacionDto actualizacion)
+        {
+            Console.WriteLine($"🔔 Llegó solicitud de actualización a /api/Personas/Update/{id}");
+            Console.WriteLine($"📝 Datos recibidos: {System.Text.Json.JsonSerializer.Serialize(actualizacion)}");
+
+            // Buscar la persona existente
+            var personaExistente = await _context.Persona.FindAsync(id);
+            if (personaExistente == null)
+            {
+                return NotFound("Persona no encontrada");
             }
 
-            return persona;
+            // Verificar que el rol no cambie
+            if (personaExistente.Rol != actualizacion.Rol)
+            {
+                return BadRequest("No se puede cambiar el rol de una persona existente");
+            }
+
+            if (actualizacion.Rol == Rol.Terapeuta)
+            {
+                if (string.IsNullOrEmpty(actualizacion.NoLicencia))
+                    ModelState.AddModelError("NoLicencia", "El campo NoLicencia es requerido para terapeutas.");
+
+                if (string.IsNullOrEmpty(actualizacion.TituloAcademico))
+                    ModelState.AddModelError("TituloAcademico", "El campo TituloAcademico es requerido para terapeutas.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            // Actualizar campos comunes
+            personaExistente.Nombres = actualizacion.Nombres ?? "";
+            personaExistente.Apellidos = actualizacion.Apellidos ?? "";
+            personaExistente.TipoDocumento = actualizacion.TipoDocumento ?? "";
+            personaExistente.DocumentoIdentidad = actualizacion.DocumentoIdentidad ?? "";
+            personaExistente.Telefono = actualizacion.Telefono ?? "";
+            personaExistente.Celular = actualizacion.Celular ?? "";
+            personaExistente.CorreoElectronico = actualizacion.CorreoElectronico ?? "";
+            personaExistente.FechaNacimiento = actualizacion.FechaNacimiento;
+            personaExistente.Genero = actualizacion.Genero ?? "";
+            personaExistente.Direccion = actualizacion.Direccion ?? "";
+            personaExistente.Ciudad = actualizacion.Ciudad ?? "";
+            personaExistente.Departamento = actualizacion.Departamento ?? "";
+            personaExistente.Activo = actualizacion.Activo;
+
+            // Actualizar campos específicos según el rol
+            switch (actualizacion.Rol)
+            {
+                case Rol.Paciente:
+                    var paciente = personaExistente as Paciente;
+                    if (paciente != null)
+                    {
+                        paciente.IdSeguroMedico = actualizacion.IdSeguroMedico;
+                        paciente.EpsId = actualizacion.EpsId;
+                        paciente.NumeroDeAfiliacion = actualizacion.NumeroDeAfiliacion ?? 0;
+                        paciente.TipoAfiliado = actualizacion.TipoAfiliado ?? "";
+                        paciente.EstadoAfiliacion = actualizacion.EstadoAfiliacion ?? true;
+                        paciente.FechaAfiliacion = actualizacion.FechaAfiliacion;
+                        paciente.Regimen = actualizacion.Regimen ?? "";
+                    }
+                    break;
+
+                case Rol.Terapeuta:
+                    var terapeuta = personaExistente as Terapeuta;
+                    if (terapeuta != null)
+                    {
+                        terapeuta.NoLicencia = actualizacion.NoLicencia ?? "";
+                        terapeuta.TituloAcademico = actualizacion.TituloAcademico ?? "";
+                        terapeuta.AñosExperiencia = actualizacion.AñosExperiencia ?? 0;
+                        terapeuta.FechaContratacion = actualizacion.FechaContratacion ?? DateTime.Now;
+                    }
+                    break;
+
+                case Rol.Administrador:
+                    // Administrador no tiene campos adicionales
+                    break;
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                Console.WriteLine($"✅ Persona {id} actualizada exitosamente");
+                return Ok(personaExistente);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!PersonaExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error al guardar cambios: {ex.Message}");
+                return StatusCode(500, "Error interno del servidor al actualizar la persona");
+            }
         }
 
         // PUT: api/Personas/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPersona(int id, Persona persona)
@@ -85,7 +285,6 @@ namespace ApiPrueba.Controllers
         }
 
         // POST: api/Personas
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Authorize]
         [HttpPost]
         public async Task<ActionResult<Persona>> PostPersona(Persona persona)
@@ -99,18 +298,23 @@ namespace ApiPrueba.Controllers
         [HttpPost("Register")]
         public async Task<ActionResult<Persona>> PostRegistroPersona(RegistroDto registro)
         {
+            Console.WriteLine("🔔 Llegó solicitud de registro a /api/Personas/Register");
+            Console.WriteLine($"📝 Datos recibidos: {System.Text.Json.JsonSerializer.Serialize(registro)}");
+            Console.WriteLine($"🔐 Usuario autenticado: {User.Identity?.IsAuthenticated}");
+            Console.WriteLine($"👤 Nombre del usuario: {User.Identity?.Name}");
+
             // Verificar si ya existe algún administrador
             bool existeAdmin = _context.Persona.Any(p => p.Rol == Rol.Administrador);
+            Console.WriteLine($"👑 Existe administrador: {existeAdmin}");
 
             // Si NO existe admin y quieres registrar uno, PERMITIR
-            if (registro.Rol != Rol.Administrador && !User.Identity.IsAuthenticated)
+            if (registro.Rol != Rol.Administrador && !(User.Identity?.IsAuthenticated ?? false))
             {
-                // Si NO está autenticado y quiere registrar un rol diferente de admin
                 return Unauthorized("Debe autenticarse para registrar este tipo de usuario");
             }
 
             // Si ya existe admin y no estás autenticado → bloquear siempre
-            if (existeAdmin && !User.Identity.IsAuthenticated)
+            if (existeAdmin && !(User.Identity?.IsAuthenticated ?? false))
             {
                 return Unauthorized("Debe autenticarse para registrar usuarios");
             }
@@ -136,7 +340,9 @@ namespace ApiPrueba.Controllers
                 });
             }
 
-            var passwordHash = BCrypt.Net.BCrypt.HashPassword(registro.Password);
+            Console.WriteLine("✅ Pasó todas las validaciones, creando paciente...");
+
+            var passwordHash = BCrypt.Net.BCrypt.HashPassword(registro.Password ?? "");
 
             Persona tipoUsuario;
 
@@ -145,59 +351,63 @@ namespace ApiPrueba.Controllers
                 case Rol.Paciente:
                     tipoUsuario = new Paciente
                     {
-                        User = registro.User,
+                        User = registro.User ?? "",
                         Password = passwordHash,
-                        Nombres = registro.Nombres,
-                        Apellidos = registro.Apellidos,
-                        TipoDocumento = registro.TipoDocumento,
-                        DocumentoIdentidad = registro.DocumentoIdentidad,
-                        Telefono = registro.Telefono,
-                        CorreoElectronico = registro.CorreoElectronico,
+                        Nombres = registro.Nombres ?? "",
+                        Apellidos = registro.Apellidos ?? "",
+                        TipoDocumento = registro.TipoDocumento ?? "",
+                        DocumentoIdentidad = registro.DocumentoIdentidad ?? "",
+                        Telefono = registro.Telefono ?? "",
+                        CorreoElectronico = registro.CorreoElectronico ?? "",
                         FechaNacimiento = registro.FechaNacimiento,
-                        Genero = registro.Genero,
-                        Direccion = registro.Direccion,
-                        Ciudad = registro.Ciudad,
-                        Departamento = registro.Departamento,
+                        Genero = registro.Genero ?? "",
+                        Direccion = registro.Direccion ?? "",
+                        Ciudad = registro.Ciudad ?? "",
+                        Departamento = registro.Departamento ?? "",
                         Activo = registro.Activo,
                         FechaRegistro = registro.FechaRegistro,
-                        Rol = Rol.Paciente
+                        Rol = Rol.Paciente,
+                        NumeroDeAfiliacion = registro.NumeroDeAfiliacion ?? 0,
+                        TipoAfiliado = registro.TipoAfiliado ?? "",
+                        EstadoAfiliacion = registro.EstadoAfiliacion ?? true,
+                        FechaAfiliacion = registro.FechaAfiliacion,
+                        Regimen = registro.Regimen ?? ""
                     };
                     break;
 
                 case Rol.Terapeuta:
                     tipoUsuario = new Terapeuta
                     {
-                        User = registro.User,
+                        User = registro.User ?? "",
                         Password = passwordHash,
-                        Nombres = registro.Nombres,
-                        Apellidos = registro.Apellidos,
-                        TipoDocumento = registro.TipoDocumento,
-                        DocumentoIdentidad = registro.DocumentoIdentidad,
-                        Telefono = registro.Telefono,
-                        CorreoElectronico = registro.CorreoElectronico,
+                        Nombres = registro.Nombres ?? "",
+                        Apellidos = registro.Apellidos ?? "",
+                        TipoDocumento = registro.TipoDocumento ?? "",
+                        DocumentoIdentidad = registro.DocumentoIdentidad ?? "",
+                        Telefono = registro.Telefono ?? "",
+                        CorreoElectronico = registro.CorreoElectronico ?? "",
                         FechaNacimiento = registro.FechaNacimiento,
-                        Genero = registro.Genero,
-                        Direccion = registro.Direccion,
-                        Ciudad = registro.Ciudad,
-                        Departamento = registro.Departamento,
+                        Genero = registro.Genero ?? "",
+                        Direccion = registro.Direccion ?? "",
+                        Ciudad = registro.Ciudad ?? "",
+                        Departamento = registro.Departamento ?? "",
                         Activo = registro.Activo,
                         FechaRegistro = registro.FechaRegistro,
                         Rol = Rol.Terapeuta,
-                        // Propiedades específicas del Terapeuta
-                        NoLicencia = registro.NoLicencia,
-                        TituloAcademico = registro.TituloAcademico,
-                        AñosExperiencia = registro.AñosExperiencia,
-                        FechaContratacion = registro.FechaContratacion
+                        NoLicencia = registro.NoLicencia ?? "",
+                        TituloAcademico = registro.TituloAcademico ?? "",
+                        AñosExperiencia = registro.AñosExperiencia ?? 0,
+                        FechaContratacion = registro.FechaContratacion ?? DateTime.Now
                     };
                     break;
 
                 case Rol.Administrador:
                     tipoUsuario = new Administrador
                     {
-                        User = registro.User,
+                        User = registro.User ?? "",
                         Password = passwordHash,
-                        Nombres = registro.Nombres,
-                        Apellidos = registro.Apellidos,
+                        Nombres = registro.Nombres ?? "",
+                        Apellidos = registro.Apellidos ?? "",
                         Activo = registro.Activo,
                         FechaRegistro = registro.FechaRegistro,
                         Rol = Rol.Administrador
@@ -218,225 +428,18 @@ namespace ApiPrueba.Controllers
             });
         }
 
-        //[HttpPost("Register")]
-        //public async Task<ActionResult<Persona>> PostRegistroPersona(RegistroDto registro)
-        //{
-        //    // Verificar si ya existe algún administrador
-        //    bool existeAdmin = _context.Persona.Any(p => p.Rol == Rol.Administrador);
-
-        //    // Si NO existe admin y quieres registrar uno, PERMITIR
-        //    if (registro.Rol != Rol.Administrador && !User.Identity.IsAuthenticated)
-        //    {
-        //        // Si NO está autenticado y quiere registrar un rol diferente de admin
-        //        return Unauthorized("Debe autenticarse para registrar este tipo de usuario");
-        //    }
-
-        //    // Si ya existe admin y no estás autenticado → bloquear siempre
-        //    if (existeAdmin && !User.Identity.IsAuthenticated)
-        //    {
-        //        return Unauthorized("Debe autenticarse para registrar usuarios");
-        //    }
-
-        //    // Evitar que registren múltiples admins si no lo deseas
-        //    if (registro.Rol == Rol.Administrador && existeAdmin)
-        //    {
-        //        return BadRequest("Ya existe un administrador registrado");
-        //    }
-
-        //    // Validaciones existentes
-        //    if (PersonaExistsByUser(registro.User))
-        //        return BadRequest("El usuario ya existe");
-
-        //    if (!string.IsNullOrEmpty(registro.DocumentoIdentidad)
-        //        && PersonaExistsByDocumento(registro.DocumentoIdentidad))
-        //    {
-        //        return Conflict(new
-        //        {
-        //            message = "Ya existe una persona registrada con este documento de identidad",
-        //            campo = "documentoIdentidad",
-        //            valor = registro.DocumentoIdentidad
-        //        });
-        //    }
-
-        //    var passwordHash = BCrypt.Net.BCrypt.HashPassword(registro.Password);
-
-        //    Persona tipoUsuario;
-
-        //    switch (registro.Rol)
-        //    {
-        //        case Rol.Paciente:
-        //            tipoUsuario = new Paciente
-        //            {
-        //                User = registro.User,
-        //                Password = passwordHash,
-        //                Nombres = registro.Nombres,
-        //                Apellidos = registro.Apellidos,
-        //                TipoDocumento = registro.TipoDocumento,
-        //                DocumentoIdentidad = registro.DocumentoIdentidad,
-        //                Telefono = registro.Telefono,
-        //                CorreoElectronico = registro.CorreoElectronico,
-        //                FechaNacimiento = registro.FechaNacimiento,
-        //                Genero = registro.Genero,
-        //                Direccion = registro.Direccion,
-        //                Rol = Rol.Paciente
-        //            };
-        //            break;
-
-        //        case Rol.Terapeuta:
-        //            tipoUsuario = new Terapeuta
-        //            {
-        //                User = registro.User,
-        //                Password = passwordHash,
-        //                Nombres = registro.Nombres,
-        //                Apellidos = registro.Apellidos,
-        //                TipoDocumento = registro.TipoDocumento,
-        //                DocumentoIdentidad = registro.DocumentoIdentidad,
-        //                Telefono = registro.Telefono,
-        //                CorreoElectronico = registro.CorreoElectronico,
-        //                FechaNacimiento = registro.FechaNacimiento,
-        //                Genero = registro.Genero,
-        //                Direccion = registro.Direccion,
-        //                Rol = Rol.Terapeuta
-        //            };
-        //            break;
-
-        //        case Rol.Administrador:
-        //            tipoUsuario = new Administrador
-        //            {
-        //                User = registro.User,
-        //                Password = passwordHash,
-        //                Nombres = registro.Nombres,
-        //                Apellidos = registro.Apellidos,
-        //                Rol = Rol.Administrador
-        //            };
-        //            break;
-
-        //        default:
-        //            return BadRequest("Rol no válido");
-        //    }
-
-        //    _context.Persona.Add(tipoUsuario);
-        //    await _context.SaveChangesAsync();
-
-        //    return CreatedAtAction("GetPersona", new { id = tipoUsuario.Id }, new LoginResponseDto
-        //    {
-        //        User = tipoUsuario.User,
-        //        Rol = tipoUsuario.Rol
-        //    });
-        //}
-
-        // POST: api/Personas/Register
-        //[Authorize]
-        //[HttpPost("Register")]
-        //public async Task<ActionResult<Persona>> PostRegistroPersona(RegistroDto registro)
-        //{
-        //    if (PersonaExistsByUser(registro.User))
-        //        return BadRequest("El usuario ya existe");
-
-        //    if (!string.IsNullOrEmpty(registro.DocumentoIdentidad) && PersonaExistsByDocumento(registro.DocumentoIdentidad))
-        //        return Conflict(new
-        //        {
-        //            message = "Ya existe una persona registrada con este documento de identidad",
-        //            campo = "documentoIdentidad",
-        //            valor = registro.DocumentoIdentidad
-        //        });
-
-        //    var PasswordHash = BCrypt.Net.BCrypt.HashPassword(registro.Password);
-
-        //    Persona tipoUsuario;
-
-        //    switch (registro.Rol)
-        //    {
-        //        case Rol.Paciente:
-        //            tipoUsuario = new Paciente
-        //            {
-        //                User = registro.User,
-        //                Password = PasswordHash,
-        //                Nombres = registro.Nombres,
-        //                Apellidos = registro.Apellidos,
-        //                TipoDocumento = registro.TipoDocumento,
-        //                DocumentoIdentidad = registro.DocumentoIdentidad,
-        //                Telefono = registro.Telefono,
-        //                CorreoElectronico = registro.CorreoElectronico,
-        //                FechaNacimiento = registro.FechaNacimiento,
-        //                Genero = registro.Genero,
-        //                Direccion = registro.Direccion,
-        //                Rol = Rol.Paciente
-        //            };
-        //            break;
-        //        case Rol.Terapeuta:
-        //            tipoUsuario = new Terapeuta
-        //            {
-        //                User = registro.User,
-        //                Password = PasswordHash,
-        //                Nombres = registro.Nombres,
-        //                Apellidos = registro.Apellidos,
-        //                TipoDocumento = registro.TipoDocumento,
-        //                DocumentoIdentidad = registro.DocumentoIdentidad,
-        //                Telefono = registro.Telefono,
-        //                CorreoElectronico = registro.CorreoElectronico,
-        //                FechaNacimiento = registro.FechaNacimiento,
-        //                Genero = registro.Genero,
-        //                Direccion = registro.Direccion,
-        //                Rol = Rol.Terapeuta
-        //            };
-        //            break;
-        //        //case Rol.Administrador:
-        //        //    tipoUsuario = new Administrador
-        //        //    {
-        //        //        User = registro.User,
-        //        //        Password = PasswordHash,
-        //        //        Nombres = registro.Nombres,
-        //        //        Apellidos = registro.Apellidos,
-        //        //        Rol = Rol.Administrador
-        //        //    };
-        //        //    break;
-
-        //        case Rol.Despachadora:
-        //            return BadRequest("Quizás.... algún día... tengamos una depachadora... de pronto así mi hijo se case... ojalá");
-
-        //        default:
-        //            return BadRequest("Rol no válido");
-
-        //    }
-
-        //    _context.Persona.Add(tipoUsuario);
-        //    try
-        //    {
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateException)
-        //    {
-        //        if (PersonaExistsByUser(registro.User))
-        //        {
-        //            return Conflict();
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
-
-        //    return CreatedAtAction("GetPersona", new { id = tipoUsuario.Id }, new LoginResponseDto
-        //    {
-        //       // Id = tipoUsuario.Id,
-        //        User = tipoUsuario.User,
-        //       // Nombres = tipoUsuario.Nombres,
-        //        //Apellidos = tipoUsuario.Apellidos,
-        //        Rol = tipoUsuario.Rol
-        //    });
-
-
-        //}
-
         // POST: api/Personas/Login
         [HttpPost("Login")]
         public async Task<ActionResult<Persona>> PostLoginPersona(LoginDto login)
         {
+            if (login?.User == null)
+            {
+                return BadRequest("Usuario o contraseña incorrectos");
+            }
+
             var loginUser = _context.Persona.FirstOrDefault(u => u.User == login.User);
 
-
-            if (loginUser == null || !BCrypt.Net.BCrypt.Verify(login.Password, loginUser.Password))
+            if (loginUser == null || !BCrypt.Net.BCrypt.Verify(login.Password ?? "", loginUser.Password))
                 return BadRequest("Usuario o contraseña incorrectos");
 
             var token = _JwTokenGenerator.GenerateToken(loginUser);
@@ -446,23 +449,9 @@ namespace ApiPrueba.Controllers
                 Id = loginUser.Id,
                 Nombres = loginUser.Nombres,
                 Apellidos = loginUser.Apellidos,
-                //User = loginUser.User,
-                // Rol = loginUser.Rol,
                 Token = token
             });
-
-            //return Ok(new LoginResponseDto
-            //{
-            //    Id = loginUser.Id,
-            //    User = loginUser.User,
-            //    Nombres = loginUser.Nombres,
-            //    Apellidos = loginUser.Apellidos,
-            //    Rol = loginUser.Rol
-
-            //});   
-
         }
-
 
         // DELETE: api/Personas/5
         [Authorize]
@@ -486,13 +475,19 @@ namespace ApiPrueba.Controllers
             return _context.Persona.Any(e => e.Id == id);
         }
 
-        private bool PersonaExistsByUser(string user)
+        private bool PersonaExistsByUser(string? user)
         {
+            if (string.IsNullOrEmpty(user))
+                return false;
+
             return _context.Persona.Any(e => e.User == user);
         }
 
-        private bool PersonaExistsByDocumento(string documentoIdentidad)
+        private bool PersonaExistsByDocumento(string? documentoIdentidad)
         {
+            if (string.IsNullOrEmpty(documentoIdentidad))
+                return false;
+
             return _context.Persona.Any(e => e.DocumentoIdentidad == documentoIdentidad);
         }
     }

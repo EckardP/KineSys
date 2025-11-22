@@ -50,6 +50,8 @@ namespace ApiPrueba.Data
         public DbSet<TratamientoTipoTerapia> TratamientoTipoTerapias { get; set; }
         public DbSet<ProtocoloTipoTerapia> ProtocoloTipoTerapias { get; set; }
 
+        public DbSet<ContratoSeguro> ContratosSeguro { get; set; }
+
         //Modelos
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

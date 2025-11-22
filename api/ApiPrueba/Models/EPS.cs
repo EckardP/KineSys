@@ -1,4 +1,6 @@
-﻿namespace ApiPrueba.Models
+﻿using System.Text.Json.Serialization;
+
+namespace ApiPrueba.Models
 {
     public class EPS
     {
@@ -6,6 +8,7 @@
         public string NombreEPS { get; set; }
 
         // Relaciones
+        [JsonIgnore]
         public ICollection<Paciente> Pacientes { get; set; } = new List<Paciente>();
     }
 }
