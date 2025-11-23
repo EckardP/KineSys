@@ -20,7 +20,7 @@ export async function obtenerEPS(id) {
 
 export async function crearEPS(data) {
   try {
-    return await epsApi.create(data);
+    return await epsApi.create('',data);
   } catch (error) {
     if (error.message.includes('409') || error.message.includes('Conflict')) {
       throw new Error('Ya existe una EPS con ese nombre');

@@ -26,7 +26,7 @@ export async function obtenerSeguros(id) {
 export async function crearSeguros(data) {
     try {
         if (!data || typeof data !== 'object') throw new Error('Datos de seguro inválidos');
-        return await segurosApi.create(data);
+        return await segurosApi.create('',data);
     } catch (error) {
         // manejar conflicto (409) o mensaje de conflict
         const status = error?.response?.status;
