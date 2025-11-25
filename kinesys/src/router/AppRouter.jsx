@@ -23,7 +23,8 @@ import AppointmentForm from "../pages/GestionAdmin/GestionCita/AppointmentForm"
 import TerapeutaHome from "../pages/TerapeutaHome/TerapeutaHome"
 import TerapeutaForm from "@/pages/GestionAdmin/GestionTerapeuta/TerapeutaForm"
 import TerapeutasList from "@/pages/GestionAdmin/GestionTerapeuta/TerapeutasList"
-import TratamientosList from "@/pages/GestionAdmin/GestionTratamiento/TratamientosList" // Agregar esta importación
+import TratamientosList from "@/pages/GestionAdmin/GestionTratamiento/TratamientosList" // Tus tratamientos
+import EquiposList from "@/pages/GestionAdmin/GestionEquipo/EquiposList" // Equipos de tu compañero
 
 export default function AppRouter() {
   return (
@@ -57,8 +58,9 @@ export default function AppRouter() {
       <Route path="/gestioncita/nueva" element={<AppointmentForm />} />
       <Route path="/gestioncita/editar/:id" element={<AppointmentForm />} />
 
-      {/* Agregar la ruta para tratamientos */}
+      {/* MANTENER AMBAS RUTAS - TRATAMIENTOS Y EQUIPOS */}
       <Route path="/gestiontratamiento/tratamientos" element={<TratamientosList />} />
+      <Route path="/gestionequipo/equipos" element={<EquiposList />} />
 
       {/* MÓDULO TERAPEUTA */}
       <Route path="/dashboard" element={<TerapeutaHome />} />

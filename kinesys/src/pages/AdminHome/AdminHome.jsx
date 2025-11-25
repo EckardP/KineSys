@@ -2,7 +2,8 @@
 
 // src/pages/AdminHome.jsx
 import { useEffect, useState } from "react"
-import { Users, CalendarDays, BarChart3, UserPlus, Calendar, Stethoscope } from "lucide-react" // Agregar Stethoscope aquí
+
+import { Users, CalendarDays, BarChart3, UserPlus, Calendar, Stethoscope, Package } from "lucide-react"
 import MetricCard from "../GestionAdmin/components/Cartas/MetricCard"
 import QuickAccessButton from "../GestionAdmin/components/Botones/QuickAccessButton"
 import { listarTerapeutas } from "../../services/terapeutasService.js"
@@ -16,6 +17,8 @@ import PatientList from "../GestionAdmin/GestionPaciente/PatientList"
 import Reportes from "../GestionAdmin/GestionReporte/Reportes"
 import TerapeutaForm from "../GestionAdmin/GestionTerapeuta/TerapeutaForm"
 import TratamientosList from "../GestionAdmin/GestionTratamiento/TratamientosList"
+import EquiposList from "../GestionAdmin/GestionEquipo/EquiposList" // Nueva importación
+
 
 function AdminDashboard() {
   const [totalTerapeutas, setTotalTerapeutas] = useState(0)
@@ -82,11 +85,11 @@ function AdminDashboard() {
             />
             <QuickAccessButton label="Ver Agenda" path="/gestionagenda/agendaadmin" icon={<CalendarDays size={20} />} />
             <QuickAccessButton label="Ver Reportes" path="/gestionreporte/reportes" icon={<BarChart3 size={20} />} />
-            <QuickAccessButton 
-              label="Gestionar Tratamientos" 
-              path="/gestiontratamiento/tratamientos" 
-              icon={<Stethoscope size={20} />} // Ahora Stethoscope está definido
-            />
+
+            <QuickAccessButton label="Gestionar Tratamientos" path="/gestiontratamiento/tratamientos" icon={<Stethoscope size={20} />} />
+
+            <QuickAccessButton label="Gestionar Equipos" path="/gestionequipo/equipos" icon={<Package size={20} />} />
+            
           </div>
         </div>
       </div>
@@ -103,7 +106,9 @@ export default function AdminHome() {
       <Route path="/gestioncita/citas" element={<AppointmentList />} />
       <Route path="/gestionpaciente/pacientes" element={<PatientList />} />
       <Route path="/gestionreporte/reportes" element={<Reportes />} />
+
       <Route path="/gestiontratamiento/tratamientos" element={<TratamientosList />} />
+      <Route path="/gestionequipo/equipos" element={<EquiposList />} />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   )
