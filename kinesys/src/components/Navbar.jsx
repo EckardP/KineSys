@@ -32,6 +32,7 @@ export default function Navbar() {
                   <Nav.Link as={Link} to="/gestionagenda/agendaadmin">Agenda</Nav.Link>
                   <Nav.Link as={Link} to="/gestioncita/citas">Citas</Nav.Link>
                   <Nav.Link as={Link} to="/gestionreporte/reportes">Reportes</Nav.Link>
+                  <Nav.Link as={Link} to="/gestiontratamiento/tratamientos">Tratamientos</Nav.Link>
                 </>
               )}
               

@@ -23,6 +23,7 @@ import AppointmentForm from "../pages/GestionAdmin/GestionCita/AppointmentForm"
 import TerapeutaHome from "../pages/TerapeutaHome/TerapeutaHome"
 import TerapeutaForm from "@/pages/GestionAdmin/GestionTerapeuta/TerapeutaForm"
 import TerapeutasList from "@/pages/GestionAdmin/GestionTerapeuta/TerapeutasList"
+import TratamientosList from "@/pages/GestionAdmin/GestionTratamiento/TratamientosList" // Agregar esta importación
 
 export default function AppRouter() {
   return (
@@ -39,7 +40,7 @@ export default function AppRouter() {
       <Route path="/pacientes/:id" element={<PacienteCardMini />} />
 
       {/* MÓDULO ADMIN */}
-      <Route path="/gestionadmin" element={<AdminHome />} />
+      <Route path="/gestionadmin/*" element={<AdminHome />} /> {/* Agregar /* aquí */}
 
       <Route path="/gestionterapeuta/terapeuta" element={<TerapeutasList />} />
 
@@ -55,6 +56,9 @@ export default function AppRouter() {
       <Route path="/gestioncita/citas" element={<AppointmentList />} />
       <Route path="/gestioncita/nueva" element={<AppointmentForm />} />
       <Route path="/gestioncita/editar/:id" element={<AppointmentForm />} />
+
+      {/* Agregar la ruta para tratamientos */}
+      <Route path="/gestiontratamiento/tratamientos" element={<TratamientosList />} />
 
       {/* MÓDULO TERAPEUTA */}
       <Route path="/dashboard" element={<TerapeutaHome />} />
