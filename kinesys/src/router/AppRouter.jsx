@@ -23,6 +23,8 @@ import AppointmentForm from "../pages/GestionAdmin/GestionCita/AppointmentForm"
 import TerapeutaHome from "../pages/TerapeutaHome/TerapeutaHome"
 import TerapeutaForm from "@/pages/GestionAdmin/GestionTerapeuta/TerapeutaForm"
 import TerapeutasList from "@/pages/GestionAdmin/GestionTerapeuta/TerapeutasList"
+import EquiposList from "@/pages/GestionAdmin/GestionEquipo/EquiposList"
+
 
 export default function AppRouter() {
   return (
@@ -55,6 +57,8 @@ export default function AppRouter() {
       <Route path="/gestioncita/citas" element={<AppointmentList />} />
       <Route path="/gestioncita/nueva" element={<AppointmentForm />} />
       <Route path="/gestioncita/editar/:id" element={<AppointmentForm />} />
+
+      <Route path="/gestionequipo/equipos" element={<EquiposList />} />
 
       {/* MÓDULO TERAPEUTA */}
       <Route path="/dashboard" element={<TerapeutaHome />} />

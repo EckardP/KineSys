@@ -1,5 +1,5 @@
 // src/services/citasService.js
-import {citasApi} from '../api/citasApi';
+import citasApi from '../api/citasApi';
 
 export async function listarCitas() {
   try {

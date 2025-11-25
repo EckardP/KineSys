@@ -27,3 +27,4 @@ namespace ApiPrueba.Models
         public Equipo? Equipo { get; set; }
     }
 }
+       
