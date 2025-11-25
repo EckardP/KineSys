@@ -22,9 +22,18 @@ namespace ApiPrueba.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal? PrecioCita { get; set; }
 
-        // Relación con reserva y nota (opcional)
-        //public ReservaCita? Reserva { get; set; }
-        //public NotaSesion? NotaSesion { get; set; }
+        /// Tipo de atención: EPS, Particular, Prepagada
+        [StringLength(50)]
+        public string? TipoAtencion { get; set; }
+        public int? IdEPS { get; set; }
+
+        /// Valor del copago si aplica
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal? Copago { get; set; }
+        public int? IdAutorizacion { get; set; }
+        public int? IdOrdenMedica { get; set; }
+        public int? IdSala { get; set; }
+        public int? IdTipoServicio { get; set; }
 
         // Relaciones
 

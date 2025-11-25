@@ -11,6 +11,10 @@ namespace ApiPrueba.Models
         public bool? EstadoAfiliacion { get; set; }
         public DateTime? FechaAfiliacion { get; set; }
         public string? Regimen { get; set; }
+        public string EstadoDelProcesoActual { get; set; } //Activo, cerrado, inactivo
+        public DateTime UltimaValoracion { get; set; }
+        public int NumeroSesionesAplicadas { get; set; }
+
         // Relaciones
         public int? EpsId { get; set; }
         [JsonIgnore]
@@ -43,5 +47,11 @@ namespace ApiPrueba.Models
 
         [JsonIgnore]
         public ICollection<Factura> Facturas { get; set; } = new List<Factura>();
+
+        [JsonIgnore]
+        public ICollection<OrdenMedica> OrdenesMedicas { get; set; } = new List<OrdenMedica>();
+
+        [JsonIgnore]
+        public ICollection<AutorizacionSesiones> AutorizacionesSesiones { get; set; } = new List<AutorizacionSesiones>();
     }
 }

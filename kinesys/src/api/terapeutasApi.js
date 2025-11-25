@@ -1,4 +1,3 @@
-
 import { crearApiCliente } from "./apiCliente";
 
-export const terapeutasApi = crearApiCliente('Terapeutas');
+export default crearApiCliente('Personas');

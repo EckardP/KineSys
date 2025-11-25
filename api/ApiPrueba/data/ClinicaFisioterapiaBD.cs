@@ -41,9 +41,17 @@ namespace ApiPrueba.Data
 
         public DbSet<HistorialMedico> HistorialMedicos { get; set; }
 
+        public DbSet<OrdenMedica> OrdenesMedicas { get; set; }
+        public DbSet<TipoServicio> TipoServicios { get; set; }
+        public DbSet<Sala> Salas { get; set; }
+        public DbSet<AutorizacionSesiones> AutorizacionSesiones { get; set; }
 
 
         //tablas intermedias N:N
+
+
+        public DbSet<EquiposRequeridos> EquiposRequeridos { get; set; }
+        public DbSet<TipoServicioEspecialidad> TipoServicioEspecialidads { get; set; }
         public DbSet<EquipoSesion> EquiposSesion { get; set; }
         public DbSet<TerapeutaEspecialidad> TerapeutaEspecialidades { get; set; }
         public DbSet<TratamientoProtocolo> TratamientoProtocolos { get; set; }
@@ -197,5 +205,13 @@ namespace ApiPrueba.Data
 public DbSet<ApiPrueba.Models.Factura> Factura { get; set; } = default!;
     
 public DbSet<ApiPrueba.Models.Auditoria> Auditoria { get; set; } = default!;
+    
+public DbSet<ApiPrueba.Models.OrdenMedica> OrdenMedica { get; set; } = default!;
+    
+public DbSet<ApiPrueba.Models.TipoServicio> TipoServicio { get; set; } = default!;
+    
+public DbSet<ApiPrueba.Models.TipoServicioEspecialidad> TipoServicioEspecialidad { get; set; } = default!;
+    
+public DbSet<ApiPrueba.Models.Sala> Sala { get; set; } = default!;
     }
 }
