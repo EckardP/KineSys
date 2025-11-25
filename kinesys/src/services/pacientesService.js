@@ -69,7 +69,7 @@ export async function actualizarPaciente(id, data) {
   try {
     console.log(`🔄 Servicio: Actualizando paciente ${id} con datos:`, data);
     
-    const resultado = await pacientesApi.update(`Update/${id}`, data);
+    const resultado = await pacientesApi.update(`/Update/${id}`, data);
     
     console.log("✅ Servicio: Paciente actualizado exitosamente:", resultado);
     return resultado;
