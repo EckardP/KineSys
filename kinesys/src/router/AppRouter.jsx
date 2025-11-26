@@ -39,7 +39,7 @@ export default function AppRouter() {
       <Route path="/pacientes/:id" element={<PacienteCardMini />} />
 
       {/* MÓDULO ADMIN - Added /* to allow nested routes */}
-      <Route path="/gestionadmin/*" element={<AdminHome />} />
+      <Route path="/AdminHome/*" element={<AdminHome />} />
 
       <Route path="/gestionterapeuta/terapeuta" element={<TerapeutasList />} />
 
