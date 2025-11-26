@@ -8,7 +8,7 @@
         public class CrearFacturaDTO
         {
             public string? NumeroFactura { get; set; }
-            public int IdPaciente { get; set; }
+            public int? IdPaciente { get; set; }
             public int? IdTratamiento { get; set; }
             public DateTime FechaEmision { get; set; }
             public DateTime? FechaVencimiento { get; set; }

@@ -1,20 +1,20 @@
-// src/pages/GestionAdmin/GestionTratamiento/TratamientoForm.jsx
 "use client"
 
 import { useState, useEffect } from "react"
-import { X, Stethoscope, Clock, DollarSign, FileText } from "lucide-react"
+import { X, Stethoscope, Clock, DollarSign, FileText, Package, Plus, Trash2 } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { crearTratamiento, actualizarTratamiento } from "../../../services/tratamientosService"
+import { listarEquipos } from "../../../services/equiposService"
 
 export default function TratamientoForm({ onSubmit, onCancel, initialData, especialidades }) {
   const [formData, setFormData] = useState({
     nombre: "",
     descripcion: "",
-    idEspecialidad: "0", // Cambiar de "" a "0"
+    idEspecialidad: "0",
     duracionMinutos: 30,
     costoBase: 0,
     materialesRequeridos: "",
@@ -25,14 +25,38 @@ export default function TratamientoForm({ onSubmit, onCancel, initialData, espec
     frecuenciaRecomendada: "Semanal"
   })
 
+  const [equipos, setEquipos] = useState([])
+  const [equiposSeleccionados, setEquiposSeleccionados] = useState([])
+  const [equipoSeleccionado, setEquipoSeleccionado] = useState("")
+  const [cantidadEquipo, setCantidadEquipo] = useState(1)
+  const [notasEquipo, setNotasEquipo] = useState("")
   const [loading, setLoading] = useState(false)
+  const [cargandoEquipos, setCargandoEquipos] = useState(false)
 
+  // Cargar equipos disponibles
+  useEffect(() => {
+    const cargarEquipos = async () => {
+      try {
+        setCargandoEquipos(true)
+        const equiposData = await listarEquipos()
+        setEquipos(equiposData || [])
+      } catch (error) {
+        console.error("Error cargando equipos:", error)
+      } finally {
+        setCargandoEquipos(false)
+      }
+    }
+
+    cargarEquipos()
+  }, [])
+
+  // Cargar datos iniciales para edición
   useEffect(() => {
     if (initialData) {
       setFormData({
         nombre: initialData.nombre || "",
         descripcion: initialData.descripcion || "",
-        idEspecialidad: initialData.idEspecialidad?.toString() || "0", // Cambiar aquí también
+        idEspecialidad: initialData.idEspecialidad?.toString() || "0",
         duracionMinutos: initialData.duracionMinutos || 30,
         costoBase: initialData.costoBase || 0,
         materialesRequeridos: initialData.materialesRequeridos || "",
@@ -42,6 +66,16 @@ export default function TratamientoForm({ onSubmit, onCancel, initialData, espec
         sesionesRecomendadas: initialData.sesionesRecomendadas || 1,
         frecuenciaRecomendada: initialData.frecuenciaRecomendada || "Semanal"
       })
+
+      // Cargar equipos si estamos editando (esto sería desde initialData.tratamientoEquipos)
+      if (initialData.tratamientoEquipos) {
+        setEquiposSeleccionados(initialData.tratamientoEquipos.map(te => ({
+          idEquipo: te.equipo.idEquipo,
+          equipo: te.equipo,
+          cantidadRequerida: te.cantidadRequerida,
+          notas: te.notas || ""
+        })))
+      }
     }
   }, [initialData])
 
@@ -51,6 +85,38 @@ export default function TratamientoForm({ onSubmit, onCancel, initialData, espec
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }))
+  }
+
+  const agregarEquipo = () => {
+    if (!equipoSeleccionado) {
+      alert("Selecciona un equipo")
+      return
+    }
+
+    const equipoExistente = equiposSeleccionados.find(e => e.idEquipo === parseInt(equipoSeleccionado))
+    if (equipoExistente) {
+      alert("Este equipo ya fue agregado al tratamiento")
+      return
+    }
+
+    const equipo = equipos.find(e => e.idEquipo === parseInt(equipoSeleccionado))
+    if (equipo) {
+      setEquiposSeleccionados(prev => [...prev, {
+        idEquipo: equipo.idEquipo,
+        equipo: equipo,
+        cantidadRequerida: cantidadEquipo,
+        notas: notasEquipo
+      }])
+
+      // Resetear el formulario de equipo
+      setEquipoSeleccionado("")
+      setCantidadEquipo(1)
+      setNotasEquipo("")
+    }
+  }
+
+  const removerEquipo = (idEquipo) => {
+    setEquiposSeleccionados(prev => prev.filter(e => e.idEquipo !== idEquipo))
   }
 
   const handleSubmit = async (e) => {
@@ -68,16 +134,21 @@ export default function TratamientoForm({ onSubmit, onCancel, initialData, espec
         duracionMinutos: parseInt(formData.duracionMinutos) || 30,
         costoBase: parseFloat(formData.costoBase) || 0,
         sesionesRecomendadas: parseInt(formData.sesionesRecomendadas) || 1,
-        idEspecialidad: formData.idEspecialidad === "0" ? null : parseInt(formData.idEspecialidad) // Convertir "0" a null
+        idEspecialidad: formData.idEspecialidad === "0" ? null : parseInt(formData.idEspecialidad),
+        // Los equipos se manejarán por separado
       }
 
+      let tratamientoGuardado
       if (initialData) {
-        await actualizarTratamiento(initialData.id, datosTratamiento)
+        tratamientoGuardado = await actualizarTratamiento(initialData.id, datosTratamiento)
       } else {
-        await crearTratamiento(datosTratamiento)
+        tratamientoGuardado = await crearTratamiento(datosTratamiento)
       }
 
-      onSubmit(datosTratamiento)
+      // Aquí podrías agregar los equipos al tratamiento si tu backend lo soporta
+      // Por ahora, los equipos seleccionados están en el estado local
+
+      onSubmit(tratamientoGuardado || datosTratamiento)
     } catch (error) {
       console.error("Error al guardar tratamiento:", error)
       alert(error.message || "Error al guardar el tratamiento")
@@ -86,8 +157,10 @@ export default function TratamientoForm({ onSubmit, onCancel, initialData, espec
     }
   }
 
+  const equipoDisponible = equipos.find(e => e.idEquipo === parseInt(equipoSeleccionado))
+
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 max-w-4xl mx-auto">
+    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
           <Stethoscope className="w-6 h-6 text-blue-600" />
@@ -125,7 +198,6 @@ export default function TratamientoForm({ onSubmit, onCancel, initialData, espec
                   <SelectValue placeholder="Seleccionar especialidad" />
                 </SelectTrigger>
                 <SelectContent>
-                  {/* CAMBIAR ESTA LÍNEA: usar "0" en lugar de "" */}
                   <SelectItem value="0">Sin especialidad</SelectItem>
                   {especialidades.map((esp) => (
                     <SelectItem key={esp.id} value={esp.id.toString()}>
@@ -202,6 +274,117 @@ export default function TratamientoForm({ onSubmit, onCancel, initialData, espec
               </Select>
             </div>
           </div>
+        </div>
+
+        {/* Equipos/Materiales Utilizados */}
+        <div>
+          <h3 className="text-lg font-semibold mb-4 text-gray-900 flex items-center gap-2">
+            <Package className="w-5 h-5 text-orange-600" />
+            Equipos y Materiales Utilizados
+          </h3>
+          
+          {/* Selector de Equipos */}
+          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+              <div className="md:col-span-2">
+                <Label htmlFor="equipoSeleccionado" className="text-gray-700">Seleccionar Equipo</Label>
+                <Select
+                  value={equipoSeleccionado}
+                  onValueChange={setEquipoSeleccionado}
+                  disabled={cargandoEquipos}
+                >
+                  <SelectTrigger className="border-gray-300">
+                    <SelectValue placeholder={cargandoEquipos ? "Cargando equipos..." : "Seleccionar equipo"} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {equipos.map((equipo) => (
+                      <SelectItem key={equipo.idEquipo} value={equipo.idEquipo.toString()}>
+                        {equipo.nombreEquipo} 
+                        <span className={`ml-2 px-1.5 py-0.5 rounded text-xs ${
+                          equipo.estado === 'Disponible' ? 'bg-green-100 text-green-800' :
+                          equipo.estado === 'En Mantenimiento' ? 'bg-yellow-100 text-yellow-800' :
+                          'bg-red-100 text-red-800'
+                        }`}>
+                          {equipo.estado}
+                        </span>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div>
+                <Label htmlFor="cantidadEquipo" className="text-gray-700">Cantidad</Label>
+                <Input
+                  id="cantidadEquipo"
+                  type="number"
+                  min="1"
+                  value={cantidadEquipo}
+                  onChange={(e) => setCantidadEquipo(parseInt(e.target.value) || 1)}
+                  className="border-gray-300"
+                />
+              </div>
+              
+              <div className="flex items-end">
+                <Button
+                  type="button"
+                  onClick={agregarEquipo}
+                  disabled={!equipoSeleccionado}
+                  className="bg-orange-600 hover:bg-orange-700 text-white w-full"
+                >
+                  <Plus size={16} className="mr-1" />
+                  Agregar
+                </Button>
+              </div>
+            </div>
+
+            {equipoDisponible && (
+              <div className="mt-2 text-sm text-gray-600">
+                <p><strong>Disponible:</strong> {equipoDisponible.cantidad} unidades</p>
+                <p><strong>Ubicación:</strong> {equipoDisponible.ubicacion || "No especificada"}</p>
+              </div>
+            )}
+          </div>
+
+          {/* Lista de Equipos Seleccionados */}
+          {equiposSeleccionados.length > 0 ? (
+            <div className="space-y-2">
+              <Label className="text-gray-700">Equipos seleccionados:</Label>
+              {equiposSeleccionados.map((item) => (
+                <div key={item.idEquipo} className="flex items-center justify-between bg-white p-3 rounded-lg border border-gray-200">
+                  <div className="flex-1">
+                    <p className="font-medium text-gray-900">{item.equipo.nombreEquipo}</p>
+                    <p className="text-sm text-gray-600">
+                      Cantidad: {item.cantidadRequerida} | 
+                      Estado: <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs ${
+                        item.equipo.estado === 'Disponible' ? 'bg-green-100 text-green-800' :
+                        item.equipo.estado === 'En Mantenimiento' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-red-100 text-red-800'
+                      }`}>
+                        {item.equipo.estado}
+                      </span>
+                    </p>
+                    {item.notas && (
+                      <p className="text-sm text-gray-500 mt-1">Notas: {item.notas}</p>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => removerEquipo(item.idEquipo)}
+                    className="p-1 hover:bg-red-50 text-red-600 rounded transition-colors ml-2"
+                    title="Remover equipo"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-4 text-gray-500 border-2 border-dashed border-gray-200 rounded-lg">
+              <Package size={32} className="mx-auto mb-2 text-gray-400" />
+              <p>No se han agregado equipos a este tratamiento</p>
+            </div>
+          )}
         </div>
 
         {/* Información Económica */}

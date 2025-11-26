@@ -53,12 +53,15 @@ namespace ApiPrueba.DTOs
     public class TratamientoDTO
     {
         public int IdTratamiento { get; set; }
-        public DateTime FechaInicio { get; set; }
-        public DateTime? FechaFin { get; set; }
-        public string? Estado { get; set; }
+        public string? Nombre { get; set; }
+        public string? Descripcion { get; set; }
+        public int DuracionMinutos { get; set; }
+        public int SesionesRecomendadas { get; set; }
+        public string? FrecuenciaRecomendada { get; set; }
+        public decimal CostoBase { get; set; }
         public string? TipoTerapia { get; set; }
         public string? TerapeutaAsignado { get; set; }
-        public string? Observaciones { get; set; }
+        public bool Activo { get; set; }
     }
 
     public class SesionDTO

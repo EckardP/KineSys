@@ -57,7 +57,7 @@ namespace ApiPrueba.Data
         public DbSet<TratamientoProtocolo> TratamientoProtocolos { get; set; }
         public DbSet<TratamientoTipoTerapia> TratamientoTipoTerapias { get; set; }
         public DbSet<ProtocoloTipoTerapia> ProtocoloTipoTerapias { get; set; }
-
+        public DbSet<TratamientoEquipo> TratamientoEquipos { get; set; }
         public DbSet<ContratoSeguro> ContratosSeguro { get; set; }
 
         //Modelos

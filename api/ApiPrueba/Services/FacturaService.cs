@@ -42,7 +42,7 @@ namespace ApiPrueba.Services
             if (tratamiento == null)
                 throw new InvalidOperationException($"No se encontró el tratamiento con ID {idTratamiento}");
 
-            return tratamiento.PrecioTratamiento ?? 0;
+            return tratamiento.CostoBase;
         }
 
         /// <summary>
@@ -91,24 +91,20 @@ namespace ApiPrueba.Services
             var query = _context.Set<Tratamiento>()
                 .Where(t => t.IdPaciente == idPaciente);
 
-            if (fechaInicio.HasValue)
-                query = query.Where(t => t.FechaInicio >= fechaInicio.Value);
-
-            if (fechaFin.HasValue)
-                query = query.Where(t => t.FechaInicio <= fechaFin.Value);
+            // Los filtros de fecha ahora deben hacerse basándose en las citas relacionadas si es necesario
 
             var tratamientos = await query.ToListAsync();
 
             var resumen = new ResumenCostosDTO
             {
                 Cantidad = tratamientos.Count,
-                Total = tratamientos.Sum(t => t.PrecioTratamiento ?? 0),
+                Total = tratamientos.Sum(t => t.CostoBase),
                 Items = tratamientos.Select(t => new ItemCostoDTO
                 {
                     Id = t.Id,
-                    Descripcion = t.NombreTratamiento,
-                    Fecha = t.FechaInicio,
-                    Precio = t.PrecioTratamiento ?? 0
+                    Descripcion = t.Nombre,
+                    Fecha = DateTime.Now,
+                    Precio = t.CostoBase
                 }).ToList()
             };
 
@@ -173,12 +169,12 @@ namespace ApiPrueba.Services
                 throw new InvalidOperationException($"No se encontró el tratamiento con ID {idTratamiento}");
 
             var numeroFactura = await GenerarNumeroFacturaAsync();
-            var precio = tratamiento.PrecioTratamiento ?? 0;
+            var precio = tratamiento.CostoBase;
 
             var factura = new Factura
             {
                 NumeroFactura = numeroFactura,
-                IdPaciente = tratamiento.IdPaciente,
+                IdPaciente = tratamiento.IdPaciente ?? 0,
                 IdTratamiento = idTratamiento,
                 FechaEmision = DateTime.Now,
                 Subtotal = precio,
@@ -191,7 +187,7 @@ namespace ApiPrueba.Services
                     new DetalleFactura
                     {
                         Concepto = "Tratamiento de fisioterapia",
-                        Descripcion = $"{tratamiento.NombreTratamiento} - {tratamiento.Descripcion}",
+                        Descripcion = $"{tratamiento.Nombre} - {tratamiento.Descripcion}",
                         Cantidad = 1,
                         PrecioUnitario = precio,
                         Subtotal = precio

@@ -4,6 +4,7 @@ using ApiPrueba.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiPrueba.Migrations
 {
     [DbContext(typeof(ClinicaFisioterapiaBD))]
-    partial class ClinicaFisioterapiaBDModelSnapshot : ModelSnapshot
+    [Migration("20251125232726_ResolviendoTratamientoEquipo")]
+    partial class ResolviendoTratamientoEquipo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1397,10 +1400,10 @@ namespace ApiPrueba.Migrations
                     b.Property<int?>("IdEspecialidad")
                         .HasColumnType("int");
 
-                    b.Property<int?>("IdPaciente")
+                    b.Property<int>("IdPaciente")
                         .HasColumnType("int");
 
-                    b.Property<int?>("IdTerapeuta")
+                    b.Property<int>("IdTerapeuta")
                         .HasColumnType("int");
 
                     b.Property<string>("Indicaciones")
@@ -1415,6 +1418,9 @@ namespace ApiPrueba.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("PacienteId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("PlanTratamientoId")
                         .HasColumnType("int");
 
@@ -1428,9 +1434,9 @@ namespace ApiPrueba.Migrations
 
                     b.HasIndex("IdEspecialidad");
 
-                    b.HasIndex("IdPaciente");
-
                     b.HasIndex("IdTerapeuta");
+
+                    b.HasIndex("PacienteId");
 
                     b.HasIndex("PlanTratamientoId");
 
@@ -2004,14 +2010,15 @@ namespace ApiPrueba.Migrations
                         .WithMany()
                         .HasForeignKey("IdEspecialidad");
 
-                    b.HasOne("ApiPrueba.Models.Paciente", "Paciente")
-                        .WithMany("Tratamientos")
-                        .HasForeignKey("IdPaciente");
-
                     b.HasOne("ApiPrueba.Models.Terapeuta", "Terapeuta")
                         .WithMany()
                         .HasForeignKey("IdTerapeuta")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ApiPrueba.Models.Paciente", null)
+                        .WithMany("Tratamientos")
+                        .HasForeignKey("PacienteId");
 
                     b.HasOne("ApiPrueba.Models.PlanTratamiento", "PlanTratamiento")
                         .WithMany()
@@ -2022,8 +2029,6 @@ namespace ApiPrueba.Migrations
                         .HasForeignKey("TerapeutaId");
 
                     b.Navigation("Especialidad");
-
-                    b.Navigation("Paciente");
 
                     b.Navigation("PlanTratamiento");
 

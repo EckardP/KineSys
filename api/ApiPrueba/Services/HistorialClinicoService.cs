@@ -87,8 +87,7 @@ namespace ApiPrueba.Services
                     Telefono = paciente.Telefono,
                     CorreoElectronico = paciente.CorreoElectronico,
                     Direccion = paciente.Direccion,
-                    SeguroMedico = paciente.SeguroMedico?.NombreAseguradora,
-                    
+                    SeguroMedico = paciente.SeguroMedico?.NombreAseguradora
                 },
 
                 HistorialMedico = paciente.HistorialMedico != null ? new HistorialMedicoDTO
@@ -120,15 +119,18 @@ namespace ApiPrueba.Services
                     .Include(t => t.Terapeuta)
                     .Include(t => t.TratamientoTipoTerapias)
                         .ThenInclude(ttt => ttt.TipoTerapia)
-                    .OrderByDescending(t => t.FechaInicio)
                     .Select(t => new TratamientoDTO
                     {
                         IdTratamiento = t.Id,
-                        FechaInicio = t.FechaInicio,
-                        FechaFin = t.FechaFin,
+                        Nombre = t.Nombre,
+                        Descripcion = t.Descripcion,
+                        DuracionMinutos = t.DuracionMinutos,
+                        SesionesRecomendadas = t.SesionesRecomendadas,
+                        FrecuenciaRecomendada = t.FrecuenciaRecomendada,
+                        CostoBase = t.CostoBase,
                         TipoTerapia = string.Join(", ", t.TratamientoTipoTerapias.Select(ttt => ttt.TipoTerapia!.Nombre)),
                         TerapeutaAsignado = t.Terapeuta != null ? $"{t.Terapeuta.Nombres} {t.Terapeuta.Apellidos}" : null,
-                        Observaciones = t.Descripcion
+                        Activo = t.Activo
                     })
                     .ToListAsync(),
 
