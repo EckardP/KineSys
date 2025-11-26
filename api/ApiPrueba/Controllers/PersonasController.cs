@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Authorization;
 using ApiPrueba.JWT;
 using NuGet.Protocol;
 using NuGet.Common;
+using ApiPrueba.Hub;
+using Microsoft.AspNetCore.SignalR;
 
 namespace ApiPrueba.Controllers
 {
@@ -22,11 +24,13 @@ namespace ApiPrueba.Controllers
     {
         private readonly ClinicaFisioterapiaBD _context;
         private readonly JwtTokenGenerator _JwTokenGenerator;
+        private readonly IHubContext<NotificacionesHub> _hub;
 
-        public PersonasController(ClinicaFisioterapiaBD context, JwtTokenGenerator jwtTokenGenerator)
+        public PersonasController(ClinicaFisioterapiaBD context, JwtTokenGenerator jwtTokenGenerator, IHubContext<NotificacionesHub> hub)
         {
             _context = context;
             _JwTokenGenerator = jwtTokenGenerator;
+            _hub = hub;
         }
 
         // GET: api/Personas
@@ -80,8 +84,8 @@ namespace ApiPrueba.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ ERROR en GetPersona: {ex.Message}");
-                Console.WriteLine($"📋 StackTrace: {ex.StackTrace}");
+                Console.WriteLine($"ERROR en GetPersona: {ex.Message}");
+                Console.WriteLine($" StackTrace: {ex.StackTrace}");
                 return StatusCode(500, $"Error interno del servidor: {ex.Message}");
             }
         }
@@ -143,7 +147,7 @@ namespace ApiPrueba.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ ERROR en GetPersona({id}): {ex.Message}");
+                Console.WriteLine($" ERROR en GetPersona({id}): {ex.Message}");
                 return StatusCode(500, $"Error interno del servidor: {ex.Message}");
             }
         }
@@ -151,8 +155,8 @@ namespace ApiPrueba.Controllers
         [HttpPut("Update/{id}")]
         public async Task<ActionResult<Persona>> PutActualizarPersona(int id, ActualizacionDto actualizacion)
         {
-            Console.WriteLine($"🔔 Llegó solicitud de actualización a /api/Personas/Update/{id}");
-            Console.WriteLine($"📝 Datos recibidos: {System.Text.Json.JsonSerializer.Serialize(actualizacion)}");
+            Console.WriteLine($"Llegó solicitud de actualización a /api/Personas/Update/{id}");
+            Console.WriteLine($" Datos recibidos: {System.Text.Json.JsonSerializer.Serialize(actualizacion)}");
 
             // Buscar la persona existente
             var personaExistente = await _context.Persona.FindAsync(id);
@@ -232,7 +236,7 @@ namespace ApiPrueba.Controllers
             try
             {
                 await _context.SaveChangesAsync();
-                Console.WriteLine($"✅ Persona {id} actualizada exitosamente");
+                Console.WriteLine($" Persona {id} actualizada exitosamente");
                 return Ok(personaExistente);
             }
             catch (DbUpdateConcurrencyException)
@@ -248,7 +252,7 @@ namespace ApiPrueba.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error al guardar cambios: {ex.Message}");
+                Console.WriteLine($" Error al guardar cambios: {ex.Message}");
                 return StatusCode(500, "Error interno del servidor al actualizar la persona");
             }
         }
@@ -298,28 +302,24 @@ namespace ApiPrueba.Controllers
         [HttpPost("Register")]
         public async Task<ActionResult<Persona>> PostRegistroPersona(RegistroDto registro)
         {
-            Console.WriteLine("🔔 Llegó solicitud de registro a /api/Personas/Register");
-            Console.WriteLine($"📝 Datos recibidos: {System.Text.Json.JsonSerializer.Serialize(registro)}");
-            Console.WriteLine($"🔐 Usuario autenticado: {User.Identity?.IsAuthenticated}");
-            Console.WriteLine($"👤 Nombre del usuario: {User.Identity?.Name}");
+            Console.WriteLine(" Llegó solicitud de registro a /api/Personas/Register");
+            Console.WriteLine($" Datos recibidos: {System.Text.Json.JsonSerializer.Serialize(registro)}");
+            Console.WriteLine($" Usuario autenticado: {User.Identity?.IsAuthenticated}");
+            Console.WriteLine($" Nombre del usuario: {User.Identity?.Name}");
 
-            // Verificar si ya existe algún administrador
             bool existeAdmin = _context.Persona.Any(p => p.Rol == Rol.Administrador);
-            Console.WriteLine($"👑 Existe administrador: {existeAdmin}");
+            Console.WriteLine($" Existe administrador: {existeAdmin}");
 
-            // Si NO existe admin y quieres registrar uno, PERMITIR
             if (registro.Rol != Rol.Administrador && !(User.Identity?.IsAuthenticated ?? false))
             {
                 return Unauthorized("Debe autenticarse para registrar este tipo de usuario");
             }
 
-            // Si ya existe admin y no estás autenticado → bloquear siempre
             if (existeAdmin && !(User.Identity?.IsAuthenticated ?? false))
             {
                 return Unauthorized("Debe autenticarse para registrar usuarios");
             }
 
-            // Evitar que registren múltiples admins si no lo deseas
             if (registro.Rol == Rol.Administrador && existeAdmin)
             {
                 return BadRequest("Ya existe un administrador registrado");
@@ -340,7 +340,7 @@ namespace ApiPrueba.Controllers
                 });
             }
 
-            Console.WriteLine("✅ Pasó todas las validaciones, creando paciente...");
+            Console.WriteLine(" Pasó todas las validaciones, creando paciente...");
 
             var passwordHash = BCrypt.Net.BCrypt.HashPassword(registro.Password ?? "");
 
@@ -443,6 +443,9 @@ namespace ApiPrueba.Controllers
                 return BadRequest("Usuario o contraseña incorrectos");
 
             var token = _JwTokenGenerator.GenerateToken(loginUser);
+
+            await _hub.Clients.All.SendAsync("Notificacion", $"El usuario '{login.User}'"+ $" con rol '{loginUser.Rol}'" + " ha iniciado sesión.");
+            
 
             return Ok(new
             {
