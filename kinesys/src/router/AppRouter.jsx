@@ -9,7 +9,6 @@ import Login from "../pages/Login"
 import PacienteCardMini from "../pages/Gestionpaciente/components/PacienteCardMini"
 
 import AdminHome from "../pages/AdminHome/AdminHome"
-import Terapeuta from "../pages/GestionAdmin/GestionTerapeuta/Terapeuta"
 import AgendaAdmin from "../pages/GestionAdmin/GestionAgenda/AgendaAdmin"
 import Reportes from "../pages/GestionAdmin/GestionReporte/Reportes"
 
@@ -21,10 +20,11 @@ import AppointmentList from "../pages/GestionAdmin/GestionCita/AppointmentList"
 import AppointmentForm from "../pages/GestionAdmin/GestionCita/AppointmentForm"
 
 import TerapeutaHome from "../pages/TerapeutaHome/TerapeutaHome"
-import TerapeutaForm from "@/pages/GestionAdmin/GestionTerapeuta/TerapeutaForm"
 import TerapeutasList from "@/pages/GestionAdmin/GestionTerapeuta/TerapeutasList"
 import TratamientosList from "@/pages/GestionAdmin/GestionTratamiento/TratamientosList" // Tus tratamientos
 import EquiposList from "@/pages/GestionAdmin/GestionEquipo/EquiposList" // Equipos de tu compañero
+import PacienteDashboard from "../pages/Gestionpaciente/PacienteDashboard"
+import EquiposList from "@/pages/GestionAdmin/GestionEquipo/EquiposList"
 
 export default function AppRouter() {
   return (
@@ -40,8 +40,11 @@ export default function AppRouter() {
       <Route path="/pacientes/nuevo" element={<FormPaciente />} />
       <Route path="/pacientes/:id" element={<PacienteCardMini />} />
 
+
       {/* MÓDULO ADMIN */}
       <Route path="/gestionadmin/*" element={<AdminHome />} /> {/* Agregar /* aquí */}
+      {/* MÓDULO ADMIN - Added /* to allow nested routes */}
+      <Route path="/AdminHome/*" element={<AdminHome />} />
 
       <Route path="/gestionterapeuta/terapeuta" element={<TerapeutasList />} />
 
@@ -64,6 +67,8 @@ export default function AppRouter() {
 
       {/* MÓDULO TERAPEUTA */}
       <Route path="/dashboard" element={<TerapeutaHome />} />
+
+      <Route path="/paciente-dashboard" element={<PacienteDashboard />} />
     </Routes>
   )
 }

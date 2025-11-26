@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims;
+using ApiPrueba.Hub;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,9 +25,11 @@ builder.Services.AddCors(options =>
     options.AddPolicy("PoliticaCors", policy => policy
         .AllowAnyHeader()
         .AllowAnyMethod()
-        .WithOrigins("http://localhost:5173")   // SIN ESPACIOS
+        .AllowCredentials() 
+        .WithOrigins("http://localhost:5174")
     );
 });
+
 
 // =======================
 // JWT
@@ -56,7 +59,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddSignalR();
 // =======================
 // APP
 // =======================
@@ -75,6 +78,8 @@ app.UseCors("PoliticaCors");
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapHub<NotificacionesHub>("/Hub/NotificacionesHub");
 
 app.MapControllers();
 
