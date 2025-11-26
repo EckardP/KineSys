@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useContext } from "react"
 import { AuthContext } from "../../../context/AuthContext"
-import { citasApi } from "../../../api/citasApi"
+import  citasApi  from "../../../api/citasApi"
 import { evolucionesPacienteApi } from "../../../api/evolucionesPaciente"
 
 export default function StatisticsCard() {

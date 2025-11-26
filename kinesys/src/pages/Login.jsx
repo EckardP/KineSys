@@ -23,7 +23,7 @@ export default function Login() {
       const datosUsuario = await login(usuario, contrasena)
 
       if (datosUsuario.rol === "Administrador") {
-        navigate("/gestionadmin")
+        navigate("/AdminHome")
       } else if (datosUsuario.rol === "Terapeuta") {
         navigate("/dashboard")
       } else if (datosUsuario.rol === "Paciente") {

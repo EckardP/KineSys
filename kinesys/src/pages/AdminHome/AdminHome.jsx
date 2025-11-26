@@ -1,12 +1,8 @@
 "use client"
 
 // src/pages/AdminHome.jsx
-
 import { useEffect, useRef, useState } from "react"
 import { Users, CalendarDays, BarChart3, UserPlus, Calendar } from "lucide-react"
-
-import { useEffect, useState } from "react"
-import { Users, CalendarDays, BarChart3, UserPlus, Calendar, Package } from "lucide-react"
 import MetricCard from "../GestionAdmin/components/Cartas/MetricCard"
 import QuickAccessButton from "../GestionAdmin/components/Botones/QuickAccessButton"
 import { listarTerapeutas } from "../../services/terapeutasService.js"
@@ -20,7 +16,6 @@ import Reportes from "../GestionAdmin/GestionReporte/Reportes"
 import TerapeutaForm from "../GestionAdmin/GestionTerapeuta/TerapeutaForm"
 import { createConnection, startConnection, stopConnection } from "../../services/SignalRService"
 import { useAuth } from "../../hooks/useAuth"
-import EquiposList from "../GestionAdmin/GestionEquipo/EquiposList" // Nueva importación
 
 function AdminDashboard() {
   const [totalTerapeutas, setTotalTerapeutas] = useState(0)
@@ -223,12 +218,6 @@ function AdminDashboard() {
             />
             <QuickAccessButton label="Ver Agenda" path="/gestionagenda/agendaadmin" icon={<CalendarDays size={20} />} />
             <QuickAccessButton label="Ver Reportes" path="/gestionreporte/reportes" icon={<BarChart3 size={20} />} />
-            {/* Nuevo botón para Gestión de Equipos */}
-            <QuickAccessButton
-              label="Gestionar Equipos"
-              path="/gestionequipo/equipos"
-              icon={<Package size={20} />}
-            />
           </div>
         </div>
       </div>
@@ -245,8 +234,6 @@ export default function AdminHome() {
       <Route path="/gestioncita/citas" element={<AppointmentList />} />
       <Route path="/gestionpaciente/pacientes" element={<PatientList />} />
       <Route path="/gestionreporte/reportes" element={<Reportes />} />
-      {/* Nueva ruta para Gestión de Equipos */}
-      <Route path="/gestionequipo/equipos" element={<EquiposList />} />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   )
