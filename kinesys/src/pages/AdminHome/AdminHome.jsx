@@ -2,11 +2,8 @@
 
 // src/pages/AdminHome.jsx
 
-import { useEffect, useState } from "react"
-
 import { Users, CalendarDays, BarChart3, UserPlus, Calendar, Stethoscope, Package } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
-import { Users, CalendarDays, BarChart3, UserPlus, Calendar } from "lucide-react"
 import MetricCard from "../GestionAdmin/components/Cartas/MetricCard"
 import QuickAccessButton from "../GestionAdmin/components/Botones/QuickAccessButton"
 import { listarTerapeutas } from "../../services/terapeutasService.js"

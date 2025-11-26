@@ -24,7 +24,7 @@ import TerapeutasList from "@/pages/GestionAdmin/GestionTerapeuta/TerapeutasList
 import TratamientosList from "@/pages/GestionAdmin/GestionTratamiento/TratamientosList" // Tus tratamientos
 import EquiposList from "@/pages/GestionAdmin/GestionEquipo/EquiposList" // Equipos de tu compañero
 import PacienteDashboard from "../pages/Gestionpaciente/PacienteDashboard"
-import EquiposList from "@/pages/GestionAdmin/GestionEquipo/EquiposList"
+
 
 export default function AppRouter() {
   return (
