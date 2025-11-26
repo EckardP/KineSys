@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Home, Users, Calendar, FileText, CreditCard, Shield, LogOut, Menu, X } from "lucide-react"
+import { Home, Users, Calendar, FileText, CreditCard, Shield, LogOut, Menu, X, Stethoscope } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "@/context/AuthContext"
 
@@ -14,6 +14,7 @@ export default function Navigation({ currentPage, setCurrentPage }) {
     { id: "dashboard", label: "Dashboard", icon: Home },
     { id: "pacientes", label: "Pacientes", icon: Users },
     { id: "citas", label: "Citas", icon: Calendar },
+    { id: "tratamientos", label: "Tratamientos", icon: Stethoscope }, // ✅ Nueva opción
     { id: "historias", label: "Historias", icon: FileText },
     { id: "facturacion", label: "Facturación", icon: CreditCard },
     { id: "auditoria", label: "Auditoría", icon: Shield },

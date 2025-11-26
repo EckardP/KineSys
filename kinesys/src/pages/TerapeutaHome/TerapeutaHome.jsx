@@ -11,6 +11,7 @@ import AppointmentList from "./components/appointments/AppointmentList"
 import ClinicalHistoryList from "./components/histories/ClinicalHistoryList"
 import InvoiceList from "./components/billing/InvoiceList"
 import AuditDashboard from "../GestionAdmin/audit/AuditDashboard"
+import TratamientosView from "./components/Treatments/TratamientosView"
 
 export default function TerapeutaHome() {
   useRequireAuth(2) // Rol 2 = Terapeuta
@@ -182,6 +183,8 @@ export default function TerapeutaHome() {
         {currentPage === "historias" && <ClinicalHistoryList />}
         {currentPage === "facturacion" && <InvoiceList />}
         {currentPage === "auditoria" && <AuditDashboard />}
+        {currentPage === "tratamientos" && <TratamientosView />}
+
       </main>
     </div>
   )
