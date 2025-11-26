@@ -36,9 +36,22 @@ export const crearTratamiento = async (tratamientoData) => {
 
 export const actualizarTratamiento = async (id, tratamientoData) => {
   try {
-    return await tratamientosApi.update(`/${id}`, tratamientoData);
+    console.log('🔧 Actualizando tratamiento:', {
+      id,
+      datos: tratamientoData,
+      datosCompletos: JSON.stringify(tratamientoData, null, 2)
+    });
+    
+    const resultado = await tratamientosApi.update(id, tratamientoData);
+    console.log('✅ Tratamiento actualizado exitosamente:', resultado);
+    return resultado;
+    
   } catch (error) {
-    console.error('Error al actualizar tratamiento:', error);
+    console.error('❌ Error completo al actualizar tratamiento:', {
+      mensaje: error.message,
+      stack: error.stack,
+      datosEnviados: tratamientoData
+    });
     throw error;
   }
 };

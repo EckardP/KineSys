@@ -34,20 +34,24 @@ export function crearApiCliente(ruta){
         return null;
     }
 
-    return {
-        getAll: () => respuesta(),
-        getById: (id) => respuesta(`/${id}`),
-        create: (url = "", data) => respuesta(url, {
-            method: 'POST',
-            body: JSON.stringify(data)
-        }),
-        // 🔥 CORREGIDO: El método update debe aceptar la URL completa
-        update: (url, data) => respuesta(url, {  // Cambiado de (id, data) a (url, data)
+    // CORRECCIÓN en apiCliente.js - Opción 2 (Flexible)
+return {
+    getAll: () => respuesta(),
+    getById: (id) => respuesta(`/${id}`),
+    create: (url = "", data) => respuesta(url, {
+        method: 'POST',
+        body: JSON.stringify(data)
+    }),
+    // ✅ SOLUCIÓN FLEXIBLE: Manejar tanto números como strings
+    update: (param, data) => {
+        const url = String(param).startsWith('/') ? String(param) : `/${param}`;
+        return respuesta(url, {
             method: 'PUT',
             body: JSON.stringify(data)
-        }),
-        delete: (id) => respuesta(`/${id}`, {
-            method: 'DELETE'
-        }),
-    };
+        });
+    },
+    delete: (id) => respuesta(`/${id}`, {
+        method: 'DELETE'
+    }),
+};
 }

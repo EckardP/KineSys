@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { X, Stethoscope, Clock, DollarSign, FileText, Package, Plus, Trash2 } from "lucide-react"
+import { X, Stethoscope, Clock, DollarSign, FileText, Package, Plus, Trash2, AlertCircle } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
@@ -32,6 +32,7 @@ export default function TratamientoForm({ onSubmit, onCancel, initialData, espec
   const [notasEquipo, setNotasEquipo] = useState("")
   const [loading, setLoading] = useState(false)
   const [cargandoEquipos, setCargandoEquipos] = useState(false)
+  const [errorEspecialidad, setErrorEspecialidad] = useState("")
 
   // Cargar equipos disponibles
   useEffect(() => {
@@ -87,6 +88,14 @@ export default function TratamientoForm({ onSubmit, onCancel, initialData, espec
     }))
   }
 
+  const handleEspecialidadChange = (value) => {
+    setFormData(prev => ({ ...prev, idEspecialidad: value }))
+    // Limpiar error cuando el usuario selecciona una especialidad
+    if (value !== "0") {
+      setErrorEspecialidad("")
+    }
+  }
+
   const agregarEquipo = () => {
     if (!equipoSeleccionado) {
       alert("Selecciona un equipo")
@@ -127,22 +136,43 @@ export default function TratamientoForm({ onSubmit, onCancel, initialData, espec
       return
     }
 
+    // 🔥 VALIDACIÓN MEJORADA: Verificar que se haya seleccionado una especialidad válida
+    if (formData.idEspecialidad === "0") {
+      setErrorEspecialidad("Por favor, selecciona una especialidad para el tratamiento")
+      return
+    }
+
     setLoading(true)
     try {
       const datosTratamiento = {
-        ...formData,
+        // Para actualización, INCLUIR EL ID en el cuerpo
+        ...(initialData && { id: initialData.id }),
+        
+        // Campos del formulario con tipos correctos
+        nombre: formData.nombre.trim(),
+        descripcion: formData.descripcion.trim(),
         duracionMinutos: parseInt(formData.duracionMinutos) || 30,
         costoBase: parseFloat(formData.costoBase) || 0,
+        materialesRequeridos: formData.materialesRequeridos.trim(),
+        indicaciones: formData.indicaciones.trim(),
+        contraindicaciones: formData.contraindicaciones.trim(),
+        activo: Boolean(formData.activo),
         sesionesRecomendadas: parseInt(formData.sesionesRecomendadas) || 1,
-        idEspecialidad: formData.idEspecialidad === "0" ? null : parseInt(formData.idEspecialidad),
-        // Los equipos se manejarán por separado
+        frecuenciaRecomendada: formData.frecuenciaRecomendada,
+        
+        // Manejar especialidad - ya validamos que no es "0"
+        idEspecialidad: parseInt(formData.idEspecialidad),
       }
+
+      console.log('📋 Datos finales para enviar:', datosTratamiento)
 
       let tratamientoGuardado
       if (initialData) {
         tratamientoGuardado = await actualizarTratamiento(initialData.id, datosTratamiento)
       } else {
-        tratamientoGuardado = await crearTratamiento(datosTratamiento)
+        // Para creación, no incluir el ID
+        const { id, ...datosCreacion } = datosTratamiento
+        tratamientoGuardado = await crearTratamiento(datosCreacion)
       }
 
       // Aquí podrías agregar los equipos al tratamiento si tu backend lo soporta
@@ -189,16 +219,23 @@ export default function TratamientoForm({ onSubmit, onCancel, initialData, espec
               />
             </div>
             <div>
-              <Label htmlFor="idEspecialidad" className="text-gray-700">Especialidad</Label>
+              <Label htmlFor="idEspecialidad" className="text-gray-700 flex items-center gap-1">
+                Especialidad *
+                {errorEspecialidad && (
+                  <AlertCircle size={14} className="text-red-500" />
+                )}
+              </Label>
               <Select
                 value={formData.idEspecialidad}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, idEspecialidad: value }))}
+                onValueChange={handleEspecialidadChange}
               >
-                <SelectTrigger className="border-gray-300">
+                <SelectTrigger className={`border-gray-300 ${errorEspecialidad ? 'border-red-500 bg-red-50' : ''}`}>
                   <SelectValue placeholder="Seleccionar especialidad" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="0">Sin especialidad</SelectItem>
+                  <SelectItem value="0" disabled>
+                    Selecciona una especialidad
+                  </SelectItem>
                   {especialidades.map((esp) => (
                     <SelectItem key={esp.id} value={esp.id.toString()}>
                       {esp.nombre}
@@ -206,6 +243,15 @@ export default function TratamientoForm({ onSubmit, onCancel, initialData, espec
                   ))}
                 </SelectContent>
               </Select>
+              {errorEspecialidad && (
+                <p className="text-red-600 text-sm mt-1 flex items-center gap-1">
+                  <AlertCircle size={14} />
+                  {errorEspecialidad}
+                </p>
+              )}
+              <p className="text-gray-500 text-xs mt-1">
+                * Campo requerido. Selecciona la especialidad a la que pertenece este tratamiento.
+              </p>
             </div>
           </div>
 
