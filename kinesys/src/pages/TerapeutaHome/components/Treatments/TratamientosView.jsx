@@ -44,6 +44,19 @@ export default function TratamientosView() {
     cargarEspecialidades()
   }, [])
 
+  // Calcular duración promedio correctamente
+  const calcularDuracionPromedio = () => {
+    if (tratamientos.length === 0) return 0;
+    
+    const sumaDuraciones = tratamientos.reduce((total, tratamiento) => {
+      return total + (tratamiento.duracionMinutos || 30); // Usar 30 como valor por defecto si no tiene
+    }, 0);
+    
+    return Math.round(sumaDuraciones / tratamientos.length);
+  };
+
+  const duracionPromedio = calcularDuracionPromedio();
+
   const filteredTratamientos = tratamientos.filter(
     (t) =>
       t.nombre?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -108,7 +121,9 @@ export default function TratamientosView() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-600 text-sm">Duración Promedio</p>
-              <p className="text-2xl font-bold text-orange-600">30 min</p>
+              <p className="text-2xl font-bold text-orange-600">
+                {duracionPromedio} min
+              </p>
             </div>
             <Clock className="text-orange-600 opacity-20" size={32} />
           </div>

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ApiPrueba.Data;
 using ApiPrueba.Models;
+using ApiPrueba.DTOs;
 
 namespace ApiPrueba.Controllers
 {
@@ -52,18 +53,69 @@ namespace ApiPrueba.Controllers
 
         // PUT: api/Tratamientoes/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTratamiento(int id, Tratamiento tratamiento)
+        public async Task<ActionResult<Tratamiento>> PutTratamiento(int id, TratamientoCreateDto tratamientoDto)
         {
-            if (id != tratamiento.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(tratamiento).State = EntityState.Modified;
-
             try
             {
+                // Verificar si el tratamiento existe
+                var tratamientoExistente = await _context.Tratamientos
+                    .Include(t => t.TratamientoEquipos)
+                    .FirstOrDefaultAsync(t => t.Id == id);
+
+                if (tratamientoExistente == null)
+                {
+                    return NotFound("Tratamiento no encontrado");
+                }
+
+                // Actualizar propiedades básicas del tratamiento
+                tratamientoExistente.Nombre = tratamientoDto.Nombre;
+                tratamientoExistente.Descripcion = tratamientoDto.Descripcion;
+                tratamientoExistente.DuracionMinutos = tratamientoDto.DuracionMinutos;
+                tratamientoExistente.SesionesRecomendadas = tratamientoDto.SesionesRecomendadas;
+                tratamientoExistente.FrecuenciaRecomendada = tratamientoDto.FrecuenciaRecomendada;
+                tratamientoExistente.CostoBase = tratamientoDto.CostoBase;
+                tratamientoExistente.Indicaciones = tratamientoDto.Indicaciones;
+                tratamientoExistente.Contraindicaciones = tratamientoDto.Contraindicaciones;
+                tratamientoExistente.Activo = tratamientoDto.Activo;
+                tratamientoExistente.IdEspecialidad = tratamientoDto.IdEspecialidad;
+                tratamientoExistente.IdPaciente = tratamientoDto.IdPaciente;
+                tratamientoExistente.IdTerapeuta = tratamientoDto.IdTerapeuta;
+
+                // 🔥 ACTUALIZAR EQUIPOS - Eliminar equipos existentes
+                _context.TratamientoEquipos.RemoveRange(tratamientoExistente.TratamientoEquipos);
+
+                // 🔥 AGREGAR NUEVOS EQUIPOS si vienen en la request
+                if (tratamientoDto.TratamientoEquipos != null && tratamientoDto.TratamientoEquipos.Any())
+                {
+                    foreach (var equipoDto in tratamientoDto.TratamientoEquipos)
+                    {
+                        // Validar que el equipo existe
+                        var equipoExiste = await _context.Equipos.AnyAsync(e => e.IdEquipo == equipoDto.IdEquipo);
+                        if (!equipoExiste)
+                        {
+                            return BadRequest($"El equipo con ID {equipoDto.IdEquipo} no existe");
+                        }
+
+                        var nuevoTratamientoEquipo = new TratamientoEquipo
+                        {
+                            IdTratamiento = id,
+                            IdEquipo = equipoDto.IdEquipo,
+                            CantidadRequerida = equipoDto.CantidadRequerida
+                        };
+                        _context.TratamientoEquipos.Add(nuevoTratamientoEquipo);
+                    }
+                }
+
                 await _context.SaveChangesAsync();
+
+                // Cargar el tratamiento actualizado con relaciones
+                var tratamientoActualizado = await _context.Tratamientos
+                    .Include(t => t.Especialidad)
+                    .Include(t => t.TratamientoEquipos)
+                        .ThenInclude(te => te.Equipo)
+                    .FirstOrDefaultAsync(t => t.Id == id);
+
+                return Ok(tratamientoActualizado);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -76,24 +128,83 @@ namespace ApiPrueba.Controllers
                     throw;
                 }
             }
-
-            return NoContent();
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+            }
         }
 
-        // POST: api/Tratamientoes
+        // POST: api/Tratamientoes - CORREGIDO CON DTO
         [HttpPost]
-        public async Task<ActionResult<Tratamiento>> PostTratamiento(Tratamiento tratamiento)
+        public async Task<ActionResult<Tratamiento>> PostTratamiento(TratamientoCreateDto tratamientoDto)
         {
-            // Validar que el nombre no esté duplicado
-            if (await _context.Tratamientos.AnyAsync(t => t.Nombre == tratamiento.Nombre))
+            try
             {
-                return Conflict("Ya existe un tratamiento con ese nombre");
+                // Validar que el nombre no esté duplicado
+                if (await _context.Tratamientos.AnyAsync(t => t.Nombre == tratamientoDto.Nombre))
+                {
+                    return Conflict("Ya existe un tratamiento con ese nombre");
+                }
+
+                // 🔥 CREAR EL TRATAMIENTO SIN LOS EQUIPOS
+                var tratamiento = new Tratamiento
+                {
+                    Nombre = tratamientoDto.Nombre,
+                    Descripcion = tratamientoDto.Descripcion,
+                    DuracionMinutos = tratamientoDto.DuracionMinutos,
+                    SesionesRecomendadas = tratamientoDto.SesionesRecomendadas,
+                    FrecuenciaRecomendada = tratamientoDto.FrecuenciaRecomendada,
+                    CostoBase = tratamientoDto.CostoBase,
+                    Indicaciones = tratamientoDto.Indicaciones,
+                    Contraindicaciones = tratamientoDto.Contraindicaciones,
+                    Activo = tratamientoDto.Activo,
+                    IdEspecialidad = tratamientoDto.IdEspecialidad,
+                    IdPaciente = tratamientoDto.IdPaciente,
+                    IdTerapeuta = tratamientoDto.IdTerapeuta
+                };
+
+                _context.Tratamientos.Add(tratamiento);
+                await _context.SaveChangesAsync();
+
+                // 🔥 AGREGAR LOS EQUIPOS SI EXISTEN
+                if (tratamientoDto.TratamientoEquipos != null && tratamientoDto.TratamientoEquipos.Any())
+                {
+                    foreach (var equipoDto in tratamientoDto.TratamientoEquipos)
+                    {
+                        // Validar que el equipo existe
+                        var equipoExiste = await _context.Equipos.AnyAsync(e => e.IdEquipo == equipoDto.IdEquipo);
+                        if (!equipoExiste)
+                        {
+                            // Opcional: eliminar el tratamiento recién creado si hay error
+                            _context.Tratamientos.Remove(tratamiento);
+                            await _context.SaveChangesAsync();
+                            return BadRequest($"El equipo con ID {equipoDto.IdEquipo} no existe");
+                        }
+
+                        var tratamientoEquipo = new TratamientoEquipo
+                        {
+                            IdTratamiento = tratamiento.Id,
+                            IdEquipo = equipoDto.IdEquipo,
+                            CantidadRequerida = equipoDto.CantidadRequerida
+                        };
+                        _context.TratamientoEquipos.Add(tratamientoEquipo);
+                    }
+                    await _context.SaveChangesAsync();
+                }
+
+                // Cargar el tratamiento completo con relaciones
+                var tratamientoCompleto = await _context.Tratamientos
+                    .Include(t => t.Especialidad)
+                    .Include(t => t.TratamientoEquipos)
+                        .ThenInclude(te => te.Equipo)
+                    .FirstOrDefaultAsync(t => t.Id == tratamiento.Id);
+
+                return CreatedAtAction("GetTratamiento", new { id = tratamiento.Id }, tratamientoCompleto);
             }
-
-            _context.Tratamientos.Add(tratamiento);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetTratamiento", new { id = tratamiento.Id }, tratamiento);
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+            }
         }
 
         // DELETE: api/Tratamientoes/5
@@ -132,8 +243,7 @@ namespace ApiPrueba.Controllers
             {
                 IdTratamiento = id,
                 IdEquipo = request.IdEquipo,
-                CantidadRequerida = request.CantidadRequerida,
-                Notas = request.Notas
+                CantidadRequerida = request.CantidadRequerida
             };
 
             _context.TratamientoEquipos.Add(tratamientoEquipo);
@@ -171,6 +281,5 @@ namespace ApiPrueba.Controllers
     {
         public int IdEquipo { get; set; }
         public int CantidadRequerida { get; set; } = 1;
-        public string? Notas { get; set; }
     }
 }

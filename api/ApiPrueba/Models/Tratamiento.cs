@@ -23,7 +23,6 @@ namespace ApiPrueba.Models
         public decimal CostoBase { get; set; }
 
         // Información técnica
-        public string MaterialesRequeridos { get; set; }
         public string Indicaciones { get; set; }
         public string Contraindicaciones { get; set; }
 
@@ -52,9 +51,7 @@ namespace ApiPrueba.Models
         [ForeignKey("IdEspecialidad")]
         public Especialidad? Especialidad { get; set; }
 
-        [JsonIgnore]
+        // 🔥 QUITA ESTE JsonIgnore - Esta es la línea que causa el problema
         public ICollection<TratamientoEquipo> TratamientoEquipos { get; set; } = new List<TratamientoEquipo>();
-
-        // NOTA: He removido las relaciones con Paciente, Terapeuta, etc. que parecen ser para otro contexto
     }
 }
