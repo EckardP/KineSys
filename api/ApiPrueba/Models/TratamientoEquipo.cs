@@ -12,7 +12,6 @@ namespace ApiPrueba.Models
         public int IdTratamiento { get; set; }
         public int IdEquipo { get; set; }
         public int CantidadRequerida { get; set; } = 1;
-        public string? Notas { get; set; }
 
         // Relaciones
         [JsonIgnore]

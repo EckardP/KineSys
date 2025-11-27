@@ -21,9 +21,21 @@ export const obtenerTratamiento = async (id) => {
 
 export const crearTratamiento = async (tratamientoData) => {
   try {
-    return await tratamientosApi.create('', tratamientoData);
+    console.log('🔧 Creando tratamiento:', {
+      datos: tratamientoData,
+      datosCompletos: JSON.stringify(tratamientoData, null, 2)
+    });
+    
+    const resultado = await tratamientosApi.create('', tratamientoData);
+    console.log('✅ Tratamiento creado exitosamente:', resultado);
+    return resultado;
+    
   } catch (error) {
-    console.error('Error al crear tratamiento:', error);
+    console.error('❌ Error completo al crear tratamiento:', {
+      mensaje: error.message,
+      stack: error.stack,
+      datosEnviados: tratamientoData
+    });
     
     // Manejo específico de errores
     if (error.message.includes('409') || error.message.includes('Conflict')) {

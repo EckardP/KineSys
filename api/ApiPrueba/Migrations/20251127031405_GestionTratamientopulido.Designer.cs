@@ -4,6 +4,7 @@ using ApiPrueba.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiPrueba.Migrations
 {
     [DbContext(typeof(ClinicaFisioterapiaBD))]
-    partial class ClinicaFisioterapiaBDModelSnapshot : ModelSnapshot
+    [Migration("20251127031405_GestionTratamientopulido")]
+    partial class GestionTratamientopulido
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -457,9 +460,6 @@ namespace ApiPrueba.Migrations
                     b.Property<TimeSpan>("HoraInicio")
                         .HasColumnType("time");
 
-                    b.Property<int?>("IdCita")
-                        .HasColumnType("int");
-
                     b.Property<int>("IdTerapeuta")
                         .HasColumnType("int");
 
@@ -468,8 +468,6 @@ namespace ApiPrueba.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.HasKey("IdDisponibilidad");
-
-                    b.HasIndex("IdCita");
 
                     b.HasIndex("IdTerapeuta", "DiaSemana");
 
@@ -1764,17 +1762,11 @@ namespace ApiPrueba.Migrations
 
             modelBuilder.Entity("ApiPrueba.Models.DisponibilidadTerapeuta", b =>
                 {
-                    b.HasOne("ApiPrueba.Models.Cita", "Cita")
-                        .WithMany()
-                        .HasForeignKey("IdCita");
-
                     b.HasOne("ApiPrueba.Models.Terapeuta", "Terapeuta")
                         .WithMany("Disponibilidades")
                         .HasForeignKey("IdTerapeuta")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Cita");
 
                     b.Navigation("Terapeuta");
                 });

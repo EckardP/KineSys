@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { X, Stethoscope, Clock, DollarSign, FileText, Package, Plus, Trash2, AlertCircle } from "lucide-react"
+import { X, Stethoscope, Clock, DollarSign, FileText, Package, Plus, Trash2, AlertCircle, AlertTriangle } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { crearTratamiento, actualizarTratamiento } from "../../../services/tratamientosService"
 import { listarEquipos } from "../../../services/equiposService"
+import { listarTratamientos } from "../../../services/tratamientosService"
 
 export default function TratamientoForm({ onSubmit, onCancel, initialData, especialidades }) {
   const [formData, setFormData] = useState({
@@ -17,7 +18,6 @@ export default function TratamientoForm({ onSubmit, onCancel, initialData, espec
     idEspecialidad: "0",
     duracionMinutos: 30,
     costoBase: 0,
-    materialesRequeridos: "",
     indicaciones: "",
     contraindicaciones: "",
     activo: true,
@@ -26,29 +26,34 @@ export default function TratamientoForm({ onSubmit, onCancel, initialData, espec
   })
 
   const [equipos, setEquipos] = useState([])
+  const [tratamientosExistentes, setTratamientosExistentes] = useState([])
   const [equiposSeleccionados, setEquiposSeleccionados] = useState([])
   const [equipoSeleccionado, setEquipoSeleccionado] = useState("")
   const [cantidadEquipo, setCantidadEquipo] = useState(1)
-  const [notasEquipo, setNotasEquipo] = useState("")
   const [loading, setLoading] = useState(false)
   const [cargandoEquipos, setCargandoEquipos] = useState(false)
   const [errorEspecialidad, setErrorEspecialidad] = useState("")
+  const [errorCantidad, setErrorCantidad] = useState("")
 
-  // Cargar equipos disponibles
+  // Cargar equipos disponibles y tratamientos existentes
   useEffect(() => {
-    const cargarEquipos = async () => {
+    const cargarDatos = async () => {
       try {
         setCargandoEquipos(true)
-        const equiposData = await listarEquipos()
+        const [equiposData, tratamientosData] = await Promise.all([
+          listarEquipos(),
+          listarTratamientos()
+        ])
         setEquipos(equiposData || [])
+        setTratamientosExistentes(tratamientosData || [])
       } catch (error) {
-        console.error("Error cargando equipos:", error)
+        console.error("Error cargando datos:", error)
       } finally {
         setCargandoEquipos(false)
       }
     }
 
-    cargarEquipos()
+    cargarDatos()
   }, [])
 
   // Cargar datos iniciales para edición
@@ -60,7 +65,6 @@ export default function TratamientoForm({ onSubmit, onCancel, initialData, espec
         idEspecialidad: initialData.idEspecialidad?.toString() || "0",
         duracionMinutos: initialData.duracionMinutos || 30,
         costoBase: initialData.costoBase || 0,
-        materialesRequeridos: initialData.materialesRequeridos || "",
         indicaciones: initialData.indicaciones || "",
         contraindicaciones: initialData.contraindicaciones || "",
         activo: initialData.activo !== undefined ? initialData.activo : true,
@@ -68,17 +72,36 @@ export default function TratamientoForm({ onSubmit, onCancel, initialData, espec
         frecuenciaRecomendada: initialData.frecuenciaRecomendada || "Semanal"
       })
 
-      // Cargar equipos si estamos editando (esto sería desde initialData.tratamientoEquipos)
-      if (initialData.tratamientoEquipos) {
+      // Cargar equipos si estamos editando
+      if (initialData.tratamientoEquipos && initialData.tratamientoEquipos.length > 0) {
         setEquiposSeleccionados(initialData.tratamientoEquipos.map(te => ({
-          idEquipo: te.equipo.idEquipo,
+          idEquipo: te.idEquipo || te.equipo?.idEquipo,
           equipo: te.equipo,
-          cantidadRequerida: te.cantidadRequerida,
-          notas: te.notas || ""
+          cantidadRequerida: te.cantidadRequerida
         })))
       }
     }
   }, [initialData])
+
+  // Calcular disponibilidad real considerando otros tratamientos
+  const calcularDisponibilidadReal = (idEquipo) => {
+    const equipo = equipos.find(e => e.idEquipo === idEquipo)
+    if (!equipo) return 0
+
+    // Sumar todas las cantidades usadas en otros tratamientos (excluyendo el actual si estamos editando)
+    const cantidadUsadaEnOtrosTratamientos = tratamientosExistentes
+      .filter(tratamiento => initialData ? tratamiento.id !== initialData.id : true) // Excluir el tratamiento actual en edición
+      .reduce((total, tratamiento) => {
+        const equiposTratamiento = tratamiento.tratamientoEquipos || []
+        const equipoEnTratamiento = equiposTratamiento.find(te => 
+          te.idEquipo === idEquipo || te.equipo?.idEquipo === idEquipo
+        )
+        return total + (equipoEnTratamiento?.cantidadRequerida || 0)
+      }, 0)
+
+    const disponibilidadReal = equipo.cantidad - cantidadUsadaEnOtrosTratamientos
+    return Math.max(0, disponibilidadReal) // No puede ser negativo
+  }
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target
@@ -96,31 +119,60 @@ export default function TratamientoForm({ onSubmit, onCancel, initialData, espec
     }
   }
 
+  // Validar cantidad cuando cambia el equipo seleccionado o la cantidad
+  useEffect(() => {
+    if (equipoSeleccionado && cantidadEquipo > 0) {
+      const equipoId = parseInt(equipoSeleccionado)
+      const disponibilidadReal = calcularDisponibilidadReal(equipoId)
+      
+      if (cantidadEquipo > disponibilidadReal) {
+        setErrorCantidad(`⚠️ Advertencia: La cantidad solicitada (${cantidadEquipo}) supera las unidades disponibles (${disponibilidadReal})`)
+      } else {
+        setErrorCantidad("")
+      }
+    } else {
+      setErrorCantidad("")
+    }
+  }, [equipoSeleccionado, cantidadEquipo, equipos, tratamientosExistentes])
+
   const agregarEquipo = () => {
     if (!equipoSeleccionado) {
       alert("Selecciona un equipo")
       return
     }
 
-    const equipoExistente = equiposSeleccionados.find(e => e.idEquipo === parseInt(equipoSeleccionado))
+    const equipoId = parseInt(equipoSeleccionado)
+    const equipo = equipos.find(e => e.idEquipo === equipoId)
+    const disponibilidadReal = calcularDisponibilidadReal(equipoId)
+
+    // Validar cantidad antes de agregar
+    if (cantidadEquipo > disponibilidadReal) {
+      const confirmar = window.confirm(
+        `⚠️ ADVERTENCIA:\n\nLa cantidad solicitada (${cantidadEquipo}) supera las unidades disponibles (${disponibilidadReal}).\n\n¿Desea continuar de todas formas?`
+      )
+      if (!confirmar) {
+        return
+      }
+    }
+
+    const equipoExistente = equiposSeleccionados.find(e => e.idEquipo === equipoId)
     if (equipoExistente) {
       alert("Este equipo ya fue agregado al tratamiento")
       return
     }
 
-    const equipo = equipos.find(e => e.idEquipo === parseInt(equipoSeleccionado))
     if (equipo) {
       setEquiposSeleccionados(prev => [...prev, {
         idEquipo: equipo.idEquipo,
         equipo: equipo,
         cantidadRequerida: cantidadEquipo,
-        notas: notasEquipo
+        disponibilidadReal: disponibilidadReal // Guardar la disponibilidad al momento de agregar
       }])
 
       // Resetear el formulario de equipo
       setEquipoSeleccionado("")
       setCantidadEquipo(1)
-      setNotasEquipo("")
+      setErrorCantidad("")
     }
   }
 
@@ -142,18 +194,41 @@ export default function TratamientoForm({ onSubmit, onCancel, initialData, espec
       return
     }
 
+    // Validar si hay equipos con cantidad excedida antes de enviar
+    const equiposConExceso = equiposSeleccionados.filter(te => {
+      const disponibilidadActual = calcularDisponibilidadReal(te.idEquipo)
+      return te.cantidadRequerida > disponibilidadActual
+    })
+
+    if (equiposConExceso.length > 0) {
+      const equiposList = equiposConExceso.map(te => {
+        const disponibilidadActual = calcularDisponibilidadReal(te.idEquipo)
+        return `- ${te.equipo.nombreEquipo}: Solicitado ${te.cantidadRequerida}, Disponible ${disponibilidadActual}`
+      }).join('\n')
+      
+      const confirmar = window.confirm(
+        `⚠️ ADVERTENCIA:\n\nLos siguientes equipos tienen cantidad solicitada mayor a la disponible:\n\n${equiposList}\n\n¿Desea continuar de todas formas?`
+      )
+      
+      if (!confirmar) {
+        return
+      }
+    }
+
     setLoading(true)
     try {
+      // 🔥 PREPARAR LOS EQUIPOS EN EL FORMATO CORRECTO (sin notas)
+      const tratamientoEquipos = equiposSeleccionados.map(te => ({
+        idEquipo: te.idEquipo,
+        cantidadRequerida: te.cantidadRequerida
+      }))
+
       const datosTratamiento = {
-        // Para actualización, INCLUIR EL ID en el cuerpo
-        ...(initialData && { id: initialData.id }),
-        
-        // Campos del formulario con tipos correctos
+        // Para actualización, NO incluir el ID aquí - va en la URL
         nombre: formData.nombre.trim(),
         descripcion: formData.descripcion.trim(),
         duracionMinutos: parseInt(formData.duracionMinutos) || 30,
         costoBase: parseFloat(formData.costoBase) || 0,
-        materialesRequeridos: formData.materialesRequeridos.trim(),
         indicaciones: formData.indicaciones.trim(),
         contraindicaciones: formData.contraindicaciones.trim(),
         activo: Boolean(formData.activo),
@@ -162,22 +237,22 @@ export default function TratamientoForm({ onSubmit, onCancel, initialData, espec
         
         // Manejar especialidad - ya validamos que no es "0"
         idEspecialidad: parseInt(formData.idEspecialidad),
+
+        // 🔥 INCLUIR LOS EQUIPOS EN EL PAYLOAD (sin notas)
+        tratamientoEquipos: tratamientoEquipos
       }
 
       console.log('📋 Datos finales para enviar:', datosTratamiento)
+      console.log('🔧 Equipos a enviar:', tratamientoEquipos)
 
       let tratamientoGuardado
       if (initialData) {
         tratamientoGuardado = await actualizarTratamiento(initialData.id, datosTratamiento)
       } else {
-        // Para creación, no incluir el ID
-        const { id, ...datosCreacion } = datosTratamiento
-        tratamientoGuardado = await crearTratamiento(datosCreacion)
+        tratamientoGuardado = await crearTratamiento(datosTratamiento)
       }
 
-      // Aquí podrías agregar los equipos al tratamiento si tu backend lo soporta
-      // Por ahora, los equipos seleccionados están en el estado local
-
+      console.log('✅ Tratamiento guardado:', tratamientoGuardado)
       onSubmit(tratamientoGuardado || datosTratamiento)
     } catch (error) {
       console.error("Error al guardar tratamiento:", error)
@@ -188,6 +263,7 @@ export default function TratamientoForm({ onSubmit, onCancel, initialData, espec
   }
 
   const equipoDisponible = equipos.find(e => e.idEquipo === parseInt(equipoSeleccionado))
+  const disponibilidadReal = equipoDisponible ? calcularDisponibilidadReal(equipoDisponible.idEquipo) : 0
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 max-w-6xl mx-auto">
@@ -322,11 +398,11 @@ export default function TratamientoForm({ onSubmit, onCancel, initialData, espec
           </div>
         </div>
 
-        {/* Equipos/Materiales Utilizados */}
+        {/* Equipos Utilizados */}
         <div>
           <h3 className="text-lg font-semibold mb-4 text-gray-900 flex items-center gap-2">
             <Package className="w-5 h-5 text-orange-600" />
-            Equipos y Materiales Utilizados
+            Equipos Utilizados
           </h3>
           
           {/* Selector de Equipos */}
@@ -343,18 +419,23 @@ export default function TratamientoForm({ onSubmit, onCancel, initialData, espec
                     <SelectValue placeholder={cargandoEquipos ? "Cargando equipos..." : "Seleccionar equipo"} />
                   </SelectTrigger>
                   <SelectContent>
-                    {equipos.map((equipo) => (
-                      <SelectItem key={equipo.idEquipo} value={equipo.idEquipo.toString()}>
-                        {equipo.nombreEquipo} 
-                        <span className={`ml-2 px-1.5 py-0.5 rounded text-xs ${
-                          equipo.estado === 'Disponible' ? 'bg-green-100 text-green-800' :
-                          equipo.estado === 'En Mantenimiento' ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-red-100 text-red-800'
-                        }`}>
-                          {equipo.estado}
-                        </span>
-                      </SelectItem>
-                    ))}
+                    {equipos.map((equipo) => {
+                      const disponibilidad = calcularDisponibilidadReal(equipo.idEquipo)
+                      return (
+                        <SelectItem key={equipo.idEquipo} value={equipo.idEquipo.toString()}>
+                          <div className="flex justify-between items-center w-full">
+                            <span>{equipo.nombreEquipo}</span>
+                            <span className={`ml-2 px-1.5 py-0.5 rounded text-xs ${
+                              equipo.estado === 'Disponible' ? 'bg-green-100 text-green-800' :
+                              equipo.estado === 'En Mantenimiento' ? 'bg-yellow-100 text-yellow-800' :
+                              'bg-red-100 text-red-800'
+                            }`}>
+                              {disponibilidad} disp.
+                            </span>
+                          </div>
+                        </SelectItem>
+                      )
+                    })}
                   </SelectContent>
                 </Select>
               </div>
@@ -386,8 +467,19 @@ export default function TratamientoForm({ onSubmit, onCancel, initialData, espec
 
             {equipoDisponible && (
               <div className="mt-2 text-sm text-gray-600">
-                <p><strong>Disponible:</strong> {equipoDisponible.cantidad} unidades</p>
+                <p><strong>Stock total:</strong> {equipoDisponible.cantidad} unidades</p>
+                <p><strong>Disponible real:</strong> {disponibilidadReal} unidades</p>
                 <p><strong>Ubicación:</strong> {equipoDisponible.ubicacion || "No especificada"}</p>
+                
+                {/* Mostrar advertencia si la cantidad solicitada excede la disponible */}
+                {cantidadEquipo > disponibilidadReal && (
+                  <div className="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded-md">
+                    <p className="text-yellow-800 text-sm flex items-center gap-1">
+                      <AlertTriangle size={14} />
+                      <strong>Advertencia:</strong> La cantidad solicitada ({cantidadEquipo}) supera las unidades disponibles ({disponibilidadReal})
+                    </p>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -395,35 +487,57 @@ export default function TratamientoForm({ onSubmit, onCancel, initialData, espec
           {/* Lista de Equipos Seleccionados */}
           {equiposSeleccionados.length > 0 ? (
             <div className="space-y-2">
-              <Label className="text-gray-700">Equipos seleccionados:</Label>
-              {equiposSeleccionados.map((item) => (
-                <div key={item.idEquipo} className="flex items-center justify-between bg-white p-3 rounded-lg border border-gray-200">
-                  <div className="flex-1">
-                    <p className="font-medium text-gray-900">{item.equipo.nombreEquipo}</p>
-                    <p className="text-sm text-gray-600">
-                      Cantidad: {item.cantidadRequerida} | 
-                      Estado: <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs ${
-                        item.equipo.estado === 'Disponible' ? 'bg-green-100 text-green-800' :
-                        item.equipo.estado === 'En Mantenimiento' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-red-100 text-red-800'
-                      }`}>
-                        {item.equipo.estado}
-                      </span>
-                    </p>
-                    {item.notas && (
-                      <p className="text-sm text-gray-500 mt-1">Notas: {item.notas}</p>
-                    )}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => removerEquipo(item.idEquipo)}
-                    className="p-1 hover:bg-red-50 text-red-600 rounded transition-colors ml-2"
-                    title="Remover equipo"
+              <Label className="text-gray-700">Equipos seleccionados ({equiposSeleccionados.length}):</Label>
+              {equiposSeleccionados.map((item) => {
+                const disponibilidadActual = calcularDisponibilidadReal(item.idEquipo)
+                const tieneExceso = item.cantidadRequerida > disponibilidadActual
+                return (
+                  <div 
+                    key={item.idEquipo} 
+                    className={`flex items-center justify-between p-3 rounded-lg border ${
+                      tieneExceso 
+                        ? 'bg-yellow-50 border-yellow-200' 
+                        : 'bg-white border-gray-200'
+                    }`}
                   >
-                    <Trash2 size={16} />
-                  </button>
-                </div>
-              ))}
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <p className="font-medium text-gray-900">{item.equipo.nombreEquipo}</p>
+                        {tieneExceso && (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-yellow-100 text-yellow-800">
+                            <AlertTriangle size={12} className="mr-1" />
+                            Exceso
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-sm text-gray-600">
+                        Cantidad: {item.cantidadRequerida} | 
+                        Disponible: {disponibilidadActual} |
+                        Estado: <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs ${
+                          item.equipo.estado === 'Disponible' ? 'bg-green-100 text-green-800' :
+                          item.equipo.estado === 'En Mantenimiento' ? 'bg-yellow-100 text-yellow-800' :
+                          'bg-red-100 text-red-800'
+                        }`}>
+                          {item.equipo.estado}
+                        </span>
+                      </p>
+                      {tieneExceso && (
+                        <p className="text-sm text-yellow-700 mt-1">
+                          ⚠️ Solicitado: {item.cantidadRequerida} | Disponible real: {disponibilidadActual}
+                        </p>
+                      )}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => removerEquipo(item.idEquipo)}
+                      className="p-1 hover:bg-red-50 text-red-600 rounded transition-colors ml-2"
+                      title="Remover equipo"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                )
+              })}
             </div>
           ) : (
             <div className="text-center py-4 text-gray-500 border-2 border-dashed border-gray-200 rounded-lg">
@@ -475,19 +589,7 @@ export default function TratamientoForm({ onSubmit, onCancel, initialData, espec
             <FileText className="w-5 h-5 text-purple-600" />
             Información Técnica
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="materialesRequeridos" className="text-gray-700">Materiales Requeridos</Label>
-              <Textarea
-                id="materialesRequeridos"
-                name="materialesRequeridos"
-                value={formData.materialesRequeridos}
-                onChange={handleChange}
-                rows={3}
-                placeholder="Lista de materiales necesarios..."
-                className="border-gray-300"
-              />
-            </div>
+          <div className="space-y-4">
             <div>
               <Label htmlFor="indicaciones" className="text-gray-700">Indicaciones</Label>
               <Textarea
@@ -500,18 +602,18 @@ export default function TratamientoForm({ onSubmit, onCancel, initialData, espec
                 className="border-gray-300"
               />
             </div>
-          </div>
-          <div className="mt-4">
-            <Label htmlFor="contraindicaciones" className="text-gray-700">Contraindicaciones</Label>
-            <Textarea
-              id="contraindicaciones"
-              name="contraindicaciones"
-              value={formData.contraindicaciones}
-              onChange={handleChange}
-              rows={2}
-              placeholder="Contraindicaciones y precauciones..."
-              className="border-gray-300"
-            />
+            <div>
+              <Label htmlFor="contraindicaciones" className="text-gray-700">Contraindicaciones</Label>
+              <Textarea
+                id="contraindicaciones"
+                name="contraindicaciones"
+                value={formData.contraindicaciones}
+                onChange={handleChange}
+                rows={2}
+                placeholder="Contraindicaciones y precauciones..."
+                className="border-gray-300"
+              />
+            </div>
           </div>
         </div>
 
