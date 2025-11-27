@@ -15,20 +15,17 @@ import AppointmentList from "../GestionAdmin/GestionCita/AppointmentList"
 import PatientList from "../GestionAdmin/GestionPaciente/PatientList"
 import Reportes from "../GestionAdmin/GestionReporte/Reportes"
 import TerapeutaForm from "../GestionAdmin/GestionTerapeuta/TerapeutaForm"
-<<<<<<< HEAD
 import TratamientosList from "../GestionAdmin/GestionTratamiento/TratamientosList"
-import EquiposList from "../GestionAdmin/GestionEquipo/EquiposList" // Nueva importació
 import { createConnection, startConnection, stopConnection } from "../../services/SignalRService"
 import { useAuth } from "../../hooks/useAuth"
 
-=======
+
 import EquiposList from "../GestionAdmin/GestionEquipo/EquiposList" // Nueva importación
 import { ClipboardList } from "lucide-react"
 import TipoServiciosList from "../GestionAdmin/GestionServicio/TipoServiciosList"
 import { Building } from "lucide-react"
 import SalasList from "../GestionAdmin/GestionSala/SalasList"
 import CitaList from "../GestionAdmin/GestionCita/CitaList"
->>>>>>> aca09fa576567d91dfb7b886f4ff21fe542c8437
 
 function AdminDashboard() {
   const [totalTerapeutas, setTotalTerapeutas] = useState(0)

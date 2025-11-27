@@ -14,8 +14,8 @@ export function AuthProvider({ children }) {
    * Al cargar, verificar si hay token guardado
    */
   useEffect(() => {
-    const tokenGuardado = localStorage.getItem('authToken');
-    const usuarioGuardado = localStorage.getItem('usuario');
+    const tokenGuardado = sessionStorage.getItem('authToken');
+    const usuarioGuardado = sessionStorage.getItem('usuario');
 
     if (tokenGuardado && usuarioGuardado) {
       try {
@@ -25,8 +25,8 @@ export function AuthProvider({ children }) {
         setIsAuthenticated(true);
       } catch (error) {
         console.error('Error al recuperar datos guardados:', error);
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('usuario');
+        sessionStorage.removeItem('authToken');
+        sessionStorage.removeItem('usuario');
       }
     }
 
@@ -57,28 +57,22 @@ export function AuthProvider({ children }) {
       const datos = await respuesta.json();
       const nuevoToken = datos.Token || datos.token;
 
-      // Extraer datos del token JWT - CORREGIDO
+      // Extraer datos del token JWT
       const datosDelToken = extraerDatosUsuario(nuevoToken);
 
-      console.log('Datos del token:', datosDelToken); // Para debug
-
-      // Combinar datos - USAR LOS DATOS DEL TOKEN QUE SÍ TIENEN LA INFORMACIÓN
       const datosUsuario = {
         id: datos.Id || datosDelToken.id,
         nombre: datos.Nombres || datosDelToken.nombre, 
         apellidos: datos.Apellidos || datosDelToken.apellidos,
-        // USAR EL FullName DEL TOKEN QUE SÍ CONTIENE LOS DATOS CORRECTOS
         nombreCompleto: datosDelToken.nombreCompleto || `${datos.Nombres} ${datos.Apellidos}`,
         usuario: usuario,
         rol: datosDelToken.rol,
         email: datosDelToken.email
       };
 
-      console.log('Datos usuario a guardar:', datosUsuario); // Para debug
-
-      // Guardar en localStorage
-      localStorage.setItem('authToken', nuevoToken);
-      localStorage.setItem('usuario', JSON.stringify(datosUsuario));
+      // Guardar en sessionStorage
+      sessionStorage.setItem('authToken', nuevoToken);
+      sessionStorage.setItem('usuario', JSON.stringify(datosUsuario));
 
       // Actualizar estado
       setToken(nuevoToken);
@@ -96,8 +90,8 @@ export function AuthProvider({ children }) {
    * Función para hacer logout
    */
   const logout = () => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('usuario');
+    sessionStorage.removeItem('authToken');
+    sessionStorage.removeItem('usuario');
     setToken(null);
     setUsuario(null);
     setIsAuthenticated(false);
