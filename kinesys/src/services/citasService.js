@@ -1,255 +1,223 @@
+// src/services/citasService.js
 import citasApi from "../api/citasApi";
+import { actualizarDisponibilidad, liberarDisponibilidad } from "./disponibilidadTerapeutaService";
 
+// 🔥 FUNCIONES BÁSICAS - Agregadas
 export async function listarCitas() {
   try {
-    console.log("🔄 Servicio: Listando citas...");
-    const citas = await citasApi.getAll();
-    console.log("✅ Servicio: Citas obtenidas:", citas);
-    return citas;
+    return await citasApi.getAll();
   } catch (error) {
-    console.error('❌ Servicio: Error al listar citas:', error);
+    console.error('Error al listar citas:', error);
     throw error;
   }
 }
 
 export async function obtenerCita(id) {
   try {
-    console.log(`🔄 Servicio: Obteniendo cita ${id}...`);
-    const cita = await citasApi.getById(id);
-    console.log("✅ Servicio: Cita obtenida:", cita);
-    return cita;
+    return await citasApi.getById(id);
   } catch (error) {
-    console.error(`❌ Servicio: Error al obtener cita ${id}:`, error);
+    console.error(`Error al obtener cita ${id}:`, error);
     throw error;
   }
 }
 
 export async function crearCita(data) {
   try {
-    console.log("🔄 Servicio: Creando cita con datos:", data);
+    console.log("🔄 Creando cita con datos:", data);
     
-    const datosCompletos = {
-      idCita: 0, // El backend lo asignará automáticamente
-      duracionProgramadaMin: data.duracionProgramadaMin || 30,
-      horaInicioReal: data.horaInicioReal || null,
-      horaFinReal: data.horaFinReal || null,
-      checkIn: data.checkIn || null,
-      checkOut: data.checkOut || null,
-      confirmada: data.confirmada !== undefined ? data.confirmada : false,
-      motivo: data.motivo || "",
-      estado: data.estado || "Programada",
-      precioCita: data.precioCita || 0,
-      tipoAtencion: data.tipoAtencion || "Particular",
-      idEPS: data.idEPS || null,
-      copago: data.copago || 0,
-      idAutorizacion: data.idAutorizacion || null,
-      idOrdenMedica: data.idOrdenMedica || null,
-      idSala: data.idSala || null,
-      idTipoServicio: data.idTipoServicio || null,
-      idPaciente: data.idPaciente || 0,
-      idTerapeuta: data.idTerapeuta || 0,
-      idTratamiento: data.idTratamiento || null
-    };
+    // Extraer idDisponibilidad de los datos (no pertenece al modelo Cita)
+    const { idDisponibilidad, ...datosCita } = data;
+    
+    // 1. Primero crear la cita
+    const citaCreada = await citasApi.create('', datosCita);
+    console.log("✅ Cita creada:", citaCreada);
 
-    // Validaciones básicas
-    if (!datosCompletos.idPaciente || datosCompletos.idPaciente === 0) {
-      throw new Error('El ID del paciente es requerido');
+    // 2. Si hay idDisponibilidad, actualizar la disponibilidad con el IdCita
+    if (citaCreada && citaCreada.idCita && idDisponibilidad) {
+      console.log("🔄 Actualizando disponibilidad con ID:", idDisponibilidad);
+      
+      try {
+        await actualizarDisponibilidad(idDisponibilidad, {
+          idCita: citaCreada.idCita,
+          disponible: false
+        });
+        console.log("✅ Disponibilidad actualizada correctamente");
+        
+        // 🔥 OPCIONAL: Si quieres mantener la referencia en el frontend
+        citaCreada.idDisponibilidad = idDisponibilidad;
+        
+      } catch (error) {
+        console.error("❌ Error al actualizar disponibilidad:", error);
+        // Revertir: eliminar la cita recién creada
+        await eliminarCita(citaCreada.idCita);
+        throw new Error("Error al reservar el horario. La cita no pudo ser agendada.");
+      }
     }
 
-    if (!datosCompletos.idTerapeuta || datosCompletos.idTerapeuta === 0) {
-      throw new Error('El ID del terapeuta es requerido');
-    }
-
-    if (datosCompletos.duracionProgramadaMin <= 0) {
-      throw new Error('La duración programada debe ser mayor a 0');
-    }
-
-    const resultado = await citasApi.create('', datosCompletos);
-    console.log("✅ Servicio: Cita creada exitosamente:", resultado);
-    return resultado;
+    return citaCreada;
   } catch (error) {
-    console.error('❌ Servicio: Error al crear cita:', error);
-    
-    // Manejo específico de errores
-    if (error.message.includes('409') || error.message.includes('Conflict')) {
-      throw new Error('Ya existe una cita en ese horario');
-    }
-    
+    console.error("❌ Error al crear cita:", error);
     throw error;
   }
 }
 
 export async function actualizarCita(id, data) {
   try {
-    console.log(`🔄 Servicio: Actualizando cita ${id} con datos:`, data);
+    console.log("🔄 Actualizando cita:", id, "con datos:", data);
     
-    const datosActualizacion = {
-      idCita: id,
-      duracionProgramadaMin: data.duracionProgramadaMin || 30,
-      horaInicioReal: data.horaInicioReal || null,
-      horaFinReal: data.horaFinReal || null,
-      checkIn: data.checkIn || null,
-      checkOut: data.checkOut || null,
-      confirmada: data.confirmada !== undefined ? data.confirmada : false,
-      motivo: data.motivo || "",
-      estado: data.estado || "Programada",
-      precioCita: data.precioCita || 0,
-      tipoAtencion: data.tipoAtencion || "Particular",
-      idEPS: data.idEPS || null,
-      copago: data.copago || 0,
-      idAutorizacion: data.idAutorizacion || null,
-      idOrdenMedica: data.idOrdenMedica || null,
-      idSala: data.idSala || null,
-      idTipoServicio: data.idTipoServicio || null,
-      idPaciente: data.idPaciente || 0,
-      idTerapeuta: data.idTerapeuta || 0,
-      idTratamiento: data.idTratamiento || null
-    };
-
-    // Validaciones básicas
-    if (!datosActualizacion.idPaciente || datosActualizacion.idPaciente === 0) {
-      throw new Error('El ID del paciente es requerido');
-    }
-
-    if (!datosActualizacion.idTerapeuta || datosActualizacion.idTerapeuta === 0) {
-      throw new Error('El ID del terapeuta es requerido');
-    }
-
-    if (datosActualizacion.duracionProgramadaMin <= 0) {
-      throw new Error('La duración programada debe ser mayor a 0');
-    }
+    // Extraer idDisponibilidad
+    const { idDisponibilidad, ...datosCita } = data;
     
-    const resultado = await citasApi.update(`/${id}`, datosActualizacion);
-    console.log("✅ Servicio: Cita actualizada exitosamente:", resultado);
-    return resultado;
+    const citaActualizada = await citasApi.update(`/${id}`, datosCita);
+    console.log("✅ Cita actualizada:", citaActualizada);
+
+    // Actualizar disponibilidad si se proporcionó
+    if (citaActualizada && idDisponibilidad) {
+      console.log("🔄 Actualizando disponibilidad con ID:", idDisponibilidad);
+      
+      try {
+        await actualizarDisponibilidad(idDisponibilidad, {
+          idCita: citaActualizada.idCita,
+          disponible: false
+        });
+        console.log("✅ Disponibilidad actualizada correctamente");
+      } catch (error) {
+        console.error("❌ Error al actualizar disponibilidad:", error);
+        throw new Error("Cita actualizada pero error al reservar el horario.");
+      }
+    }
+
+    return citaActualizada;
   } catch (error) {
-    console.error(`❌ Servicio: Error al actualizar cita ${id}:`, error);
+    console.error(`Error al actualizar cita ${id}:`, error);
     throw error;
   }
 }
 
 export async function eliminarCita(id) {
   try {
-    console.log(`🔄 Servicio: Eliminando cita ${id}...`);
-    const resultado = await citasApi.delete(id);
-    console.log("✅ Servicio: Cita eliminada exitosamente");
-    return resultado;
-  } catch (error) {
-    console.error(`❌ Servicio: Error al eliminar cita ${id}:`, error);
+    // Primero obtener la cita para saber si tiene disponibilidad asociada
+    const cita = await obtenerCita(id);
     
-    // Manejo específico para cuando no se puede eliminar por relaciones
-    if (error.message.includes('409') || error.message.includes('Conflict')) {
-      throw new Error('No se puede eliminar la cita porque tiene registros asociados');
+    // Eliminar la cita
+    const resultado = await citasApi.delete(id);
+    
+    // Si la cita tenía una disponibilidad asociada, liberarla
+    if (cita && cita.idDisponibilidad) {
+      await liberarDisponibilidad(cita.idDisponibilidad);
     }
     
+    return resultado;
+  } catch (error) {
+    console.error(`Error al eliminar cita ${id}:`, error);
     throw error;
   }
 }
 
-// Funciones adicionales útiles para citas
+// 🔥 FUNCIONES ADICIONALES - Corregidas (ahora usan las funciones básicas)
 export async function buscarCitasPorPaciente(idPaciente) {
   try {
-    console.log(`🔍 Servicio: Buscando citas por paciente: ${idPaciente}`);
+    console.log(`🔍 Buscando citas por paciente: ${idPaciente}`);
     const citas = await listarCitas();
     const resultados = citas.filter(cita => 
       cita.idPaciente === idPaciente
     );
-    console.log("✅ Servicio: Citas del paciente:", resultados);
+    console.log("✅ Citas del paciente:", resultados);
     return resultados;
   } catch (error) {
-    console.error('❌ Servicio: Error al buscar citas por paciente:', error);
+    console.error('❌ Error al buscar citas por paciente:', error);
     throw error;
   }
 }
 
 export async function buscarCitasPorTerapeuta(idTerapeuta) {
   try {
-    console.log(`🔍 Servicio: Buscando citas por terapeuta: ${idTerapeuta}`);
+    console.log(`🔍 Buscando citas por terapeuta: ${idTerapeuta}`);
     const citas = await listarCitas();
     const resultados = citas.filter(cita => 
       cita.idTerapeuta === idTerapeuta
     );
-    console.log("✅ Servicio: Citas del terapeuta:", resultados);
+    console.log("✅ Citas del terapeuta:", resultados);
     return resultados;
   } catch (error) {
-    console.error('❌ Servicio: Error al buscar citas por terapeuta:', error);
+    console.error('❌ Error al buscar citas por terapeuta:', error);
     throw error;
   }
 }
 
 export async function filtrarCitasPorEstado(estado) {
   try {
-    console.log(`🔍 Servicio: Filtrando citas por estado: ${estado}`);
+    console.log(`🔍 Filtrando citas por estado: ${estado}`);
     const citas = await listarCitas();
     const resultados = citas.filter(cita => 
-      cita.estado.toLowerCase() === estado.toLowerCase()
+      cita.estado && cita.estado.toLowerCase() === estado.toLowerCase()
     );
-    console.log("✅ Servicio: Citas filtradas por estado:", resultados);
+    console.log("✅ Citas filtradas por estado:", resultados);
     return resultados;
   } catch (error) {
-    console.error('❌ Servicio: Error al filtrar citas por estado:', error);
+    console.error('❌ Error al filtrar citas por estado:', error);
     throw error;
   }
 }
 
 export async function filtrarCitasPorTipoAtencion(tipoAtencion) {
   try {
-    console.log(`🔍 Servicio: Filtrando citas por tipo de atención: ${tipoAtencion}`);
+    console.log(`🔍 Filtrando citas por tipo de atención: ${tipoAtencion}`);
     const citas = await listarCitas();
     const resultados = citas.filter(cita => 
-      cita.tipoAtencion.toLowerCase() === tipoAtencion.toLowerCase()
+      cita.tipoAtencion && cita.tipoAtencion.toLowerCase() === tipoAtencion.toLowerCase()
     );
-    console.log("✅ Servicio: Citas filtradas por tipo de atención:", resultados);
+    console.log("✅ Citas filtradas por tipo de atención:", resultados);
     return resultados;
   } catch (error) {
-    console.error('❌ Servicio: Error al filtrar citas por tipo de atención:', error);
+    console.error('❌ Error al filtrar citas por tipo de atención:', error);
     throw error;
   }
 }
 
 export async function obtenerCitasProgramadas() {
   try {
-    console.log("🔍 Servicio: Obteniendo citas programadas...");
+    console.log("🔍 Obteniendo citas programadas...");
     return await filtrarCitasPorEstado("Programada");
   } catch (error) {
-    console.error('❌ Servicio: Error al obtener citas programadas:', error);
+    console.error('❌ Error al obtener citas programadas:', error);
     throw error;
   }
 }
 
 export async function obtenerCitasConfirmadas() {
   try {
-    console.log("🔍 Servicio: Obteniendo citas confirmadas...");
+    console.log("🔍 Obteniendo citas confirmadas...");
     return await filtrarCitasPorEstado("Confirmada");
   } catch (error) {
-    console.error('❌ Servicio: Error al obtener citas confirmadas:', error);
+    console.error('❌ Error al obtener citas confirmadas:', error);
     throw error;
   }
 }
 
 export async function obtenerCitasCompletadas() {
   try {
-    console.log("🔍 Servicio: Obteniendo citas completadas...");
+    console.log("🔍 Obteniendo citas completadas...");
     return await filtrarCitasPorEstado("Completada");
   } catch (error) {
-    console.error('❌ Servicio: Error al obtener citas completadas:', error);
+    console.error('❌ Error al obtener citas completadas:', error);
     throw error;
   }
 }
 
 export async function obtenerCitasCanceladas() {
   try {
-    console.log("🔍 Servicio: Obteniendo citas canceladas...");
+    console.log("🔍 Obteniendo citas canceladas...");
     return await filtrarCitasPorEstado("Cancelada");
   } catch (error) {
-    console.error('❌ Servicio: Error al obtener citas canceladas:', error);
+    console.error('❌ Error al obtener citas canceladas:', error);
     throw error;
   }
 }
 
 export async function confirmarCita(id) {
   try {
-    console.log(`🔄 Servicio: Confirmando cita ${id}...`);
+    console.log(`🔄 Confirmando cita ${id}...`);
     
     // Primero obtener la cita actual
     const cita = await obtenerCita(id);
@@ -263,14 +231,14 @@ export async function confirmarCita(id) {
     
     return await actualizarCita(id, datosActualizacion);
   } catch (error) {
-    console.error(`❌ Servicio: Error al confirmar cita:`, error);
+    console.error(`❌ Error al confirmar cita:`, error);
     throw error;
   }
 }
 
 export async function cancelarCita(id) {
   try {
-    console.log(`🔄 Servicio: Cancelando cita ${id}...`);
+    console.log(`🔄 Cancelando cita ${id}...`);
     
     // Primero obtener la cita actual
     const cita = await obtenerCita(id);
@@ -284,14 +252,14 @@ export async function cancelarCita(id) {
     
     return await actualizarCita(id, datosActualizacion);
   } catch (error) {
-    console.error(`❌ Servicio: Error al cancelar cita:`, error);
+    console.error(`❌ Error al cancelar cita:`, error);
     throw error;
   }
 }
 
 export async function realizarCheckIn(id) {
   try {
-    console.log(`🔄 Servicio: Realizando check-in para cita ${id}...`);
+    console.log(`🔄 Realizando check-in para cita ${id}...`);
     
     // Primero obtener la cita actual
     const cita = await obtenerCita(id);
@@ -304,14 +272,14 @@ export async function realizarCheckIn(id) {
     
     return await actualizarCita(id, datosActualizacion);
   } catch (error) {
-    console.error(`❌ Servicio: Error al realizar check-in:`, error);
+    console.error(`❌ Error al realizar check-in:`, error);
     throw error;
   }
 }
 
 export async function realizarCheckOut(id) {
   try {
-    console.log(`🔄 Servicio: Realizando check-out para cita ${id}...`);
+    console.log(`🔄 Realizando check-out para cita ${id}...`);
     
     // Primero obtener la cita actual
     const cita = await obtenerCita(id);
@@ -325,14 +293,14 @@ export async function realizarCheckOut(id) {
     
     return await actualizarCita(id, datosActualizacion);
   } catch (error) {
-    console.error(`❌ Servicio: Error al realizar check-out:`, error);
+    console.error(`❌ Error al realizar check-out:`, error);
     throw error;
   }
 }
 
 export async function iniciarCita(id) {
   try {
-    console.log(`🔄 Servicio: Iniciando cita ${id}...`);
+    console.log(`🔄 Iniciando cita ${id}...`);
     
     // Primero obtener la cita actual
     const cita = await obtenerCita(id);
@@ -346,14 +314,14 @@ export async function iniciarCita(id) {
     
     return await actualizarCita(id, datosActualizacion);
   } catch (error) {
-    console.error(`❌ Servicio: Error al iniciar cita:`, error);
+    console.error(`❌ Error al iniciar cita:`, error);
     throw error;
   }
 }
 
 export async function finalizarCita(id) {
   try {
-    console.log(`🔄 Servicio: Finalizando cita ${id}...`);
+    console.log(`🔄 Finalizando cita ${id}...`);
     
     // Primero obtener la cita actual
     const cita = await obtenerCita(id);
@@ -367,14 +335,14 @@ export async function finalizarCita(id) {
     
     return await actualizarCita(id, datosActualizacion);
   } catch (error) {
-    console.error(`❌ Servicio: Error al finalizar cita:`, error);
+    console.error(`❌ Error al finalizar cita:`, error);
     throw error;
   }
 }
 
 export async function verificarDisponibilidad(idTerapeuta, fechaHoraInicio, duracionMin) {
   try {
-    console.log(`🔍 Servicio: Verificando disponibilidad para terapeuta ${idTerapeuta} en ${fechaHoraInicio} por ${duracionMin} minutos...`);
+    console.log(`🔍 Verificando disponibilidad para terapeuta ${idTerapeuta} en ${fechaHoraInicio} por ${duracionMin} minutos...`);
     
     // Obtener todas las citas del terapeuta
     const citasTerapeuta = await buscarCitasPorTerapeuta(idTerapeuta);
@@ -388,8 +356,8 @@ export async function verificarDisponibilidad(idTerapeuta, fechaHoraInicio, dura
       // Solo verificar citas que no estén canceladas
       if (cita.estado === "Cancelada") return false;
       
-      const inicioExistente = new Date(cita.horaInicioReal || cita.horaInicioProgramada); // Asumiendo que hay una hora de inicio programada
-      const finExistente = new Date(inicioExistente.getTime() + cita.duracionProgramadaMin * 60000);
+      const inicioExistente = new Date(cita.fechaHora); // Usar fechaHora que es cuando está programada
+      const finExistente = new Date(inicioExistente.getTime() + (cita.duracionProgramadaMin || 30) * 60000);
       
       // Verificar superposición
       return (
@@ -400,66 +368,65 @@ export async function verificarDisponibilidad(idTerapeuta, fechaHoraInicio, dura
     });
     
     const disponible = !tieneConflicto;
-    console.log(`✅ Servicio: Disponibilidad verificada:`, disponible);
+    console.log(`✅ Disponibilidad verificada:`, disponible);
     return disponible;
   } catch (error) {
-    console.error('❌ Servicio: Error al verificar disponibilidad:', error);
+    console.error('❌ Error al verificar disponibilidad:', error);
     throw error;
   }
 }
 
 export async function obtenerCitasPorRangoDeFechas(fechaInicio, fechaFin) {
   try {
-    console.log(`🔍 Servicio: Obteniendo citas entre ${fechaInicio} y ${fechaFin}...`);
+    console.log(`🔍 Obteniendo citas entre ${fechaInicio} y ${fechaFin}...`);
     const citas = await listarCitas();
     const fechaInicioDate = new Date(fechaInicio);
     const fechaFinDate = new Date(fechaFin);
     
     const resultados = citas.filter(cita => {
-      // Usar la hora de inicio real o programada (depende de tu modelo)
-      const fechaCita = new Date(cita.horaInicioReal || cita.horaInicioProgramada);
+      const fechaCita = new Date(cita.fechaHora);
       return fechaCita >= fechaInicioDate && fechaCita <= fechaFinDate;
     });
     
-    console.log("✅ Servicio: Citas en el rango de fechas:", resultados);
+    console.log("✅ Citas en el rango de fechas:", resultados);
     return resultados;
   } catch (error) {
-    console.error('❌ Servicio: Error al obtener citas por rango de fechas:', error);
+    console.error('❌ Error al obtener citas por rango de fechas:', error);
     throw error;
   }
 }
 
 export async function obtenerCitasHoy() {
   try {
-    console.log("🔍 Servicio: Obteniendo citas de hoy...");
+    console.log("🔍 Obteniendo citas de hoy...");
     const hoy = new Date();
     const inicioDia = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
     const finDia = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() + 1);
     
     return await obtenerCitasPorRangoDeFechas(inicioDia, finDia);
   } catch (error) {
-    console.error('❌ Servicio: Error al obtener citas de hoy:', error);
+    console.error('❌ Error al obtener citas de hoy:', error);
     throw error;
   }
 }
 
 export async function obtenerCitasProximaSemana() {
   try {
-    console.log("🔍 Servicio: Obteniendo citas de la próxima semana...");
+    console.log("🔍 Obteniendo citas de la próxima semana...");
     const hoy = new Date();
     const inicioSemana = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
     const finSemana = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() + 7);
     
     return await obtenerCitasPorRangoDeFechas(inicioSemana, finSemana);
   } catch (error) {
-    console.error('❌ Servicio: Error al obtener citas de la próxima semana:', error);
+    console.error('❌ Error al obtener citas de la próxima semana:', error);
     throw error;
   }
 }
 
 export async function obtenerResumenCitas() {
   try {
-    console.log("📊 Servicio: Obteniendo resumen de citas...");
+    console.log("📊 Obteniendo resumen de citas...");
     const citas = await listarCitas();
     
     const resumen = {
@@ -472,10 +439,10 @@ export async function obtenerResumenCitas() {
       ingresosTotales: citas.reduce((sum, cita) => sum + (cita.precioCita || 0), 0)
     };
     
-    console.log("✅ Servicio: Resumen de citas:", resumen);
+    console.log("✅ Resumen de citas:", resumen);
     return resumen;
   } catch (error) {
-    console.error('❌ Servicio: Error al obtener resumen de citas:', error);
+    console.error('❌ Error al obtener resumen de citas:', error);
     throw error;
   }
 }

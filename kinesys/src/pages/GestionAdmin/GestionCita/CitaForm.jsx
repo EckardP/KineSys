@@ -85,41 +85,46 @@ export default function CitaForm({ onCancel, onSubmitSuccess, initialData }) {
     setCurrentStep(step)
   }
 
-  const handleSubmit = async () => {
-    setLoading(true)
-    try {
-      console.log("🔄 Enviando datos de cita:", citaData)
+  // En CitaForm.jsx - modificar handleSubmit
+const handleSubmit = async () => {
+  setLoading(true)
+  try {
+    console.log("🔄 Enviando datos de cita:", citaData)
 
-      const datosParaEnviar = {
-        ...citaData,
-        duracionProgramadaMin: Number(citaData.duracionProgramadaMin) || 30,
-        precioCita: Number(citaData.precioCita) || 0,
-        copago: Number(citaData.copago) || 0,
-        confirmada: citaData.estado === "Confirmada",
-        // Campos que deben ser null si no tienen valor
-        idSala: citaData.idSala || null,
-        idOrdenMedica: citaData.idOrdenMedica || null,
-        idAutorizacion: citaData.idAutorizacion || null,
-        idEPS: citaData.idEPS || null
-      }
+    // Separar los datos que van a Cita vs Disponibilidad
+    const { idDisponibilidad, ...datosCita } = citaData;
 
-      let resultado
-      if (initialData?.idCita) {
-        resultado = await actualizarCita(initialData.idCita, datosParaEnviar)
-      } else {
-        resultado = await crearCita(datosParaEnviar)
-      }
-
-      console.log("✅ Cita guardada exitosamente:", resultado)
-      onSubmitSuccess(resultado)
-    } catch (error) {
-      console.error("❌ Error al guardar cita:", error)
-      alert(error.message || "Error al guardar la cita")
-    } finally {
-      setLoading(false)
+    const datosParaEnviar = {
+      ...datosCita,
+      duracionProgramadaMin: Number(citaData.duracionProgramadaMin) || 30,
+      precioCita: Number(citaData.precioCita) || 0,
+      copago: Number(citaData.copago) || 0,
+      confirmada: citaData.estado === "Confirmada",
+      // Campos que deben ser null si no tienen valor
+      idSala: citaData.idSala || null,
+      idOrdenMedica: citaData.idOrdenMedica || null,
+      idAutorizacion: citaData.idAutorizacion || null,
+      idEPS: citaData.idEPS || null,
+      // Incluir idDisponibilidad para que el servicio lo maneje
+      idDisponibilidad: idDisponibilidad || null
     }
-  }
 
+    let resultado
+    if (initialData?.idCita) {
+      resultado = await actualizarCita(initialData.idCita, datosParaEnviar)
+    } else {
+      resultado = await crearCita(datosParaEnviar)
+    }
+
+    console.log("✅ Cita guardada exitosamente:", resultado)
+    onSubmitSuccess(resultado)
+  } catch (error) {
+    console.error("❌ Error al guardar cita:", error)
+    alert(error.message || "Error al guardar la cita")
+  } finally {
+    setLoading(false)
+  }
+}
   const renderStep = () => {
     switch (currentStep) {
       case 1:
