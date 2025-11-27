@@ -29,8 +29,23 @@ export async function crearDisponibilidad(data) {
 
 export async function actualizarDisponibilidad(id, data) {
   try {
-    // 🔥 IMPORTANTE: Pasar la URL completa con el ID
-    return await disponibilidadTerapeutaApi.update(`/${id}`, data);
+    // Primero obtener los datos actuales de la disponibilidad
+    const disponibilidadActual = await obtenerDisponibilidad(id);
+    
+    // Combinar datos actuales con los nuevos, manteniendo campos requeridos
+    const datosActualizados = {
+      ...disponibilidadActual,
+      ...data,
+      // Asegurar que los campos requeridos se mantengan
+      diaSemana: disponibilidadActual.diaSemana,
+      horaInicio: disponibilidadActual.horaInicio,
+      horaFin: disponibilidadActual.horaFin,
+      idTerapeuta: disponibilidadActual.idTerapeuta
+    };
+    
+    console.log("🔄 Datos para actualizar disponibilidad:", datosActualizados);
+    
+    return await disponibilidadTerapeutaApi.update(`/${id}`, datosActualizados);
   } catch (error) {
     console.error(`Error al actualizar disponibilidad ${id}:`, error);
     throw error;
@@ -103,3 +118,17 @@ export async function obtenerHorariosDisponibles(idTerapeuta, diaSemana, tipoAmb
     throw error;
   }
 }
+
+export async function liberarDisponibilidad(idDisponibilidad) {
+  try {
+    console.log(`🔄 Liberando disponibilidad ${idDisponibilidad}`);
+    return await actualizarDisponibilidad(idDisponibilidad, {
+      idCita: null,
+      disponible: true
+    });
+  } catch (error) {
+    console.error(`Error al liberar disponibilidad ${idDisponibilidad}:`, error);
+    throw error;
+  }
+}
+// En disponibilidadTerapeutaService.js - agregar esta funci
