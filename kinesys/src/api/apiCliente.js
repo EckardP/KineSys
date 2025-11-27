@@ -1,6 +1,6 @@
 import { getEndpoint } from '../config/apiConfig';
 
-export function crearApiCliente(ruta){
+export function crearApiCliente(ruta) {
     const URL_BASE = getEndpoint(ruta);
 
     async function respuesta(url = "", opciones = {}) {
@@ -35,19 +35,30 @@ export function crearApiCliente(ruta){
     }
 
     return {
+        // Get All por defecto
         getAll: () => respuesta(),
+        
+        // Get All personalizado con endpoint diferente
+        getAllCustom: (endpointPersonalizado = "") => respuesta(endpointPersonalizado),
+        
         getById: (id) => respuesta(`/${id}`),
-        create: (url = "", data) => respuesta(url, {
+        
+        // Create con endpoint personalizable
+        create: (endpointPersonalizado = "", data) => respuesta(endpointPersonalizado, {
             method: 'POST',
             body: JSON.stringify(data)
         }),
-        // 🔥 CORREGIDO: El método update debe aceptar la URL completa
-        update: (url, data) => respuesta(url, {  // Cambiado de (id, data) a (url, data)
+        
+        update: (url, data) => respuesta(url, {
             method: 'PUT',
             body: JSON.stringify(data)
         }),
+        
         delete: (id) => respuesta(`/${id}`, {
             method: 'DELETE'
         }),
+        
+        // Método genérico para máxima flexibilidad
+        customRequest: (url, opciones = {}) => respuesta(url, opciones)
     };
 }

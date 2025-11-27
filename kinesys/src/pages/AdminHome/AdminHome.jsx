@@ -16,6 +16,11 @@ import PatientList from "../GestionAdmin/GestionPaciente/PatientList"
 import Reportes from "../GestionAdmin/GestionReporte/Reportes"
 import TerapeutaForm from "../GestionAdmin/GestionTerapeuta/TerapeutaForm"
 import EquiposList from "../GestionAdmin/GestionEquipo/EquiposList" // Nueva importación
+import { ClipboardList } from "lucide-react"
+import TipoServiciosList from "../GestionAdmin/GestionServicio/TipoServiciosList"
+import { Building } from "lucide-react"
+import SalasList from "../GestionAdmin/GestionSala/SalasList"
+import CitaList from "../GestionAdmin/GestionCita/CitaList"
 
 function AdminDashboard() {
   const [totalTerapeutas, setTotalTerapeutas] = useState(0)
@@ -65,16 +70,37 @@ function AdminDashboard() {
           <MetricCard title="Ocupación de Agenda" value={`${ocupacionAgenda}%`} icon={<BarChart3 size={24} />} />
         </div>
 
+        {/* Botones DE alta importancia */}
+        <div className="quick-access-section">
+          <h2 className="section-title">Botones de Alta Importancia</h2>
+          <div className="quick-access-buttons">
+                   <QuickAccessButton
+                      label="Gestionar Citas"
+                      path="/gestioncita/citas"
+                      icon={<Calendar size={20} />}
+                  />
+            </div>
+          </div>
+
+
         {/* Accesos rápidos */}
         <div className="quick-access-section">
           <h2 className="section-title">Accesos Rápidos</h2>
           <div className="quick-access-buttons">
+
+            <QuickAccessButton
+              label="Gestionar Citas"
+              path="/gestioncita/citas"
+              icon={<Calendar size={20} />}
+            />
+
+
             <QuickAccessButton
               label="Gestionar Pacientes"
               path="/gestionpaciente/pacientes"
               icon={<UserPlus size={20} />}
             />
-            <QuickAccessButton label="Gestionar Citas" path="/gestioncita/citas" icon={<Calendar size={20} />} />
+            
             <QuickAccessButton
               label="Gestionar Terapeutas"
               path="/gestionterapeuta/terapeuta"
@@ -88,6 +114,18 @@ function AdminDashboard() {
               path="/gestionequipo/equipos"
               icon={<Package size={20} />}
             />
+            {/* Nuevo boton para gestion de tipo de servicios */}
+            <QuickAccessButton
+              label="Gestionar Servicios"
+              path="/gestionservicio/servicios"
+              icon={<ClipboardList size={20} />}
+            />
+            {/* Nuevo boton para gestion de salas */}
+            <QuickAccessButton
+              label="Gestionar Salas"
+              path="/gestionsala/salas"
+              icon={<Building size={20} />}
+            />
           </div>
         </div>
       </div>
@@ -99,13 +137,21 @@ export default function AdminHome() {
   return (
     <Routes>
       <Route path="/" element={<AdminDashboard />} />
+
+      <Route path="/gestioncita/citas" element={<CitaList />} />
+
       <Route path="/gestionterapeuta/terapeuta" element={<TerapeutaForm />} />
       <Route path="/gestionagenda/agendaadmin" element={<AgendaAdmin />} />
-      <Route path="/gestioncita/citas" element={<AppointmentList />} />
+      
       <Route path="/gestionpaciente/pacientes" element={<PatientList />} />
       <Route path="/gestionreporte/reportes" element={<Reportes />} />
       {/* Nueva ruta para Gestión de Equipos */}
       <Route path="/gestionequipo/equipos" element={<EquiposList />} />
+      {/* Nueva ruta para Gestión de Tipo de Servicios */}
+      <Route path="/gestionservicio/servicios" element={<TipoServiciosList />} />
+
+      <Route path="/gestionsala/salas" element={<SalasList />} />
+
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   )

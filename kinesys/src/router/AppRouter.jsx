@@ -19,11 +19,14 @@ import PatientDetail from "../pages/GestionAdmin/GestionPaciente/PatientDetail"
 
 import AppointmentList from "../pages/GestionAdmin/GestionCita/AppointmentList"
 import AppointmentForm from "../pages/GestionAdmin/GestionCita/AppointmentForm"
+import CitaList from "../pages/GestionAdmin/GestionCita/CitaList"
 
 import TerapeutaHome from "../pages/TerapeutaHome/TerapeutaHome"
 import TerapeutaForm from "@/pages/GestionAdmin/GestionTerapeuta/TerapeutaForm"
 import TerapeutasList from "@/pages/GestionAdmin/GestionTerapeuta/TerapeutasList"
 import EquiposList from "@/pages/GestionAdmin/GestionEquipo/EquiposList"
+import TipoServiciosList from "@/pages/GestionAdmin/GestionServicio/TipoServiciosList"
+import SalasList from "@/pages/GestionAdmin/GestionSala/SalasList"
 
 
 export default function AppRouter() {
@@ -54,11 +57,15 @@ export default function AppRouter() {
       <Route path="/gestionpaciente/:id" element={<PatientDetail />} />
       <Route path="/gestionpaciente/editar/:id" element={<PatientForm />} />
 
-      <Route path="/gestioncita/citas" element={<AppointmentList />} />
+      <Route path="/gestioncita/citas" element={<CitaList />} />
       <Route path="/gestioncita/nueva" element={<AppointmentForm />} />
       <Route path="/gestioncita/editar/:id" element={<AppointmentForm />} />
 
       <Route path="/gestionequipo/equipos" element={<EquiposList />} />
+
+      <Route path="/gestionservicio/servicios" element={<TipoServiciosList />} />
+
+      <Route path="/gestionsala/salas" element={<SalasList />} />
 
       {/* MÓDULO TERAPEUTA */}
       <Route path="/dashboard" element={<TerapeutaHome />} />

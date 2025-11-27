@@ -12,9 +12,6 @@ namespace ApiPrueba.Models
         [Key]
         public int IdDisponibilidad { get; set; }
 
-        [Required]
-        public int IdTerapeuta { get; set; }
-
         [Required, StringLength(15)]
         public string DiaSemana { get; set; }  // Ej: "Lunes", "Martes"
 
@@ -29,6 +26,18 @@ namespace ApiPrueba.Models
 
         [StringLength(20)]
         public string? TipoAmbiente { get; set; } // Calle u Oficina
+
+        //Relaciones
+
+        public int? IdCita { get; set; }
+        [JsonIgnore]
+        [ForeignKey("IdCita")]
+        public Cita? Cita { get; set; }
+
+
+        [Required]
+        public int IdTerapeuta { get; set; }
+
         [JsonIgnore]
         [ForeignKey("IdTerapeuta")]
         public Terapeuta? Terapeuta { get; set; }

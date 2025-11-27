@@ -42,6 +42,22 @@ namespace ApiPrueba.Controllers
             return disponibilidadTerapeuta;
         }
 
+        // GET: api/DisponibilidadTerapeutas/por-terapeuta/{idTerapeuta}
+        [HttpGet("por-terapeuta/{idTerapeuta}")]
+        public async Task<ActionResult<IEnumerable<DisponibilidadTerapeuta>>> GetDisponibilidadPorTerapeuta(int idTerapeuta)
+        {
+            var disponibilidades = await _context.DisponibilidadesTerapeutas
+                .Where(d => d.IdTerapeuta == idTerapeuta)
+                .ToListAsync();
+
+            if (disponibilidades == null || !disponibilidades.Any())
+            {
+                return NotFound($"No se encontraron disponibilidades para el terapeuta con ID {idTerapeuta}");
+            }
+
+            return disponibilidades;
+        }
+
         // PUT: api/DisponibilidadTerapeutas/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]

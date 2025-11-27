@@ -42,6 +42,46 @@ namespace ApiPrueba.Controllers
             return terapeutaEspecialidad;
         }
 
+
+        // GET: api/TerapeutaEspecialidads/por-terapeuta/{idTerapeuta}
+        // GET: api/TerapeutaEspecialidads/por-terapeuta/{idTerapeuta}
+        [HttpGet("por-terapeuta/{idTerapeuta}")]
+        public async Task<ActionResult<IEnumerable<object>>> GetEspecialidadesPorTerapeuta(int idTerapeuta)
+        {
+            var especialidades = await _context.TerapeutaEspecialidades
+                .Where(te => te.IdTerapeuta == idTerapeuta)
+                .Include(te => te.Especialidad)
+                .Select(te => new
+                {
+                    te.IdTerapeutaEspecialidad,
+                    te.IdTerapeuta,
+                    te.IdEspecialidad,
+                    Nombre = te.Especialidad.Nombre, // ← Incluir el nombre aquí
+                    te.FechaCertificacion,
+                    te.NumeroCertificado,
+                    te.EsPrincipal
+                })
+                .ToListAsync();
+
+            return Ok(especialidades);
+        }
+        // GET: api/TerapeutaEspecialidads/por-terapeuta/{idTerapeuta}/principal
+        [HttpGet("por-terapeuta/{idTerapeuta}/principal")]
+        public async Task<ActionResult<TerapeutaEspecialidad>> GetEspecialidadPrincipalPorTerapeuta(int idTerapeuta)
+        {
+            var especialidadPrincipal = await _context.TerapeutaEspecialidades
+                .Where(te => te.IdTerapeuta == idTerapeuta && te.EsPrincipal)
+                .Include(te => te.Especialidad)
+                .FirstOrDefaultAsync();
+
+            if (especialidadPrincipal == null)
+            {
+                return NotFound($"No se encontró especialidad principal para el terapeuta con ID {idTerapeuta}");
+            }
+
+            return especialidadPrincipal;
+        }
+
         // PUT: api/TerapeutaEspecialidads/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]

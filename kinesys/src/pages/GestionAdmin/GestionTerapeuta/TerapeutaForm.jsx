@@ -5,9 +5,9 @@ import { X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import TerapeutaPersonalInfo from "./TerapeutaPersonalInfo"
 import TerapeutaContactInfo from "./TerapeutaContactInfo"
-import TerapeutaEspecialidad from "./TerapeutaEspecialidad"
 import TerapeutaProfessionalInfo from "./TerapeutaProfessionalInfo"
 import TerapeutaAccessInfo from "./TerapeutaAccessInfo"
+import GestionarEspecialidadesTerapeuta from "./GestionarEspecialidadesTerapeuta"
 import { crearTerapeuta, actualizarTerapeuta } from "../../../services/terapeutasService"
 
 const formatDateForInput = (dateString) => {
@@ -44,11 +44,13 @@ export default function TerapeutaForm({ onSubmit, onCancel, initialData }) {
     direccion: "",
     ciudad: "",
     departamento: "",
+    activo: true,
+    fechaRegistro: new Date().toISOString(),
+    rol: 2, // 2 para terapeuta
     noLicencia: "",
     tituloAcademico: "",
-    añosExperiencia: "",
+    añosExperiencia: 0,
     fechaContratacion: "",
-    idEspecialidad: "",
   })
 
   const [loading, setLoading] = useState(false)
@@ -58,18 +60,27 @@ export default function TerapeutaForm({ onSubmit, onCancel, initialData }) {
       console.log("📥 Cargando datos iniciales para edición:", initialData)
 
       const formattedData = {
-        ...initialData,
         user: initialData.user || "",
         password: "", // Siempre vacío en edición por seguridad
-        fechaNacimiento: formatDateForInput(initialData.fechaNacimiento),
-        fechaContratacion: formatDateForInput(initialData.fechaContratacion),
-        idEspecialidad: initialData.idEspecialidad || "",
+        nombres: initialData.nombres || "",
+        apellidos: initialData.apellidos || "",
+        tipoDocumento: initialData.tipoDocumento || "",
+        documentoIdentidad: initialData.documentoIdentidad || "",
         telefono: initialData.telefono || "",
         celular: initialData.celular || "",
+        correoElectronico: initialData.correoElectronico || "",
+        fechaNacimiento: formatDateForInput(initialData.fechaNacimiento),
+        genero: initialData.genero || "",
         direccion: initialData.direccion || "",
         ciudad: initialData.ciudad || "",
         departamento: initialData.departamento || "",
-        añosExperiencia: initialData.añosExperiencia || "",
+        activo: initialData.activo !== undefined ? initialData.activo : true,
+        fechaRegistro: initialData.fechaRegistro || new Date().toISOString(),
+        rol: initialData.rol || 2,
+        noLicencia: initialData.noLicencia || "",
+        tituloAcademico: initialData.tituloAcademico || "",
+        añosExperiencia: initialData.añosExperiencia || 0,
+        fechaContratacion: formatDateForInput(initialData.fechaContratacion) || new Date().toISOString().split('T')[0],
       }
 
       console.log("📤 Datos formateados:", formattedData)
@@ -91,20 +102,22 @@ export default function TerapeutaForm({ onSubmit, onCancel, initialData }) {
         direccion: "",
         ciudad: "",
         departamento: "",
+        activo: true,
+        fechaRegistro: new Date().toISOString(),
+        rol: 2,
         noLicencia: "",
         tituloAcademico: "",
-        añosExperiencia: "",
-        fechaContratacion: "",
-        idEspecialidad: "",
+        añosExperiencia: 0,
+        fechaContratacion: new Date().toISOString().split('T')[0],
       })
     }
   }, [initialData])
 
   const handleChange = (e) => {
-    const { name, value } = e.target
+    const { name, value, type, checked } = e.target
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: type === 'checkbox' ? checked : value,
     }))
   }
 
@@ -145,7 +158,7 @@ export default function TerapeutaForm({ onSubmit, onCancel, initialData }) {
     try {
       const datosTerapeuta = {
         user: formData.user,
-        password: formData.password, // Usar la contraseña ingresada manualmente
+        password: formData.password,
         nombres: formData.nombres,
         apellidos: formData.apellidos,
         tipoDocumento: formData.tipoDocumento,
@@ -158,31 +171,33 @@ export default function TerapeutaForm({ onSubmit, onCancel, initialData }) {
         direccion: formData.direccion,
         ciudad: formData.ciudad,
         departamento: formData.departamento,
-        activo: true,
-        fechaRegistro: new Date().toISOString(),
-        rol: 2,
+        activo: formData.activo,
+        fechaRegistro: formData.fechaRegistro,
+        rol: formData.rol,
         noLicencia: formData.noLicencia,
         tituloAcademico: formData.tituloAcademico,
         añosExperiencia: Number(formData.añosExperiencia) || 0,
         fechaContratacion: formData.fechaContratacion ? new Date(formData.fechaContratacion).toISOString() : new Date().toISOString(),
-        idEspecialidad: formData.idEspecialidad ? Number(formData.idEspecialidad) : null,
       }
 
+      console.log("📤 Datos a enviar al backend:", datosTerapeuta)
+
+      let resultado
       if (initialData) {
         // Para actualizar, no envíes password si está vacío (no se quiere cambiar)
-        const { password, fechaRegistro, rol, ...datosActualizacion } = datosTerapeuta
+        const { password, ...datosActualizacion } = datosTerapeuta
         // Si se ingresó una nueva contraseña, incluirla en la actualización
         const datosParaActualizar = formData.password 
           ? { ...datosActualizacion, password: formData.password }
           : datosActualizacion
         
-        await actualizarTerapeuta(initialData.id, datosParaActualizar)
+        resultado = await actualizarTerapeuta(initialData.id, datosParaActualizar)
       } else {
-        await crearTerapeuta(datosTerapeuta)
+        resultado = await crearTerapeuta(datosTerapeuta)
       }
 
-      console.log("🎉 Terapeuta guardado correctamente")
-      onSubmit() // Esto recargará la lista y cerrará el formulario
+      console.log("🎉 Terapeuta guardado correctamente:", resultado)
+      onSubmit(resultado) // Pasar el resultado para que pueda usarse si es necesario
     } catch (error) {
       console.error("❌ Error en handleSubmit:", error)
       alert(error.message || "Error al guardar el terapeuta")
@@ -209,6 +224,7 @@ export default function TerapeutaForm({ onSubmit, onCancel, initialData }) {
         <TerapeutaAccessInfo
           formData={formData}
           onChange={handleChange}
+          onSelectChange={handleSelectChange}
           isEditing={!!initialData}
         />
 
@@ -225,17 +241,34 @@ export default function TerapeutaForm({ onSubmit, onCancel, initialData }) {
           onChange={handleChange}
         />
 
-        {/* Especialidad */}
-        <TerapeutaEspecialidad
-          formData={formData}
-          onSelectChange={handleSelectChange}
-        />
-
         {/* Información Profesional */}
         <TerapeutaProfessionalInfo
           formData={formData}
           onChange={handleChange}
         />
+
+        {/* NUEVO COMPONENTE DE GESTIÓN DE ESPECIALIDADES */}
+        <div className="border-t border-gray-200 pt-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Gestión de Especialidades</h3>
+          <GestionarEspecialidadesTerapeuta 
+            idTerapeuta={initialData?.id} 
+          />
+        </div>
+
+        {/* Campo activo (oculto o visible según necesites) */}
+        <div className="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            id="activo"
+            name="activo"
+            checked={formData.activo}
+            onChange={handleChange}
+            className="rounded border-gray-300"
+          />
+          <label htmlFor="activo" className="text-sm font-medium text-gray-700">
+            Terapeuta activo
+          </label>
+        </div>
 
         {/* Botones de acción */}
         <div className="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200">
