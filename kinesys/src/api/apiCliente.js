@@ -1,6 +1,6 @@
 import { getEndpoint } from '../config/apiConfig';
 
-export function crearApiCliente(ruta){
+export function crearApiCliente(ruta) {
     const URL_BASE = getEndpoint(ruta);
 
     async function respuesta(url = "", opciones = {}) {
@@ -34,24 +34,31 @@ export function crearApiCliente(ruta){
         return null;
     }
 
-    // CORRECCIÓN en apiCliente.js - Opción 2 (Flexible)
-return {
-    getAll: () => respuesta(),
-    getById: (id) => respuesta(`/${id}`),
-    create: (url = "", data) => respuesta(url, {
-        method: 'POST',
-        body: JSON.stringify(data)
-    }),
-    // ✅ SOLUCIÓN FLEXIBLE: Manejar tanto números como strings
-    update: (param, data) => {
-        const url = String(param).startsWith('/') ? String(param) : `/${param}`;
-        return respuesta(url, {
+    return {
+        // Get All por defecto
+        getAll: () => respuesta(),
+        
+        // Get All personalizado con endpoint diferente
+        getAllCustom: (endpointPersonalizado = "") => respuesta(endpointPersonalizado),
+        
+        getById: (id) => respuesta(`/${id}`),
+        
+        // Create con endpoint personalizable
+        create: (endpointPersonalizado = "", data) => respuesta(endpointPersonalizado, {
+            method: 'POST',
+            body: JSON.stringify(data)
+        }),
+        
+        update: (url, data) => respuesta(url, {
             method: 'PUT',
             body: JSON.stringify(data)
-        });
-    },
-    delete: (id) => respuesta(`/${id}`, {
-        method: 'DELETE'
-    }),
-};
+        }),
+        
+        delete: (id) => respuesta(`/${id}`, {
+            method: 'DELETE'
+        }),
+        
+        // Método genérico para máxima flexibilidad
+        customRequest: (url, opciones = {}) => respuesta(url, opciones)
+    };
 }
