@@ -50,4 +50,5 @@ $RECYCLE.BIN/
 *.code-workspace
 
 echo "Kinesys.zip" >> .gitignore
-echo "*.zip" >> .gitignore
+echo "*.zip" >> .gitignoreKinesys.zip
+*.zip
