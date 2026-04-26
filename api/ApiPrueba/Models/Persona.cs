@@ -122,4 +122,19 @@ namespace ApiPrueba.Models
     {
         // Puedes agregar propiedades específicas del administrador aquí si es necesario
     }
+
+    public class Recepcionista : Persona
+    {
+
+    }
+
+    public class Contador : Persona
+    {
+
+    }
+
+    public class Supervisor : Persona
+    {
+
+    }
 }

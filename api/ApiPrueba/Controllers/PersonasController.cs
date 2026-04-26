@@ -414,6 +414,48 @@ namespace ApiPrueba.Controllers
                     };
                     break;
 
+                case Rol.Recepcionista:
+                    tipoUsuario = new Recepcionista
+                    {
+                        User = registro.User ?? "",
+                        Password = passwordHash,
+                        Nombres = registro.Nombres ?? "",
+                        Apellidos = registro.Apellidos ?? "",
+                        Activo = registro.Activo,
+                        FechaRegistro = registro.FechaRegistro,
+                        Rol = Rol.Recepcionista
+
+                    };
+                    break;
+
+                case Rol.Contador:
+                    tipoUsuario = new Contador
+                    {
+                        User = registro.User ?? "",
+                        Password = passwordHash,
+                        Nombres = registro.Nombres ?? "",
+                        Apellidos = registro.Apellidos ?? "",
+                        Activo = registro.Activo,
+                        FechaRegistro = registro.FechaRegistro,
+                        Rol = Rol.Contador
+
+                    };
+                    break;
+
+                case Rol.Supervisor:
+                    tipoUsuario = new Supervisor
+                    {
+                        User = registro.User ?? "",
+                        Password = passwordHash,
+                        Nombres = registro.Nombres ?? "",
+                        Apellidos = registro.Apellidos ?? "",
+                        Activo = registro.Activo,
+                        FechaRegistro = registro.FechaRegistro,
+                        Rol = Rol.Supervisor
+
+                    };
+                    break;
+
                 default:
                     return BadRequest("Rol no válido");
             }
