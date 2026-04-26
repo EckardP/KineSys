@@ -1,6 +1,6 @@
 import * as signalR from "@microsoft/signalr"
 
-const API_URL = "http://localhost:5058"
+const API_URL = import.meta.env.VITE_SIGNALR_URL || "http://localhost:5058"
 
 export const createConnection = (userId) => {
   if (!userId) {
@@ -25,7 +25,7 @@ export const createConnection = (userId) => {
     console.warn("SignalR reconectando:", error?.message)
   })
 
-  connection.onreconnected((connectionId) => {
+  connection.onreconnected((_connectionId) => {
     console.log("SignalR reconectado")
   })
 

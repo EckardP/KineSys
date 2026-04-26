@@ -1,11 +1,10 @@
 // src/pages/GestionCita/CitaServiceSelection.jsx
-"use client"
 
 import { useState, useEffect } from "react"
 import { Search, Clock, DollarSign, Info, ArrowRight } from "lucide-react"
 import { listarTipoServicios } from "../../../services/tipoServiciosService"
 
-const tiposAtencion = [
+const _tiposAtencion = [
   "Inicial / valoración",
   "Tratamiento / sesión terapéutica",
   "Seguimiento",
@@ -16,7 +15,7 @@ const tiposAtencion = [
   "Preventiva / bienestar"
 ]
 
-export default function CitaServiceSelection({ citaData, updateCitaData, onNext }) {
+export default function CitaServiceSelection({ citaData: _citaData, updateCitaData, onNext }) {
   const [servicios, setServicios] = useState([])
   const [searchTerm, setSearchTerm] = useState("")
   const [loading, setLoading] = useState(true)

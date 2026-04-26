@@ -1,5 +1,4 @@
 // src/pages/GestionCita/CitaForm.jsx
-"use client"
 
 import { useState, useEffect } from "react"
 import { Calendar, ArrowLeft, Save } from "lucide-react"

@@ -36,8 +36,6 @@ export function extraerDatosUsuario(token) {
     return null;
   }
 
-  console.log('Payload completo del token:', payload); // Para debug
-
   // Los claims de ASP.NET usan URLs completas, necesitamos mapearlos correctamente
   return {
     id: payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] || 

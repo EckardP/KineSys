@@ -1,5 +1,3 @@
-"use client"
-
 // src/pages/AdminHome.jsx
 
 import { Users, CalendarDays, BarChart3, UserPlus, Calendar, Stethoscope, Package } from "lucide-react"
@@ -177,15 +175,15 @@ function AdminDashboard() {
     setupConnection();
 
     return () => {
-      console.log("[v0] AdminHome - Limpiando efectos SignalR");
       const conn = connectionRef.current;
       if (conn) {
         conn.off("Notificacion");
         conn.off("CitaAsignada");
         conn.off("Error");
+        stopConnection(conn);
       }
     };
-  }, [isAuthenticated, usuario, displayName, userIdForSignalR, loading]);
+  }, [isAuthenticated, usuario, loading]);
 
   // Limpieza automática de notificaciones antiguas
   useEffect(() => {
@@ -371,7 +369,7 @@ function AdminDashboard() {
               icon={<Building size={20} />}
             />
 
-            <QuickAccessButton label="Gestionar Tratamientos" path="/gestiontratamiento/tratamientos" icon={<Stethoscope size={20} />} />
+            <QuickAccessButton label="Gestionar Tratamientos" path="/gestiontratamiento/tratamientos" icon={<Stethoscope size={20} />} />
           </div>
         </div>
       </div>

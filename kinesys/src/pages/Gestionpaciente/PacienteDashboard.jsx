@@ -1,9 +1,8 @@
-"use client"
 
 import { useContext, useEffect, useRef, useState } from "react"
 import { useRequireAuth } from "../../hooks/useRequireAuth"
 import { AuthContext } from "../../context/AuthContext"
-import { createConnection, startConnection, stopConnection } from "../../services/SignalRService"
+import { createConnection, startConnection } from "../../services/SignalRService"
 import Navigation from "./components/Navigation"
 import StatisticsCard from "./components/StatisticsCard"
 import UpcomingAppointments from "./components/UpcomingAppointments"
@@ -51,15 +50,11 @@ export default function PacienteDashboard() {
       return
     }
 
-    let connCreatedHere = false
-
     const setupConnection = async () => {
       try {
         console.log("[v0] PacienteDashboard - Iniciando conexión SignalR... userId:", userIdForSignalR)
         const conn = createConnection(userIdForSignalR)
         connectionRef.current = conn
-        connCreatedHere = true
-
         const connected = await startConnection(conn)
         if (!connected) {
           console.error("[v0] PacienteDashboard - No se pudo conectar a SignalR")

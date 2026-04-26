@@ -1,8 +1,7 @@
-"use client"
-
 import { useState, useEffect, useRef } from "react"
 import { useRequireAuth } from "@/hooks/useRequireAuth"
 import { useAuth } from "@/hooks/useAuth"
+import { ROLES } from "@/utils/constants"
 import { createConnection, startConnection, stopConnection } from "@/services/SignalRService"
 import Navigation from "./components/Navigation"
 import Dashboard from "./components/Dashboard"
@@ -14,7 +13,7 @@ import AuditDashboard from "../GestionAdmin/audit/AuditDashboard"
 import TratamientosView from "./components/Treatments/TratamientosView"
 
 export default function TerapeutaHome() {
-  useRequireAuth(2) // Rol 2 = Terapeuta
+  useRequireAuth([ROLES.TERAPEUTA])
   const { usuario } = useAuth()
 
   const [currentPage, setCurrentPage] = useState("dashboard")
@@ -59,15 +58,11 @@ export default function TerapeutaHome() {
       return
     }
 
-    let createdHere = false
-
     const setupConnection = async () => {
       try {
         console.log("[Terapeuta] Creando conexión SignalR...")
         const conn = createConnection(userIdForSignalR)
         connectionRef.current = conn
-        createdHere = true
-
         const ok = await startConnection(conn)
         if (!ok) {
           console.error("[Terapeuta] No se pudo conectar a SignalR")
@@ -150,6 +145,7 @@ export default function TerapeutaHome() {
         conn.off("CitaAsignada")
         conn.off("UsuarioConectado")
         conn.off("Error")
+        stopConnection(conn)
       }
     }
   }, [usuario])

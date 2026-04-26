@@ -1,5 +1,3 @@
-"use client"
-
 // src/pages/GestionAdmin/GestionReporte/Reportes.jsx
 import { useEffect, useState } from "react"
 import {
@@ -56,13 +54,13 @@ const Reportes = () => {
 
   // Calcular estadísticas
   const totalPacientes = pacientes.length
-  const pacientesActivos = pacientes.filter((p) => p.estado === "activo").length
+  const pacientesActivos = pacientes.filter((p) => p.activo === true).length
   const totalTerapeutas = terapeutas.length
-  const terapeutasActivos = terapeutas.filter((t) => t.estado === "activo").length
+  const terapeutasActivos = terapeutas.filter((t) => t.activo === true).length
   const totalCitas = citas.length
-  const citasCompletadas = citas.filter((c) => c.estado === "completada").length
-  const citasProgramadas = citas.filter((c) => c.estado === "programada").length
-  const citasCanceladas = citas.filter((c) => c.estado === "cancelada" || c.estado === "inasistencia").length
+  const citasCompletadas = citas.filter((c) => c.estado === "Completada").length
+  const citasProgramadas = citas.filter((c) => c.estado === "Programada").length
+  const citasCanceladas = citas.filter((c) => c.estado === "Cancelada" || c.estado === "Inasistencia").length
 
   // Distribución de estados de citas
   const estadoCitasData = [
@@ -73,9 +71,9 @@ const Reportes = () => {
 
   // Citas por terapeuta
   const citasPorTerapeuta = terapeutas.map((terapeuta) => ({
-    nombre: terapeuta.nombres.split(" ")[0],
+    nombre: terapeuta.nombres?.split(" ")[0] ?? terapeuta.nombre ?? "Sin nombre",
     citas: citas.filter((c) => c.idTerapeuta === terapeuta.id).length,
-    completadas: citas.filter((c) => c.idTerapeuta === terapeuta.id && c.estado === "completada").length,
+    completadas: citas.filter((c) => c.idTerapeuta === terapeuta.id && c.estado === "Completada").length,
   }))
 
   // Tendencia mensual de citas (últimos 6 meses)
@@ -95,8 +93,8 @@ const Reportes = () => {
       data.push({
         mes: monthName,
         total: citasDelMes.length,
-        completadas: citasDelMes.filter((c) => c.estado === "completada").length,
-        canceladas: citasDelMes.filter((c) => c.estado === "cancelada" || c.estado === "inasistencia").length,
+        completadas: citasDelMes.filter((c) => c.estado === "Completada").length,
+        canceladas: citasDelMes.filter((c) => c.estado === "Cancelada" || c.estado === "Inasistencia").length,
       })
     }
 

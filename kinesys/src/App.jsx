@@ -25,12 +25,7 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <div className="app-layout">
-          <main className="main-content">
-            <AppRouter />
-          </main>
-          <Footer />
-        </div>
+        <AppLayout />
       </AuthProvider>
     </BrowserRouter>
   );

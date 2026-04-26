@@ -1,4 +1,3 @@
-"use client"
 
 import { useState, useEffect } from "react"
 import { X, Stethoscope, Clock, DollarSign, FileText, Package, Plus, Trash2, AlertCircle, AlertTriangle } from "lucide-react"
@@ -33,7 +32,7 @@ export default function TratamientoForm({ onSubmit, onCancel, initialData, espec
   const [loading, setLoading] = useState(false)
   const [cargandoEquipos, setCargandoEquipos] = useState(false)
   const [errorEspecialidad, setErrorEspecialidad] = useState("")
-  const [errorCantidad, setErrorCantidad] = useState("")
+  const [, setErrorCantidad] = useState("")
 
   // Cargar equipos disponibles y tratamientos existentes
   useEffect(() => {

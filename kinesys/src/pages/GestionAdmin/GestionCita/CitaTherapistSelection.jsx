@@ -1,5 +1,4 @@
 // src/pages/GestionCita/CitaTherapistSelection.jsx
-"use client"
 
 import { useState, useEffect } from "react"
 import { Search, User, Mail, Phone, Award, ArrowRight, ArrowLeft, Filter, AlertCircle } from "lucide-react"

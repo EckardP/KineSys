@@ -1,6 +1,34 @@
 import React, { useEffect, useState } from 'react'
 
 import TherapistCard from '../components/TherapistCard'
+import { crearTerapeuta, listarTerapeutas } from '../services/terapeutasService'
+
+const normalizarTerapeuta = (terapeuta) => ({
+  id: terapeuta.id || terapeuta.documentoIdentidad,
+  name: [terapeuta.nombres, terapeuta.apellidos].filter(Boolean).join(' ') || terapeuta.user || 'Terapeuta',
+  specialty: terapeuta.tituloAcademico || terapeuta.especialidad?.nombre || 'Sin especialidad',
+  availableDays: terapeuta.availableDays || [],
+  sessions: terapeuta.sessions || 0,
+})
+
+const fetchTherapists = async () => {
+  const terapeutas = await listarTerapeutas()
+  return (terapeutas || []).map(normalizarTerapeuta)
+}
+
+const registerTherapist = async ({ name, specialty }) => {
+  const documento = `TEMP-${Date.now()}`
+  return crearTerapeuta({
+    user: documento,
+    password: documento,
+    nombres: name.trim(),
+    apellidos: '',
+    tipoDocumento: 'DNI',
+    documentoIdentidad: documento,
+    tituloAcademico: specialty.trim(),
+    noLicencia: documento,
+  })
+}
 
 export default function Therapists() {
   const [therapists, setTherapists] = useState([])

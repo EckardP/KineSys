@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext } from "react"
 import QuickStats from "./dashboard/QuickStats"
 import UpcomingAppointments from "./dashboard/UpcomingAppointments"
 import RecentPatients from "./dashboard/RecentPatients"

@@ -1,4 +1,3 @@
-"use client"
 
 import { useState } from "react"
 import { Plus, Trash2, Star, Package, Users } from "lucide-react"

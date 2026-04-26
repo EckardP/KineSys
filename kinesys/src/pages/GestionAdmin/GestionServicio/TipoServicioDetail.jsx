@@ -1,4 +1,3 @@
-"use client"
 
 import { ArrowLeft, Clock, MapPin, DollarSign, FileText, Users, Package, Star } from "lucide-react"
 import { Button } from "@/components/ui/button"

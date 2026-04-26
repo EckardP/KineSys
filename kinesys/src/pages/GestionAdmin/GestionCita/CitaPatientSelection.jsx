@@ -1,11 +1,10 @@
 // src/pages/GestionCita/CitaPatientSelection.jsx
-"use client"
 
 import { useState, useEffect } from "react"
 import { Search, User, Mail, Phone, MapPin, ArrowRight, ArrowLeft } from "lucide-react"
 import { listarPacientes, obtenerPaciente } from "../../../services/pacientesService"
 
-export default function CitaPatientSelection({ citaData, updateCitaData, onNext, onBack }) {
+export default function CitaPatientSelection({ citaData: _citaData, updateCitaData, onNext, onBack }) {
   const [pacientes, setPacientes] = useState([])
   const [searchTerm, setSearchTerm] = useState("")
   const [loading, setLoading] = useState(true)

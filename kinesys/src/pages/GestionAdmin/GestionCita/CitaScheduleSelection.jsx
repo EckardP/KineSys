@@ -1,5 +1,4 @@
 // src/pages/GestionCita/CitaScheduleSelection.jsx
-"use client"
 
 import { useState, useEffect } from "react"
 import { Calendar, Clock, ArrowRight, ArrowLeft, Loader } from "lucide-react"

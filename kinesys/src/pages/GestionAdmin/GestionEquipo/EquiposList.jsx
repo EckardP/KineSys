@@ -1,4 +1,3 @@
-"use client"
 
 import { useState, useEffect } from "react"
 import { Search, Plus, Edit, Trash2, Eye } from "lucide-react"
@@ -65,7 +64,7 @@ export default function EquiposList() {
   if (showForm) {
     return (
       <EquipoForm
-        onSubmit={async (equipoData) => {
+        onSubmit={async (_equipoData) => {
           await cargarEquipos()
           setShowForm(false)
           setEditingEquipo(null)

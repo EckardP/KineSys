@@ -1,4 +1,3 @@
-"use client"
 
 // src/pages/GestionAdmin/GestionAgenda/AgendaAdmin.jsx
 import { useEffect, useState, useMemo } from "react"
@@ -144,7 +143,7 @@ const AgendaAdmin = () => {
   }, [disponibilidades, citas, terapeutas, pacientes, filtroTerapeuta])
 
   const handleEventClick = (info) => {
-    const { paciente, terapeuta, estado, cita, tipoAmbiente, disponibilidad } = info.event.extendedProps
+    const { paciente, terapeuta, estado, cita, tipoAmbiente } = info.event.extendedProps
     
     const fechaInicio = new Date(info.event.start).toLocaleString("es-ES", {
       day: "2-digit",
@@ -174,7 +173,7 @@ ${cita?.tipoAtencion ? `🎯 Tipo: ${cita.tipoAtencion}` : ''}
   }
 
   // Función para formatear TimeSpan a hora legible
-  const formatTimeSpan = (timeSpan) => {
+  const _formatTimeSpan = (timeSpan) => {
     if (typeof timeSpan === 'string') {
       return timeSpan.substring(0, 5) // Convierte "08:00:00" a "08:00"
     }
