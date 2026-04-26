@@ -8,6 +8,7 @@ import {
 } from './pacientesService';
 
 vi.mock('../api/pacientesApi', () => ({
+  __esModule: true,
   default: {
     getAll: vi.fn(),
     getById: vi.fn(),

@@ -14,6 +14,7 @@ import {
 
 // ── Mocks ─────────────────────────────────────────────────────
 vi.mock('../api/citasApi', () => ({
+  __esModule: true,
   default: {
     getAll: vi.fn(),
     getById: vi.fn(),

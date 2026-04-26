@@ -9,6 +9,7 @@ import {
 } from './terapeutasService';
 
 vi.mock('../api/terapeutasApi', () => ({
+  __esModule: true,
   default: {
     getAll: vi.fn(),
     getById: vi.fn(),

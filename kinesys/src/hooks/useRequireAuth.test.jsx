@@ -5,6 +5,8 @@ import { AuthContext } from '../context/AuthContext';
 import { useRequireAuth } from './useRequireAuth';
 import { ROLES } from '../utils/constants';
 
+vi.mock('../config/apiConfig', () => ({ API_BASE_URL: 'http://localhost:5058/api' }));
+
 // Componente auxiliar que ejecuta el hook
 function ComponenteProtegido({ rolesPermitidos = [] }) {
   const { isAuthenticated } = useRequireAuth(rolesPermitidos);
