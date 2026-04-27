@@ -178,7 +178,7 @@ export default function TerapeutaHome() {
         )}
 
         {currentPage === "dashboard" && <Dashboard />}
-        {currentPage === "pacientes" && <PatientList />}
+       {currentPage === "pacientes" && <PatientList />}
         {currentPage === "citas" && <AppointmentList />}
         {currentPage === "historias" && <ClinicalHistoryList />}
         {currentPage === "facturacion" && <InvoiceList />}

@@ -5,6 +5,7 @@ export default function UpcomingAppointments() {
     { id: 1, patient: "Juan García", time: "09:00 AM", room: "Sala 1", type: "Seguimiento" },
     { id: 2, patient: "María López", time: "10:30 AM", room: "Sala 2", type: "Inicial" },
     { id: 3, patient: "Carlos Rodríguez", time: "02:00 PM", room: "Sala 1", type: "Evolución" },
+
   ]
 
   return (
