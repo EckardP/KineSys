@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Globalization;
 
 namespace ApiPrueba.JWT
 {
@@ -18,13 +19,24 @@ namespace ApiPrueba.JWT
 
         public string GenerateToken (Persona user)
         {
-            var key = Encoding.UTF8.GetBytes(_config["JwtSettings:Key"]);
+            var jwtKey = _config["JwtSettings:Key"];
+            if (string.IsNullOrWhiteSpace(jwtKey))
+            {
+                throw new InvalidOperationException("JwtSettings:Key no esta configurado.");
+            }
+
+            var key = Encoding.UTF8.GetBytes(jwtKey);
+
+            if (!double.TryParse(_config["JwtSettings:ExpireInMinutes"], NumberStyles.Number, CultureInfo.InvariantCulture, out var expireInMinutes))
+            {
+                throw new InvalidOperationException("JwtSettings:ExpireInMinutes no esta configurado correctamente.");
+            }
 
             // Claims incluyendo el ROL
             var Claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.User),
+                new Claim(ClaimTypes.Name, user.User ?? string.Empty),
                 new Claim("role", user.Rol.ToString()),
                 new Claim(ClaimTypes.Role, user.Rol.ToString()),
                 new Claim("FullName", $"{user.Nombres} {user.Apellidos}"),
@@ -35,7 +47,7 @@ namespace ApiPrueba.JWT
                 issuer: _config["JwtSettings:Issuer"],
                 audience: _config["JwtSettings:Audience"],
                 claims: Claims,
-                expires: DateTime.UtcNow.AddMinutes(double.Parse(_config["JwtSettings:ExpireInMinutes"])),
+                expires: DateTime.UtcNow.AddMinutes(expireInMinutes),
                 signingCredentials: new SigningCredentials(
                     new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256

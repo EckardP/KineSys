@@ -148,7 +148,7 @@ export default function TerapeutaHome() {
         stopConnection(conn)
       }
     }
-  }, [usuario])
+  }, [displayName, usuario, userIdForSignalR])
 
   return (
     <div className="min-h-screen bg-background">

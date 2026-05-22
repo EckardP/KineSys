@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { X, Plus, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -23,7 +23,7 @@ export default function HorariosModal({ terapeuta, onClose }) {
   const [loading, setLoading] = useState(false)
   const [creando, setCreando] = useState(false)
 
-  const cargarHorarios = async () => {
+  const cargarHorarios = useCallback(async () => {
     try {
       setLoading(true)
       const data = await obtenerDisponibilidadPorTerapeuta(terapeuta.id)
@@ -34,11 +34,11 @@ export default function HorariosModal({ terapeuta, onClose }) {
     } finally {
       setLoading(false)
     }
-  }
+  }, [terapeuta.id])
 
   useEffect(() => {
     cargarHorarios()
-  }, [terapeuta.id])
+  }, [cargarHorarios])
 
   const handleHorarioChange = (e) => {
     const { name, value, type, checked } = e.target

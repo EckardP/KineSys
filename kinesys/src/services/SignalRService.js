@@ -12,6 +12,7 @@ export const createConnection = (userId) => {
 
   const connection = new signalR.HubConnectionBuilder()
     .withUrl(hubUrl, {
+      accessTokenFactory: () => sessionStorage.getItem("authToken") || "",
       skipNegotiation: true,
       transport: signalR.HttpTransportType.WebSockets,
       withCredentials: true,

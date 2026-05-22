@@ -16,11 +16,26 @@ import {
   ResponsiveContainer,
 } from "recharts"
 import { Calendar, Users, Stethoscope, TrendingUp, Activity, FileText, Download } from "lucide-react"
-import * as XLSX from "xlsx"
 import { listarPacientes } from "../../../services/pacientesService.js"
 import { listarTerapeutas } from "../../../services/terapeutasService.js"
 import { listarCitas } from "../../../services/citasService.js"
 import "../../AdminHome/AdminDashboard.css"
+
+const escaparCsv = (valor) => {
+  const texto = valor == null ? "" : String(valor)
+  return `"${texto.replace(/"/g, '""')}"`
+}
+
+const descargarCsv = (filas, nombreArchivo) => {
+  const contenido = filas.map((fila) => fila.map(escaparCsv).join(",")).join("\n")
+  const blob = new Blob([`\uFEFF${contenido}`], { type: "text/csv;charset=utf-8" })
+  const url = URL.createObjectURL(blob)
+  const enlace = document.createElement("a")
+  enlace.href = url
+  enlace.download = nombreArchivo
+  enlace.click()
+  URL.revokeObjectURL(url)
+}
 
 const Reportes = () => {
   const [citas, setCitas] = useState([])
@@ -113,19 +128,18 @@ const Reportes = () => {
   const tasaCompletitud = totalCitas > 0 ? ((citasCompletadas / totalCitas) * 100).toFixed(1) : "0"
   const tasaCancelacion = totalCitas > 0 ? ((citasCanceladas / totalCitas) * 100).toFixed(1) : "0"
 
-  // Exportar a Excel
+  // Exportar reporte sin dependencias vulnerables de hojas de calculo.
   const handleExport = () => {
-    const worksheet = XLSX.utils.json_to_sheet(
-      citas.map((c) => ({
-        Paciente: c.paciente?.nombreCompleto || "N/A",
-        Terapeuta: c.terapeuta?.nombres || "N/A",
-        Fecha: new Date(c.fecha).toLocaleDateString(),
-        Estado: c.estado,
-      })),
-    )
-    const workbook = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Reportes")
-    XLSX.writeFile(workbook, "reportes_clinica.xlsx")
+    const filas = [
+      ["Paciente", "Terapeuta", "Fecha", "Estado"],
+      ...citas.map((c) => [
+        c.paciente?.nombreCompleto || "N/A",
+        c.terapeuta?.nombres || "N/A",
+        c.fecha ? new Date(c.fecha).toLocaleDateString() : "N/A",
+        c.estado || "N/A",
+      ]),
+    ]
+    descargarCsv(filas, "reportes_clinica.csv")
   }
 
   return (

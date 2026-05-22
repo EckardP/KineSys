@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using ApiPrueba.Data;
 using ApiPrueba.Models;
@@ -12,6 +13,7 @@ namespace ApiPrueba.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class SeguroMedicoesController : ControllerBase
     {
         private readonly ClinicaFisioterapiaBD _context;

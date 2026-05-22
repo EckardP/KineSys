@@ -2,12 +2,27 @@
 using ApiPrueba.JWT;
 using ApiPrueba.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using ApiPrueba.Hub;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var jwtKey = builder.Configuration["JwtSettings:Key"];
+if (string.IsNullOrWhiteSpace(jwtKey))
+{
+    if (!builder.Environment.IsDevelopment())
+    {
+        throw new InvalidOperationException("JwtSettings:Key debe configurarse mediante variable de entorno o user-secrets.");
+    }
+
+    jwtKey = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+    builder.Configuration["JwtSettings:Key"] = jwtKey;
+}
 
 // =======================
 // DATABASE
@@ -48,14 +63,36 @@ builder.Services.AddAuthentication("Bearer")
             ValidAudience = "ApiClinicaFisioterapiaUsers",
 
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"])),
+                Encoding.UTF8.GetBytes(jwtKey)),
 
             // 🔥 IMPORTANTE: PARA QUE TU FILTRO RECONOZCA ROLES
             RoleClaimType = ClaimTypes.Role
         };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+                var path = context.HttpContext.Request.Path;
+
+                if (!string.IsNullOrEmpty(accessToken) &&
+                    path.StartsWithSegments("/Hub/NotificacionesHub"))
+                {
+                    context.Token = accessToken;
+                }
+
+                return Task.CompletedTask;
+            }
+        };
     });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+});
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -79,7 +116,7 @@ app.UseCors("PoliticaCors");
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapHub<NotificacionesHub>("/Hub/NotificacionesHub");
+app.MapHub<NotificacionesHub>("/Hub/NotificacionesHub").RequireAuthorization();
 
 app.MapControllers();
 

@@ -21,6 +21,7 @@ export default function CitaTherapistSelection({ citaData, updateCitaData, onNex
 
   useEffect(() => {
     cargarDatos()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [citaData.idTipoServicio])
 
   // NUEVO: useEffect para aplicar automáticamente el filtro cuando las especialidades estén cargadas
@@ -29,6 +30,7 @@ export default function CitaTherapistSelection({ citaData, updateCitaData, onNex
       console.log("🔄 Aplicando filtro automáticamente...")
       aplicarFiltroEspecialidad(terapeutas, especialidadesRequeridas)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [especialidadesCargadas, filtroActivo, especialidadesRequeridas, terapeutas])
 
   const cargarDatos = async () => {
@@ -207,6 +209,7 @@ export default function CitaTherapistSelection({ citaData, updateCitaData, onNex
         cargarEspecialidadesTerapeuta(selectedTerapeuta.id)
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTerapeuta])
 
   const terapeutasParaMostrar = terapeutasFiltrados.filter(terapeuta =>

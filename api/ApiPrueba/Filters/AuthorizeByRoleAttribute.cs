@@ -19,7 +19,7 @@ namespace ApiPrueba.Filters
         {
             var user = context.HttpContext.User;
 
-            if (!user.Identity.IsAuthenticated)
+            if (user.Identity?.IsAuthenticated != true)
             {
                 context.Result = new UnauthorizedResult();
                 return;

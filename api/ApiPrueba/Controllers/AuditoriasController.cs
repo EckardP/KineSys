@@ -7,11 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ApiPrueba.Data;
 using ApiPrueba.Models;
+using ApiPrueba.Filters;
 
 namespace ApiPrueba.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [AuthorizeByRole("Administrador")]
     public class AuditoriasController : ControllerBase
     {
         private readonly ClinicaFisioterapiaBD _context;

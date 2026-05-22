@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>KineSys - Proyecto Final Primera Entrega - Tres Módulos</title>
+  <style>
+    @page { size: A4; margin: 15mm 13mm 17mm; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: #20262e;
+      background: #fff;
+      font-size: 9.8pt;
+      line-height: 1.38;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    h1, h2, h3, h4 { color: #17324d; margin: 0 0 7px; line-height: 1.18; }
+    h1 { font-size: 25pt; }
+    h2 { font-size: 16pt; margin-top: 17px; padding-bottom: 4px; border-bottom: 2px solid #3c8192; }
+    h3 { font-size: 12.4pt; margin-top: 13px; color: #24586b; }
+    h4 { font-size: 10.6pt; margin-top: 10px; color: #2f3d4a; }
+    p { margin: 0 0 7px; }
+    ul, ol { margin: 4px 0 9px 20px; padding: 0; }
+    li { margin: 2px 0; }
+    table { width: 100%; border-collapse: collapse; margin: 7px 0 12px; page-break-inside: avoid; }
+    th { background: #e6f1f4; color: #17324d; font-weight: 700; }
+    th, td { border: 1px solid #b7c7cf; padding: 4px 5px; vertical-align: top; }
+    tr:nth-child(even) td { background: #f8fafb; }
+    pre {
+      white-space: pre-wrap;
+      background: #f2f5f7;
+      border: 1px solid #cfd9df;
+      border-radius: 4px;
+      padding: 7px;
+      font-size: 8.4pt;
+      margin: 7px 0 11px;
+    }
+    .cover {
+      min-height: 262mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+      border: 3px solid #17324d;
+      padding: 22mm 17mm;
+    }
+    .cover .kicker { text-transform: uppercase; letter-spacing: 1px; color: #4c6f79; font-weight: 700; }
+    .cover h1 { font-size: 28pt; margin: 12px 0 14px; }
+    .cover h2 { border: 0; font-size: 15pt; margin: 0 0 17px; color: #24586b; }
+    .block { margin-top: 15px; }
+    .page-break { break-before: page; page-break-before: always; }
+    .toc { columns: 2; column-gap: 18px; }
+    .toc p { margin-bottom: 3px; }
+    .note { color: #52626c; font-size: 8.8pt; }
+    .badge-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 8px 0 13px; }
+    .badge { border: 1px solid #b7c7cf; background: #f4f9fa; border-radius: 5px; padding: 8px; text-align: center; min-height: 48px; }
+    .badge strong { display: block; color: #17324d; font-size: 14pt; }
+    .module-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin: 8px 0 12px; }
+    .module-card { border: 1px solid #b7c7cf; border-left: 4px solid #3c8192; border-radius: 5px; padding: 8px 10px; background: #fbfdfd; page-break-inside: avoid; }
+    .callout { border-left: 4px solid #3c8192; background: #f2f8fa; padding: 8px 10px; margin: 9px 0 12px; page-break-inside: avoid; }
+    .callout p { margin: 3px 0 0; }
+    .diagram { display: grid; grid-template-columns: 1fr 22px 1fr 22px 1fr; align-items: center; gap: 6px; margin: 8px 0 13px; page-break-inside: avoid; }
+    .box { border: 1px solid #9cb7c2; background: #f7fbfc; border-radius: 5px; padding: 7px; text-align: center; min-height: 45px; }
+    .arrow { text-align: center; color: #24586b; font-weight: 700; }
+    .small td, .small th { font-size: 8.7pt; padding: 4px; }
+  </style>
+</head>
+<body>
+  <section class="cover">
+    <div class="kicker">Proyecto final - primera entrega</div>
+    <h1>KineSys</h1>
+    <h2>Documento enfocado en los 3 módulos trabajados</h2>
+    <p><strong>Pacientes - Terapeutas - Terapias y Tratamientos</strong></p>
+    <div class="block">
+      <p><strong>Estudiantes:</strong></p>
+      <p>Eckard Antony Rodriguez Gutierrez</p>
+      <p>Luis Alejandro Narvaez Teran</p>
+    </div>
+    <div class="block">
+      <p><strong>Docente:</strong> Maribel Romero Mestre</p>
+      <p>Universidad Popular del Cesar - Sede Sabanas</p>
+      <p>Ingeniería de Sistemas</p>
+      <p>Valledupar - Cesar</p>
+      <p>2026</p>
+    </div>
+    <p class="note block">Versión corregida el 26 de abril de 2026. Se limita a los tres módulos que venían desarrollados en el PDF original y agrega las pruebas automatizadas correspondientes.</p>
+  </section>
+
+  <div class="page-break"></div>
+  <h2>Tabla De Contenido</h2>
+  <div class="toc">
+    <p>1. Descripción del sistema para los tres módulos</p>
+    <p>1.1 Identificación del problema</p>
+    <p>1.2 Descripción de los módulos</p>
+    <p>1.3 Requisitos funcionales y no funcionales</p>
+    <p>1.4 Casos de uso</p>
+    <p>1.5 Diseño del sistema</p>
+    <p>1.6 Producto del software</p>
+    <p>2. Pruebas del software</p>
+    <p>2.1 Introducción</p>
+    <p>2.2 Planificación</p>
+    <p>2.3 Pruebas unitarias por módulo</p>
+    <p>2.4 Pruebas de integración</p>
+    <p>2.5 Pruebas de sistema</p>
+    <p>2.6 Pruebas de aceptación</p>
+    <p>3. Conclusiones</p>
+    <p>4. Referencias y pendientes</p>
+  </div>
+
+  <div class="page-break"></div>
+  <h2>1. Descripción Del Sistema Para Los Tres Módulos</h2>
+  <h3>1.1 Identificación Del Problema</h3>
+  <p>La clínica de fisioterapia necesita controlar tres procesos centrales: el registro de pacientes, el registro de terapeutas y la gestión de terapias/tratamientos disponibles. Si estos procesos se gestionan manualmente, se producen errores de digitación, duplicidad de documentos, terapeutas sin información profesional completa, tratamientos sin especialidad definida y dificultad para relacionar equipos con terapias.</p>
+  <p>El alcance de esta entrega se concentra únicamente en esos tres módulos, porque son los módulos que venían desarrollados en el PDF original y sobre los que se diseñan clases de equivalencia, valores límite, caminos básicos, pruebas unitarias, integración y aceptación.</p>
+
+  <h3>1.2 Descripción De Los Módulos</h3>
+  <div class="module-grid"><div class="module-card">
+      <h4>Registro y Gestión de Pacientes</h4>
+      <p>Módulo encargado de registrar, consultar, actualizar y eliminar pacientes. Gestiona datos personales, documento, contacto, EPS, seguro médico, afiliación y rol Paciente.</p>
+      <p class="note"><strong>Archivos:</strong> PatientForm.jsx, PatientList.jsx, pacientesService.js, pacientesApi.js, Paciente.cs, PersonasController/PacientesController.</p>
+    </div><div class="module-card">
+      <h4>Registro y Gestión de Terapeutas</h4>
+      <p>Módulo encargado de registrar, consultar, actualizar y eliminar terapeutas. Administra información personal, acceso, contacto, licencia profesional, título académico, años de experiencia, fecha de contratación, estado y especialidades.</p>
+      <p class="note"><strong>Archivos:</strong> TerapeutaForm.jsx, TerapeutasList.jsx, terapeutasService.js, terapeutasApi.js, Terapeuta.cs, PersonasController/TerapeutasController.</p>
+    </div><div class="module-card">
+      <h4>Gestión de Terapias y Tratamientos</h4>
+      <p>Módulo encargado de registrar, consultar, actualizar y eliminar tratamientos. Maneja nombre, descripción, especialidad, duración, costo, sesiones recomendadas, frecuencia, estado, indicaciones, contraindicaciones y equipos requeridos.</p>
+      <p class="note"><strong>Archivos:</strong> TratamientoForm.jsx, TratamientosList.jsx, tratamientosService.js, tratamientosApi.js, Tratamiento.cs, TratamientoesController.</p>
+    </div></div>
+  <div class="diagram">
+    <div class="box"><strong>Formulario/Listado</strong><br>React</div>
+    <div class="arrow">-&gt;</div>
+    <div class="box"><strong>Servicio</strong><br>pacientesService<br>terapeutasService<br>tratamientosService</div>
+    <div class="arrow">-&gt;</div>
+    <div class="box"><strong>API</strong><br>ASP.NET Core<br>SQL Server</div>
+  </div>
+
+  <h3>1.3 Modelo De Requerimientos</h3>
+  <h4>Requisitos Funcionales</h4>
+  <table class="small">
+    <thead><tr><th>ID</th><th>Módulo</th><th>Descripción</th></tr></thead>
+    <tbody><tr><td>RF-PAC-01</td><td>Pacientes</td><td>Registrar pacientes con datos personales, documento, contacto, EPS, seguro y rol Paciente.</td></tr><tr><td>RF-PAC-02</td><td>Pacientes</td><td>Listar únicamente personas con rol Paciente (rol = 1).</td></tr><tr><td>RF-PAC-03</td><td>Pacientes</td><td>Consultar un paciente por identificador y rechazar registros que no tengan rol Paciente.</td></tr><tr><td>RF-PAC-04</td><td>Pacientes</td><td>Actualizar datos del paciente mediante endpoint /Update/{id}.</td></tr><tr><td>RF-PAC-05</td><td>Pacientes</td><td>Eliminar paciente por identificador propagando errores funcionales del API.</td></tr><tr><td>RF-TER-01</td><td>Terapeutas</td><td>Registrar terapeutas con rol Terapeuta (rol = 2), datos de acceso y datos profesionales.</td></tr><tr><td>RF-TER-02</td><td>Terapeutas</td><td>Listar únicamente personas con rol Terapeuta (rol = 2).</td></tr><tr><td>RF-TER-03</td><td>Terapeutas</td><td>Consultar un terapeuta por identificador y rechazar registros que no tengan rol Terapeuta.</td></tr><tr><td>RF-TER-04</td><td>Terapeutas</td><td>Actualizar terapeuta preservando rol 2 y normalizando datos profesionales.</td></tr><tr><td>RF-TER-05</td><td>Terapeutas</td><td>Obtener únicamente terapeutas activos.</td></tr><tr><td>RF-TRA-01</td><td>Tratamientos</td><td>Registrar tratamientos asociados a una especialidad válida.</td></tr><tr><td>RF-TRA-02</td><td>Tratamientos</td><td>Listar, consultar, actualizar y eliminar tratamientos.</td></tr><tr><td>RF-TRA-03</td><td>Tratamientos</td><td>Validar nombre obligatorio, especialidad, duración, sesiones, costo y frecuencia.</td></tr><tr><td>RF-TRA-04</td><td>Tratamientos</td><td>Agregar y remover equipos requeridos para un tratamiento mediante rutas anidadas.</td></tr><tr><td>RF-TRA-05</td><td>Tratamientos</td><td>Advertir cuando la cantidad de equipo solicitada supera la disponibilidad real.</td></tr></tbody>
+  </table>
+  <h4>Requisitos No Funcionales</h4>
+  <table>
+    <thead><tr><th>ID</th><th>Atributo</th><th>Descripción</th></tr></thead>
+    <tbody><tr><td>RNF-01</td><td>Mantenibilidad</td><td>Cada módulo separa UI, servicio y API client para facilitar pruebas y cambios controlados.</td></tr><tr><td>RNF-02</td><td>Seguridad</td><td>Las operaciones se ejecutan bajo sesión autenticada; el token JWT lo agrega apiCliente mediante Authorization Bearer.</td></tr><tr><td>RNF-03</td><td>Integridad</td><td>Paciente y Terapeuta se distinguen por rol; Tratamiento exige especialidad válida y relaciones con equipos.</td></tr><tr><td>RNF-04</td><td>Usabilidad</td><td>Formularios con campos requeridos, listas, búsquedas, estados de carga y mensajes de error.</td></tr><tr><td>RNF-05</td><td>Portabilidad</td><td>Frontend React/Vite ejecutable en navegador moderno; API .NET 8 con SQL Server.</td></tr><tr><td>RNF-06</td><td>Testabilidad</td><td>Servicios principales cubiertos con Vitest/Jest, mocks de APIs y salidas de ejecución guardadas.</td></tr></tbody>
+  </table>
+
+  <h3>1.4 Modelo De Casos De Uso</h3>
+  <p>Actor principal para los tres módulos: Administrador. Los módulos se usan desde el panel administrativo para mantener la información base de la clínica.</p>
+  <table class="small">
+    <thead><tr><th>ID</th><th>Actor</th><th>Caso de uso</th><th>Precondición</th><th>Resultado esperado</th></tr></thead>
+    <tbody><tr><td>CU-PAC-01</td><td>Administrador</td><td>Registrar paciente</td><td>Formulario con datos válidos</td><td>Paciente creado con rol 1 y credenciales iniciales por documento.</td></tr><tr><td>CU-PAC-02</td><td>Administrador</td><td>Actualizar paciente</td><td>Paciente existente</td><td>Datos actualizados en backend.</td></tr><tr><td>CU-PAC-03</td><td>Administrador</td><td>Eliminar paciente</td><td>Paciente seleccionado</td><td>Paciente eliminado o error mostrado si la operación falla.</td></tr><tr><td>CU-TER-01</td><td>Administrador</td><td>Registrar terapeuta</td><td>Formulario con datos personales y profesionales válidos</td><td>Terapeuta creado con rol 2 y activo.</td></tr><tr><td>CU-TER-02</td><td>Administrador</td><td>Actualizar terapeuta</td><td>Terapeuta existente</td><td>Datos actualizados preservando rol Terapeuta.</td></tr><tr><td>CU-TER-03</td><td>Administrador</td><td>Listar terapeutas activos</td><td>Personas cargadas desde API</td><td>Se muestran solo terapeutas activos.</td></tr><tr><td>CU-TRA-01</td><td>Administrador</td><td>Registrar tratamiento</td><td>Especialidad seleccionada y datos válidos</td><td>Tratamiento creado con configuración clínica y económica.</td></tr><tr><td>CU-TRA-02</td><td>Administrador</td><td>Agregar equipo a tratamiento</td><td>Equipo y cantidad seleccionados</td><td>Equipo asociado al tratamiento o advertencia por exceso.</td></tr><tr><td>CU-TRA-03</td><td>Administrador</td><td>Eliminar tratamiento</td><td>Tratamiento seleccionado</td><td>Tratamiento eliminado o error mostrado si está relacionado.</td></tr></tbody>
+  </table>
+
+  <h3>1.5 Modelo De Diseño Del Sistema</h3>
+  <table>
+    <thead><tr><th>Elemento</th><th>Tipo</th><th>Responsabilidad</th></tr></thead>
+    <tbody><tr><td>Paciente</td><td>Persona</td><td>Hereda datos comunes y agrega EPS, seguro, afiliación, estado clínico, citas, tratamientos e historial.</td></tr><tr><td>Terapeuta</td><td>Persona</td><td>Hereda datos comunes y agrega licencia, título, experiencia, contratación, citas, disponibilidad y especialidades.</td></tr><tr><td>Tratamiento</td><td>Entidad clínica</td><td>Se relaciona con terapeuta, paciente/planes, protocolos, tipos de terapia y equipos requeridos.</td></tr><tr><td>pacientesService</td><td>Servicio frontend</td><td>Filtra rol 1, crea con /Register, actualiza con /Update/{id}, elimina por id.</td></tr><tr><td>terapeutasService</td><td>Servicio frontend</td><td>Filtra rol 2, crea con /Register, preserva rol 2 al actualizar y obtiene activos.</td></tr><tr><td>tratamientosService</td><td>Servicio frontend</td><td>CRUD de tratamientos y rutas /{idTratamiento}/equipos para equipos requeridos.</td></tr></tbody>
+  </table>
+
+  <h3>1.6 Producto Del Software</h3>
+  <table>
+    <thead><tr><th>Elemento</th><th>Detalle</th></tr></thead>
+    <tbody><tr><td>Aplicación</td><td>KineSys - Sistema de Gestión de Clínica de Fisioterapia</td></tr><tr><td>Módulos incluidos en este documento</td><td>Pacientes, Terapeutas, Terapias/Tratamientos</td></tr><tr><td>Frontend</td><td>cd kinesys; npm run dev</td></tr><tr><td>Pruebas</td><td>cd kinesys; npm run test / npm run test:jest / npm run test:coverage</td></tr><tr><td>Build</td><td>cd kinesys; npm run build</td></tr><tr><td>Backend</td><td>cd api/ApiPrueba; dotnet run</td></tr></tbody>
+  </table>
+
+  <div class="page-break"></div>
+  <h2>2. Pruebas Del Software</h2>
+  <h3>2.1 Introducción</h3>
+  <p>Esta sección completa la plantilla de pruebas exclusivamente para los tres módulos trabajados: pacientes, terapeutas y tratamientos. Se incluyen técnicas de caja negra y caja blanca, diseño de casos, ejecución automatizada con Jest/Vitest y evaluación de resultados.</p>
+  <div class="badge-grid">
+    <div class="badge"><strong>3</strong>Módulos evaluados</div>
+    <div class="badge"><strong>33</strong>Pruebas específicas</div>
+    <div class="badge"><strong>107</strong>Pruebas frontend totales</div>
+    <div class="badge"><strong>10/10</strong>Suites aprobadas</div>
+  </div>
+
+  <h3>2.2 Planificación De Las Pruebas</h3>
+  <h4>Objetivo General</h4>
+  <p>Verificar y validar que los módulos de Pacientes, Terapeutas y Terapias/Tratamientos permiten registrar, consultar, actualizar y eliminar información de forma consistente, con validación de datos, roles correctos y comunicación adecuada con los servicios/API.</p>
+  <h4>Objetivos Específicos</h4>
+  <ul><li>Verificar que el módulo de Pacientes filtre rol 1, cree credenciales iniciales por documento y propague errores del API.</li><li>Validar que el módulo de Terapeutas filtre rol 2, preserve el rol al actualizar y maneje datos profesionales obligatorios.</li><li>Comprobar que el módulo de Tratamientos valide especialidad, duración, costo, sesiones, frecuencia y equipos asociados.</li><li>Ejecutar pruebas unitarias automatizadas con Vitest y Jest para los servicios de los tres módulos.</li><li>Diseñar casos de aceptación que permitan ejecutar manualmente los flujos de interfaz pendientes.</li></ul>
+  <h4>Alcance</h4>
+  <table>
+    <thead><tr><th>Módulo</th><th>Funcionalidades sometidas a prueba</th></tr></thead>
+    <tbody><tr><td>Pacientes</td><td>Registro, consulta, edición, eliminación y validación de rol Paciente</td></tr><tr><td>Terapeutas</td><td>Registro, consulta, edición, eliminación, activos y validación de rol Terapeuta</td></tr><tr><td>Tratamientos</td><td>Registro, consulta, edición, eliminación, especialidad, duración, costo, sesiones y equipos requeridos</td></tr></tbody>
+  </table>
+  <h4>Estrategia</h4>
+  <table>
+    <thead><tr><th>Nivel</th><th>Técnica</th><th>Modelo / tipo</th><th>Herramienta</th></tr></thead>
+    <tbody><tr><td>Unitarias</td><td>Caja negra y caja blanca</td><td>Clases de equivalencia, valores límite, caminos básicos y mocks de API</td><td>Vitest, Jest</td></tr><tr><td>Integración</td><td>Incremental</td><td>Formulario -&gt; servicio -&gt; API client -&gt; endpoint; validación de rol y payload</td><td>Vitest/Jest, revisión de código</td></tr><tr><td>Sistema</td><td>Caja negra</td><td>Build de producción y revisión de comportamiento por módulo</td><td>Vite build</td></tr><tr><td>Aceptación</td><td>Caja negra</td><td>Escenarios funcionales por módulo con pasos de negocio</td><td>Manual; pendiente Selenium/Katalon</td></tr></tbody>
+  </table>
+  <h4>Ambiente</h4>
+  <table>
+    <thead><tr><th>Equipo</th><th>Especificación</th></tr></thead>
+    <tbody><tr><td>Equipo de pruebas</td><td>Windows 11 Home Single Language 64 bits, Intel Core i5-1235U, 10 núcleos, 12 procesadores lógicos, 15.7 GB RAM</td></tr><tr><td>Repositorio</td><td>C:\Users\carde\Documents\ProgramacionMovil\KineSys</td></tr></tbody>
+  </table>
+  <table>
+    <thead><tr><th>Software</th><th>Versión / Estado</th></tr></thead>
+    <tbody><tr><td>Node.js</td><td>v24.14.0</td></tr><tr><td>npm</td><td>11.9.0</td></tr><tr><td>React</td><td>19.1.1</td></tr><tr><td>Vite</td><td>7.x; build ejecutado correctamente</td></tr><tr><td>Vitest</td><td>4.1.5</td></tr><tr><td>Jest</td><td>30.3.0</td></tr><tr><td>Testing Library React</td><td>16.3.2</td></tr><tr><td>.NET</td><td>API objetivo net8.0; SDK local 10.0.103</td></tr><tr><td>SQL Server</td><td>Configurado en docker-compose.yml</td></tr></tbody>
+  </table>
+
+  <h3>2.3 Pruebas Unitarias Por Módulo</h3>
+  <h4>Resumen De Pruebas Automatizadas</h4>
+  <table>
+    <thead><tr><th>Archivo</th><th>Módulo</th><th>Casos</th><th>Cobertura funcional</th><th>Resultado</th></tr></thead>
+    <tbody><tr><td>pacientesService.test.js</td><td>Pacientes</td><td>12</td><td>listar, obtener, crear, actualizar, eliminar, errores de API</td><td>Aprobado</td></tr><tr><td>terapeutasService.test.js</td><td>Terapeutas</td><td>12</td><td>listar, obtener, crear, actualizar, eliminar, activos</td><td>Aprobado</td></tr><tr><td>tratamientosService.test.js</td><td>Tratamientos</td><td>9</td><td>listar, obtener, crear, actualizar, eliminar, equipos, error 409</td><td>Aprobado</td></tr></tbody>
+  </table>
+  <table>
+    <thead><tr><th>Área</th><th>Sentencias</th><th>Ramas</th><th>Funciones</th><th>Líneas</th></tr></thead>
+    <tbody><tr><td>Suite completa frontend</td><td>71.83%</td><td>70.70%</td><td>76.66%</td><td>71.75%</td></tr><tr><td>pacientesService.js</td><td>79.31%</td><td>33.33%</td><td>100.00%</td><td>78.57%</td></tr><tr><td>terapeutasService.js</td><td>60.97%</td><td>71.42%</td><td>80.00%</td><td>58.97%</td></tr><tr><td>tratamientosService.js</td><td>74.41%</td><td>50.00%</td><td>100.00%</td><td>74.41%</td></tr></tbody>
+  </table>
+
+  <h4>2.3.1 Módulo Pacientes - Clases De Equivalencia</h4>
+  <table>
+    <thead><tr><th>Campo</th><th>Clases válidas</th><th>Clases inválidas</th></tr></thead>
+    <tbody><tr><td>Nombres</td><td>2 a 50 caracteres, solo letras y espacios</td><td>Vacío, menor a 2, mayor a 50, contiene números</td></tr><tr><td>Apellidos</td><td>2 a 50 caracteres, solo letras y espacios</td><td>Vacío, mayor a 50, contiene números</td></tr><tr><td>Tipo documento</td><td>CC, TI, CE, PA</td><td>Sin selección o valor no permitido</td></tr><tr><td>Documento identidad</td><td>6 a 15 dígitos</td><td>Vacío, menor a 6, mayor a 15, contiene letras</td></tr><tr><td>Correo</td><td>Formato usuario@dominio</td><td>Sin @, sin dominio, vacío si obligatorio</td></tr><tr><td>Teléfono/Celular</td><td>10 dígitos numéricos</td><td>Menor a 10, mayor a 10, contiene letras</td></tr><tr><td>Fecha nacimiento</td><td>Fecha válida pasada</td><td>Fecha futura, formato inválido</td></tr><tr><td>EPS/Seguro</td><td>Registro existente o vacío permitido según flujo</td><td>ID inexistente o afiliación incompleta cuando se selecciona EPS</td></tr></tbody>
+  </table>
+  <h4>Casos De Prueba - Pacientes</h4>
+  <table class="small">
+    <thead><tr><th>ID</th><th>Caso</th><th>Datos</th><th>Resultado esperado</th><th>Resultado obtenido</th></tr></thead>
+    <tbody><tr><td>PAC-CP01</td><td>Datos completos válidos</td><td>Ana Pérez, CC, 12345678, correo válido</td><td>Registro exitoso</td><td>Aprobado por servicio</td></tr><tr><td>PAC-CP02</td><td>Nombre vacío</td><td>nombres = ''</td><td>Formulario bloquea y muestra alerta</td><td>Diseñado</td></tr><tr><td>PAC-CP03</td><td>Documento corto</td><td>12345</td><td>Error de validación</td><td>Diseñado</td></tr><tr><td>PAC-CP04</td><td>Persona con rol distinto</td><td>API devuelve rol 2</td><td>obtenerPaciente lanza error</td><td>Automatizado aprobado</td></tr><tr><td>PAC-CP05</td><td>API sin pacientes</td><td>Lista con roles 2 y 3</td><td>listarPacientes devuelve []</td><td>Automatizado aprobado</td></tr><tr><td>PAC-CP06</td><td>Error de eliminación</td><td>API rechaza delete</td><td>Error propagado</td><td>Automatizado aprobado</td></tr></tbody>
+  </table>
+
+  <h4>2.3.2 Módulo Terapeutas - Clases De Equivalencia</h4>
+  <table>
+    <thead><tr><th>Campo</th><th>Clases válidas</th><th>Clases inválidas</th></tr></thead>
+    <tbody><tr><td>Usuario</td><td>4 a 20 caracteres alfanuméricos</td><td>Vacío, menor a 4, mayor a 20, caracteres especiales</td></tr><tr><td>Contraseña</td><td>Mínimo 6 caracteres en creación</td><td>Vacía en creación, menor a 6</td></tr><tr><td>Documento identidad</td><td>6 a 15 dígitos</td><td>Vacío, fuera de rango, contiene letras</td></tr><tr><td>Nombres/Apellidos</td><td>2 a 50 caracteres</td><td>Vacío, menor a 2, mayor a 50, caracteres inválidos</td></tr><tr><td>Licencia profesional</td><td>Texto no vacío</td><td>Vacía o duplicada</td></tr><tr><td>Título académico</td><td>Texto no vacío</td><td>Vacío o demasiado corto</td></tr><tr><td>Años experiencia</td><td>0 a 99</td><td>Negativo, mayor a 99, texto</td></tr><tr><td>Fecha contratación</td><td>Fecha válida</td><td>Formato inválido</td></tr></tbody>
+  </table>
+  <h4>Casos De Prueba - Terapeutas</h4>
+  <table class="small">
+    <thead><tr><th>ID</th><th>Caso</th><th>Datos</th><th>Resultado esperado</th><th>Resultado obtenido</th></tr></thead>
+    <tbody><tr><td>TER-CP01</td><td>Datos válidos</td><td>usuario, password, documento, licencia y título</td><td>Registro exitoso con rol 2</td><td>Aprobado por servicio</td></tr><tr><td>TER-CP02</td><td>Contraseña vacía en creación</td><td>password = ''</td><td>Formulario bloquea</td><td>Diseñado</td></tr><tr><td>TER-CP03</td><td>Campos profesionales vacíos</td><td>noLicencia/tituloAcademico vacíos</td><td>Formulario bloquea</td><td>Diseñado</td></tr><tr><td>TER-CP04</td><td>Persona con rol distinto</td><td>API devuelve rol 1</td><td>obtenerTerapeuta lanza error</td><td>Automatizado aprobado</td></tr><tr><td>TER-CP05</td><td>Actualizar terapeuta</td><td>datos parciales</td><td>Se preserva rol 2</td><td>Automatizado aprobado</td></tr><tr><td>TER-CP06</td><td>Listar activos</td><td>mezcla activo true/false</td><td>Devuelve solo terapeutas activos</td><td>Automatizado aprobado</td></tr></tbody>
+  </table>
+
+  <h4>2.3.3 Módulo Terapias/Tratamientos - Clases De Equivalencia</h4>
+  <table>
+    <thead><tr><th>Campo</th><th>Clases válidas</th><th>Clases inválidas</th></tr></thead>
+    <tbody><tr><td>Nombre</td><td>Texto no vacío</td><td>Vacío o solo espacios</td></tr><tr><td>Especialidad</td><td>ID diferente de 0 y existente</td><td>0, vacío o especialidad inexistente</td></tr><tr><td>Duración</td><td>5 a 240 minutos</td><td>Menor a 5, mayor a 240, no numérico</td></tr><tr><td>Costo base</td><td>Mayor o igual a 0</td><td>Negativo o no numérico</td></tr><tr><td>Sesiones recomendadas</td><td>1 a 50</td><td>0, negativo, mayor a 50</td></tr><tr><td>Frecuencia</td><td>Diaria, Semanal, Quincenal, Mensual</td><td>Valor diferente a los permitidos</td></tr><tr><td>Equipos</td><td>Equipo existente y cantidad mayor o igual a 1</td><td>Sin equipo, cantidad 0 o mayor a disponibilidad sin confirmación</td></tr></tbody>
+  </table>
+  <h4>Casos De Prueba - Tratamientos</h4>
+  <table class="small">
+    <thead><tr><th>ID</th><th>Caso</th><th>Datos</th><th>Resultado esperado</th><th>Resultado obtenido</th></tr></thead>
+    <tbody><tr><td>TRA-CP01</td><td>Datos válidos</td><td>nombre, especialidad 1, duración 60, costo 150000</td><td>Tratamiento creado</td><td>Automatizado servicio</td></tr><tr><td>TRA-CP02</td><td>Nombre vacío</td><td>nombre = ''</td><td>Formulario bloquea</td><td>Diseñado</td></tr><tr><td>TRA-CP03</td><td>Especialidad no seleccionada</td><td>idEspecialidad = 0</td><td>Muestra error de especialidad</td><td>Diseñado</td></tr><tr><td>TRA-CP04</td><td>Duración menor a 5</td><td>duracionMinutos = 4</td><td>Input no permite / error</td><td>Diseñado</td></tr><tr><td>TRA-CP05</td><td>Costo negativo</td><td>costoBase = -1</td><td>Input no permite / error</td><td>Diseñado</td></tr><tr><td>TRA-CP06</td><td>Tratamiento duplicado</td><td>API responde 409</td><td>Mensaje: Ya existe un tratamiento con ese nombre</td><td>Automatizado aprobado</td></tr><tr><td>TRA-CP07</td><td>Agregar equipo</td><td>idTratamiento 9, idEquipo 2</td><td>POST /9/equipos</td><td>Automatizado aprobado</td></tr><tr><td>TRA-CP08</td><td>Remover equipo</td><td>idTratamiento 9, idEquipo 2</td><td>DELETE /9/equipos/2</td><td>Automatizado aprobado</td></tr></tbody>
+  </table>
+
+  <h4>Casos Por Valores Límite</h4>
+  <table class="small">
+    <thead><tr><th>Módulo</th><th>Campo</th><th>Dato</th><th>Escenario</th><th>Resultado esperado</th></tr></thead>
+    <tbody><tr><td>Paciente</td><td>Documento</td><td>5 dígitos</td><td>Límite inferior -1</td><td>Error</td></tr><tr><td>Paciente</td><td>Documento</td><td>6 dígitos</td><td>Límite inferior exacto</td><td>OK</td></tr><tr><td>Paciente</td><td>Documento</td><td>15 dígitos</td><td>Límite superior exacto</td><td>OK</td></tr><tr><td>Paciente</td><td>Documento</td><td>16 dígitos</td><td>Límite superior +1</td><td>Error</td></tr><tr><td>Terapeuta</td><td>Usuario</td><td>3 caracteres</td><td>Límite inferior -1</td><td>Error</td></tr><tr><td>Terapeuta</td><td>Usuario</td><td>4 caracteres</td><td>Límite inferior exacto</td><td>OK</td></tr><tr><td>Terapeuta</td><td>Contraseña</td><td>5 caracteres</td><td>Límite inferior -1</td><td>Error</td></tr><tr><td>Terapeuta</td><td>Contraseña</td><td>6 caracteres</td><td>Límite inferior exacto</td><td>OK</td></tr><tr><td>Tratamiento</td><td>Duración</td><td>4</td><td>Límite inferior -1</td><td>Error</td></tr><tr><td>Tratamiento</td><td>Duración</td><td>5</td><td>Límite inferior exacto</td><td>OK</td></tr><tr><td>Tratamiento</td><td>Duración</td><td>240</td><td>Límite superior exacto</td><td>OK</td></tr><tr><td>Tratamiento</td><td>Duración</td><td>241</td><td>Límite superior +1</td><td>Error</td></tr><tr><td>Tratamiento</td><td>Sesiones</td><td>0</td><td>Límite inferior -1</td><td>Error</td></tr><tr><td>Tratamiento</td><td>Sesiones</td><td>1</td><td>Límite inferior exacto</td><td>OK</td></tr><tr><td>Tratamiento</td><td>Sesiones</td><td>50</td><td>Límite superior exacto</td><td>OK</td></tr><tr><td>Tratamiento</td><td>Sesiones</td><td>51</td><td>Límite superior +1</td><td>Error</td></tr><tr><td>Tratamiento</td><td>Costo</td><td>-1</td><td>Límite inferior -1</td><td>Error</td></tr><tr><td>Tratamiento</td><td>Costo</td><td>0</td><td>Límite inferior exacto</td><td>OK</td></tr></tbody>
+  </table>
+
+  <h4>Pruebas Del Camino Básico</h4>
+  <table class="small">
+    <thead><tr><th>Camino</th><th>Flujo</th><th>Secuencia</th><th>Resultado esperado</th></tr></thead>
+    <tbody><tr><td>PAC-C1</td><td>Crear paciente exitoso</td><td>Formulario válido -&gt; crearPaciente -&gt; /Register -&gt; respuesta OK</td><td>Paciente guardado y lista recargada</td></tr><tr><td>PAC-C2</td><td>Paciente duplicado</td><td>Formulario válido -&gt; /Register -&gt; 409</td><td>Mensaje de documento duplicado</td></tr><tr><td>PAC-C3</td><td>Consultar no paciente</td><td>obtenerPaciente -&gt; API rol 2</td><td>Error: no es un paciente</td></tr><tr><td>TER-C1</td><td>Crear terapeuta exitoso</td><td>Formulario válido -&gt; crearTerapeuta -&gt; /Register -&gt; respuesta OK</td><td>Terapeuta guardado con rol 2</td></tr><tr><td>TER-C2</td><td>Editar terapeuta</td><td>Formulario edición -&gt; actualizarTerapeuta -&gt; /Update/{id}</td><td>Terapeuta actualizado preservando rol 2</td></tr><tr><td>TER-C3</td><td>Consultar no terapeuta</td><td>obtenerTerapeuta -&gt; API rol 1</td><td>Error: no es un terapeuta</td></tr><tr><td>TRA-C1</td><td>Crear tratamiento exitoso</td><td>Formulario válido -&gt; crearTratamiento -&gt; endpoint base</td><td>Tratamiento guardado</td></tr><tr><td>TRA-C2</td><td>Especialidad inválida</td><td>Formulario idEspecialidad = 0</td><td>No se envía; se muestra error</td></tr><tr><td>TRA-C3</td><td>Equipo excede disponibilidad</td><td>Cantidad requerida &gt; disponible</td><td>Sistema pide confirmación antes de continuar</td></tr><tr><td>TRA-C4</td><td>Tratamiento duplicado</td><td>crearTratamiento -&gt; 409</td><td>Mensaje funcional de duplicado</td></tr></tbody>
+  </table>
+
+  <h4>Ejecución Y Evaluación</h4>
+  <table>
+    <thead><tr><th>Herramienta</th><th>Comando</th><th>Resultado</th></tr></thead>
+    <tbody><tr><td>Vitest</td><td>npm run test</td><td>Test Files: 10 passed. Tests: 107 passed. Duration: 6.84 s.</td></tr><tr><td>Jest</td><td>npm run test:jest</td><td>Test Suites: 10 passed. Tests: 107 passed. Time: 7.041 s.</td></tr><tr><td>Vitest Coverage</td><td>npm run test:coverage</td><td>Statements 71.83%, Branches 70.70%, Functions 76.66%, Lines 71.75%.</td></tr></tbody>
+  </table>
+  <pre><code>Pruebas específicas de los tres módulos:
+- pacientesService.test.js: 12 aprobadas.
+- terapeutasService.test.js: 12 aprobadas.
+- tratamientosService.test.js: 9 aprobadas.
+Total específico: 33 aprobadas.
+
+Suite frontend completa:
+- Vitest: 10 archivos aprobados, 107 pruebas aprobadas.
+- Jest: 10 suites aprobadas, 107 pruebas aprobadas.</code></pre>
+
+  <h3>2.4 Pruebas De Integración</h3>
+  <p>La integración se evalúa desde los formularios/listados hacia servicios y API client. En el nivel automatizado se prueban principalmente los servicios, y en el nivel de diseño se documentan los puntos de integración visual pendientes de ejecución manual.</p>
+  <table class="small">
+    <thead><tr><th>ID</th><th>Integración</th><th>Entrada</th><th>Resultado esperado</th><th>Estado</th></tr></thead>
+    <tbody><tr><td>INT-PAC-01</td><td>PatientForm -&gt; pacientesService -&gt; pacientesApi</td><td>Datos válidos</td><td>Payload incluye user/password igual a documento, activo true y fechaRegistro</td><td>Automatizado en servicio</td></tr><tr><td>INT-PAC-02</td><td>PatientList -&gt; listarPacientes</td><td>API retorna mezcla de roles</td><td>Solo rol 1 aparece como paciente</td><td>Automatizado</td></tr><tr><td>INT-TER-01</td><td>TerapeutaForm -&gt; terapeutasService -&gt; terapeutasApi</td><td>Datos válidos</td><td>Payload preserva rol 2, activo true y fechaRegistro</td><td>Automatizado en servicio</td></tr><tr><td>INT-TER-02</td><td>TerapeutasList -&gt; obtenerTerapeutasActivos</td><td>Terapeutas activos/inactivos</td><td>Solo activo true</td><td>Automatizado</td></tr><tr><td>INT-TRA-01</td><td>TratamientoForm -&gt; tratamientosService</td><td>Datos válidos</td><td>Crea/actualiza tratamiento con especialidad, duración, costo, frecuencia y equipos</td><td>Automatizado parcial</td></tr><tr><td>INT-TRA-02</td><td>TratamientoForm -&gt; listarEquipos/listarTratamientos</td><td>Equipo seleccionado</td><td>Calcula disponibilidad real según equipos ya usados</td><td>Diseñado/revisión de código</td></tr><tr><td>INT-TRA-03</td><td>TratamientosList -&gt; listarTratamientos/listarEspecialidades</td><td>Carga de pantalla</td><td>Muestra tabla, métricas y buscador por nombre/descripción/especialidad</td><td>Diseñado/revisión de código</td></tr></tbody>
+  </table>
+
+  <h3>2.5 Pruebas De Sistema</h3>
+  <table>
+    <thead><tr><th>Tipo</th><th>Foco</th><th>Herramienta</th><th>Resultado</th></tr></thead>
+    <tbody><tr><td>Rendimiento</td><td>Carga y construcción de los tres módulos</td><td>npm run build</td><td>Build exitoso; advertencia general por chunk JS grande</td></tr><tr><td>Seguridad</td><td>Operaciones CRUD bajo cliente API autenticado</td><td>apiCliente + token JWT</td><td>Authorization Bearer centralizado; requiere sesión válida</td></tr><tr><td>Usabilidad</td><td>Formularios de pacientes, terapeutas y tratamientos</td><td>Revisión funcional</td><td>Campos requeridos, mensajes y estados de carga documentados</td></tr><tr><td>Portabilidad</td><td>Ejecución frontend en ambiente local</td><td>Node/Vite/Windows</td><td>Pruebas y build ejecutados correctamente</td></tr></tbody>
+  </table>
+  <pre><code>Build de sistema:
+npm run build
+Resultado: build exitoso.
+Observación: Vite reporta advertencia por chunk JavaScript grande; no bloquea la entrega, pero se recomienda code-splitting en una iteración posterior.</code></pre>
+
+  <h3>2.6 Pruebas De Aceptación</h3>
+  <table class="small">
+    <thead><tr><th>ID</th><th>Requisito</th><th>Escenario</th><th>Pasos</th><th>Resultado esperado</th><th>Resultado obtenido</th></tr></thead>
+    <tbody><tr><td>CA-PAC-01</td><td>RF-PAC-01</td><td>Registrar paciente</td><td>Completar formulario de paciente con datos válidos y guardar</td><td>Paciente creado con rol 1</td><td>Cubierto por servicio; UI pendiente manual</td></tr><tr><td>CA-PAC-02</td><td>RF-PAC-02</td><td>Listar pacientes</td><td>Abrir módulo de pacientes</td><td>Solo se observan personas con rol Paciente</td><td>Automatizado</td></tr><tr><td>CA-TER-01</td><td>RF-TER-01</td><td>Registrar terapeuta</td><td>Completar acceso, personal, contacto y profesional</td><td>Terapeuta creado con rol 2</td><td>Cubierto por servicio; UI pendiente manual</td></tr><tr><td>CA-TER-02</td><td>RF-TER-05</td><td>Consultar terapeutas activos</td><td>Abrir listado con mezcla de estados</td><td>Solo activos en filtro correspondiente</td><td>Automatizado</td></tr><tr><td>CA-TRA-01</td><td>RF-TRA-01</td><td>Registrar tratamiento</td><td>Completar nombre, especialidad, duración, costo y guardar</td><td>Tratamiento creado</td><td>Cubierto por servicio; UI pendiente manual</td></tr><tr><td>CA-TRA-02</td><td>RF-TRA-04</td><td>Asociar equipo</td><td>Seleccionar equipo y cantidad</td><td>Equipo asociado a tratamiento</td><td>Automatizado servicio</td></tr><tr><td>CA-TRA-03</td><td>RF-TRA-05</td><td>Cantidad mayor a disponible</td><td>Ingresar cantidad superior a disponibilidad real</td><td>Sistema advierte y solicita confirmación</td><td>Diseñado</td></tr></tbody>
+  </table>
+
+  <div class="page-break"></div>
+  <h2>3. Conclusiones</h2>
+  <ol><li>El entregable queda corregido para trabajar únicamente los tres módulos del PDF original: Pacientes, Terapeutas y Terapias/Tratamientos.</li><li>Pacientes cuenta con 12 pruebas automatizadas que validan filtrado por rol 1, creación, actualización, eliminación y errores del API.</li><li>Terapeutas cuenta con 12 pruebas automatizadas que validan filtrado por rol 2, creación, actualización preservando rol y terapeutas activos.</li><li>Tratamientos ahora cuenta con 9 pruebas automatizadas nuevas que cubren CRUD, error 409 y asociación/remoción de equipos.</li><li>La suite frontend completa quedó aprobada en Vitest y Jest con 107 pruebas exitosas.</li><li>Las pruebas de aceptación de interfaz quedan diseñadas y listas para ejecutarse manualmente o automatizarse con Selenium/Katalon.</li><li>Quedan pendientes pantallazos, diagramas gráficos y herramientas externas como JMeter/OWASP ZAP si el docente las exige como evidencia visual.</li></ol>
+
+  <h2>4. Referencias Y Pendientes</h2>
+  <ul><li>Plantilla proyecto final - Pruebas.doc.</li><li>Proyecto final primera entrega.pdf original, con los módulos de pacientes, terapeutas y tratamientos.</li><li>Código fuente local de KineSys: kinesys/src/services y kinesys/src/pages/GestionAdmin.</li><li>Salidas de ejecución en artifacts/pruebas: vitest-output-focused.txt, jest-output-focused.txt y coverage-output-focused.txt.</li></ul>
+  <table>
+    <thead><tr><th>Pendiente</th><th>Motivo</th><th>Avance actual</th></tr></thead>
+    <tbody><tr><td>Pantallazos de los tres módulos</td><td>No se levantó servidor visual durante esta corrección</td><td>Queda estructura lista para insertar capturas</td></tr><tr><td>Diagramas gráficos UML</td><td>No existen imágenes editables en el repositorio</td><td>Se dejan casos de uso, componentes y relaciones en tablas</td></tr><tr><td>Pruebas E2E Selenium/Katalon</td><td>No están configuradas</td><td>Casos de aceptación diseñados por módulo</td></tr><tr><td>JMeter/OWASP ZAP</td><td>No instalados</td><td>Se documenta build, seguridad de cliente API y pruebas unitarias/integración</td></tr></tbody>
+  </table>
+</body>
+</html>

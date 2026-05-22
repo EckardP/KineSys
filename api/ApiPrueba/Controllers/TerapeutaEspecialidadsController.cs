@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using ApiPrueba.Data;
 using ApiPrueba.Models;
@@ -12,6 +13,7 @@ namespace ApiPrueba.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TerapeutaEspecialidadsController : ControllerBase
     {
         private readonly ClinicaFisioterapiaBD _context;
@@ -56,7 +58,7 @@ namespace ApiPrueba.Controllers
                     te.IdTerapeutaEspecialidad,
                     te.IdTerapeuta,
                     te.IdEspecialidad,
-                    Nombre = te.Especialidad.Nombre, // ← Incluir el nombre aquí
+                    Nombre = te.Especialidad.Nombre, // ? Incluir el nombre aqu�
                     te.FechaCertificacion,
                     te.NumeroCertificado,
                     te.EsPrincipal
@@ -76,7 +78,7 @@ namespace ApiPrueba.Controllers
 
             if (especialidadPrincipal == null)
             {
-                return NotFound($"No se encontró especialidad principal para el terapeuta con ID {idTerapeuta}");
+                return NotFound($"No se encontr� especialidad principal para el terapeuta con ID {idTerapeuta}");
             }
 
             return especialidadPrincipal;

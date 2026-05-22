@@ -95,11 +95,14 @@ public class CitaModelTests
         ((int)Rol.Paciente).Should().Be(1);
         ((int)Rol.Terapeuta).Should().Be(2);
         ((int)Rol.Administrador).Should().Be(3);
+        ((int)Rol.Recepcionista).Should().Be(4);
+        ((int)Rol.Contador).Should().Be(5);
+        ((int)Rol.Supervisor).Should().Be(6);
     }
 
     [Fact]
-    public void Rol_ContieneExactamenteTresValores()
+    public void Rol_ContieneExactamenteSeisValores()
     {
-        Enum.GetValues<Rol>().Should().HaveCount(3);
+        Enum.GetValues<Rol>().Should().HaveCount(6);
     }
 }

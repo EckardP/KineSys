@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using ApiPrueba.Data;
 using ApiPrueba.Models;
@@ -13,6 +14,7 @@ namespace ApiPrueba.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TratamientoesController : ControllerBase
     {
         private readonly ClinicaFisioterapiaBD _context;
@@ -67,7 +69,7 @@ namespace ApiPrueba.Controllers
                     return NotFound("Tratamiento no encontrado");
                 }
 
-                // Actualizar propiedades básicas del tratamiento
+                // Actualizar propiedades b�sicas del tratamiento
                 tratamientoExistente.Nombre = tratamientoDto.Nombre;
                 tratamientoExistente.Descripcion = tratamientoDto.Descripcion;
                 tratamientoExistente.DuracionMinutos = tratamientoDto.DuracionMinutos;
@@ -81,10 +83,10 @@ namespace ApiPrueba.Controllers
                 tratamientoExistente.IdPaciente = tratamientoDto.IdPaciente;
                 tratamientoExistente.IdTerapeuta = tratamientoDto.IdTerapeuta;
 
-                // 🔥 ACTUALIZAR EQUIPOS - Eliminar equipos existentes
+                // ?? ACTUALIZAR EQUIPOS - Eliminar equipos existentes
                 _context.TratamientoEquipos.RemoveRange(tratamientoExistente.TratamientoEquipos);
 
-                // 🔥 AGREGAR NUEVOS EQUIPOS si vienen en la request
+                // ?? AGREGAR NUEVOS EQUIPOS si vienen en la request
                 if (tratamientoDto.TratamientoEquipos != null && tratamientoDto.TratamientoEquipos.Any())
                 {
                     foreach (var equipoDto in tratamientoDto.TratamientoEquipos)
@@ -140,13 +142,13 @@ namespace ApiPrueba.Controllers
         {
             try
             {
-                // Validar que el nombre no esté duplicado
+                // Validar que el nombre no est� duplicado
                 if (await _context.Tratamientos.AnyAsync(t => t.Nombre == tratamientoDto.Nombre))
                 {
                     return Conflict("Ya existe un tratamiento con ese nombre");
                 }
 
-                // 🔥 CREAR EL TRATAMIENTO SIN LOS EQUIPOS
+                // ?? CREAR EL TRATAMIENTO SIN LOS EQUIPOS
                 var tratamiento = new Tratamiento
                 {
                     Nombre = tratamientoDto.Nombre,
@@ -166,7 +168,7 @@ namespace ApiPrueba.Controllers
                 _context.Tratamientos.Add(tratamiento);
                 await _context.SaveChangesAsync();
 
-                // 🔥 AGREGAR LOS EQUIPOS SI EXISTEN
+                // ?? AGREGAR LOS EQUIPOS SI EXISTEN
                 if (tratamientoDto.TratamientoEquipos != null && tratamientoDto.TratamientoEquipos.Any())
                 {
                     foreach (var equipoDto in tratamientoDto.TratamientoEquipos)
@@ -175,7 +177,7 @@ namespace ApiPrueba.Controllers
                         var equipoExiste = await _context.Equipos.AnyAsync(e => e.IdEquipo == equipoDto.IdEquipo);
                         if (!equipoExiste)
                         {
-                            // Opcional: eliminar el tratamiento recién creado si hay error
+                            // Opcional: eliminar el tratamiento reci�n creado si hay error
                             _context.Tratamientos.Remove(tratamiento);
                             await _context.SaveChangesAsync();
                             return BadRequest($"El equipo con ID {equipoDto.IdEquipo} no existe");

@@ -15,7 +15,7 @@ public class JwtTokenGeneratorTests
     {
         var configMock = new Mock<IConfiguration>();
         // Clave de 32+ caracteres para HMAC-SHA256
-        configMock.Setup(c => c["JwtSettings:Key"]).Returns("ClaveDeTestSegura_ParaPruebasUnitarias_2025!");
+        configMock.Setup(c => c["JwtSettings:Key"]).Returns(new string('K', 64));
         configMock.Setup(c => c["JwtSettings:Issuer"]).Returns("KineSys-Tests");
         configMock.Setup(c => c["JwtSettings:Audience"]).Returns("KineSys-Frontend");
         configMock.Setup(c => c["JwtSettings:ExpireInMinutes"]).Returns("60");

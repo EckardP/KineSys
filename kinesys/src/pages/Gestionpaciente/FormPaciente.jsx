@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Container, Form, Row, Col, Button, Spinner, Alert } from "react-bootstrap";
 import {
@@ -31,13 +31,7 @@ export default function FormPaciente() {
   const [erroresValidacion, setErroresValidacion] = useState({});
 
   //  Si es edición, obtener datos del paciente
-  useEffect(() => {
-    if (esEdicion) {
-      cargarPaciente();
-    }
-  }, [id]);
-
-  const cargarPaciente = async () => {
+  const cargarPaciente = useCallback(async () => {
     try {
       setCargando(true);
       const respuesta = await obtenerPaciente(id);
@@ -58,7 +52,13 @@ export default function FormPaciente() {
       setError("No se pudieron cargar los datos del paciente.");
       setCargando(false);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    if (esEdicion) {
+      cargarPaciente();
+    }
+  }, [cargarPaciente, esEdicion]);
 
   // --- Validaciones ---
   const validarFormulario = () => {

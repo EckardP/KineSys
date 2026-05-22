@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Pruebas de Seguridad ISO/IEC 25010 en KineSys</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 16mm 15mm;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: #172033;
+      background: #ffffff;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 10.5pt;
+      line-height: 1.45;
+    }
+
+    h1, h2, h3 {
+      margin: 0;
+      line-height: 1.18;
+      color: #10223f;
+    }
+
+    h1 {
+      font-size: 24pt;
+      margin-bottom: 8px;
+    }
+
+    h2 {
+      font-size: 15pt;
+      margin-top: 22px;
+      margin-bottom: 8px;
+      padding-bottom: 5px;
+      border-bottom: 2px solid #d8e0eb;
+    }
+
+    h3 {
+      font-size: 11pt;
+      margin-top: 12px;
+      margin-bottom: 4px;
+      color: #26456f;
+    }
+
+    p {
+      margin: 5px 0 8px;
+    }
+
+    ul, ol {
+      margin: 5px 0 8px 20px;
+      padding: 0;
+    }
+
+    li {
+      margin: 3px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 8px 0 14px;
+      table-layout: fixed;
+    }
+
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 6px;
+      vertical-align: top;
+      word-wrap: break-word;
+    }
+
+    th {
+      background: #edf3fb;
+      color: #13233b;
+      font-weight: 700;
+    }
+
+    code, pre {
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 9pt;
+    }
+
+    pre {
+      margin: 6px 0 10px;
+      padding: 8px 10px;
+      white-space: pre-wrap;
+      background: #f5f7fb;
+      border: 1px solid #d8e0eb;
+      border-radius: 6px;
+      color: #111827;
+    }
+
+    .cover {
+      min-height: 245mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      page-break-after: always;
+    }
+
+    .subtitle {
+      font-size: 13pt;
+      color: #415676;
+      margin-bottom: 18px;
+    }
+
+    .box {
+      border: 1px solid #cbd5e1;
+      border-left: 5px solid #2563eb;
+      background: #f8fbff;
+      padding: 10px 12px;
+      margin: 10px 0;
+      border-radius: 6px;
+    }
+
+    .step {
+      page-break-inside: avoid;
+      margin-bottom: 10px;
+      padding-top: 2px;
+    }
+
+    .label {
+      display: inline-block;
+      font-size: 8.5pt;
+      font-weight: 700;
+      color: #1e3a5f;
+      background: #e9f2ff;
+      border: 1px solid #bfd5f5;
+      padding: 2px 6px;
+      border-radius: 99px;
+      margin-right: 4px;
+    }
+
+    .say {
+      border-left: 4px solid #16a34a;
+      padding: 7px 10px;
+      background: #f3fbf5;
+      margin: 7px 0 10px;
+    }
+
+    .warn {
+      border-left: 4px solid #f59e0b;
+      padding: 7px 10px;
+      background: #fff9ed;
+      margin: 7px 0 10px;
+    }
+
+    .page-break {
+      page-break-before: always;
+    }
+  </style>
+</head>
+<body>
+  <section class="cover">
+    <h1>Pruebas de Seguridad ISO/IEC 25010 en KineSys</h1>
+    <p class="subtitle">Guia paso a paso: herramienta, comando, subcaracteristica y resultado esperado.</p>
+    <div class="box">
+      <p><strong>Objetivo:</strong> que cualquier compañero pueda aplicar este flujo en su propio proyecto.</p>
+      <p><strong>Regla para explicar:</strong> no basta con ejecutar comandos. Hay que decir que herramienta se usa, que parte del proyecto revisa, que subcaracteristica evalua y que significa el resultado.</p>
+    </div>
+  </section>
+
+  <h2>Resumen rapido</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Paso</th>
+        <th>Herramienta</th>
+        <th>Que revisa</th>
+        <th>Subcaracteristica ISO 25010</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>npm audit raiz</td><td>Dependencias JavaScript generales</td><td>Confidencialidad e integridad</td></tr>
+      <tr><td>2</td><td>npm audit frontend</td><td>Dependencias React/Vite</td><td>Confidencialidad e integridad</td></tr>
+      <tr><td>3</td><td>Jest</td><td>Login, token, servicios frontend</td><td>Autenticidad e integridad</td></tr>
+      <tr><td>4</td><td>Vite build</td><td>Compilacion del frontend</td><td>Apoyo a integridad del producto</td></tr>
+      <tr><td>5</td><td>ESLint</td><td>Errores de codigo frontend</td><td>Apoyo a integridad del producto</td></tr>
+      <tr><td>6</td><td>NuGet audit</td><td>Dependencias .NET</td><td>Confidencialidad e integridad</td></tr>
+      <tr><td>7</td><td>xUnit</td><td>Pruebas del backend</td><td>Autenticidad e integridad</td></tr>
+      <tr><td>8</td><td>PowerShell</td><td>Controladores sin autorizacion</td><td>Confidencialidad y autenticidad</td></tr>
+      <tr><td>9</td><td>PowerShell / Semgrep</td><td>Secretos JWT en codigo</td><td>Confidencialidad y autenticidad</td></tr>
+      <tr><td>10</td><td>PowerShell / Semgrep</td><td>Exposicion de Password</td><td>Confidencialidad</td></tr>
+      <tr><td>11</td><td>Swagger/Postman/PowerShell</td><td>Endpoint sin token</td><td>Confidencialidad y autenticidad</td></tr>
+      <tr><td>12</td><td>Auditorias</td><td>Registro de acciones</td><td>Responsabilidad y no repudio</td></tr>
+      <tr><td>13</td><td>OWASP ZAP</td><td>App/API ejecutandose</td><td>Confidencialidad, integridad y autenticidad</td></tr>
+    </tbody>
+  </table>
+
+  <div class="box">
+    <p><strong>Comando inicial:</strong></p>
+    <pre>cd C:\Users\carde\Documents\ProgramacionMovil\KineSys</pre>
+    <p><strong>Frase:</strong> Todas las pruebas se ejecutan desde el proyecto KineSys. Algunas revisan frontend, otras backend y otras seguridad general.</p>
+  </div>
+
+  <h2>Paso 1 - Dependencias JavaScript de la raiz</h2>
+  <div class="step">
+    <p><span class="label">Herramienta</span> npm audit</p>
+    <p><span class="label">Subcaracteristica</span> Confidencialidad e integridad</p>
+    <p><strong>Por que aqui:</strong> se ejecuta en la raiz porque ahi hay un <code>package.json</code> general.</p>
+    <pre>cd C:\Users\carde\Documents\ProgramacionMovil\KineSys</pre>
+    <pre>npm audit --audit-level=moderate</pre>
+    <p><strong>Resultado esperado:</strong></p>
+    <pre>found 0 vulnerabilities</pre>
+    <div class="say"><strong>Que decir:</strong> Esta prueba evalua confidencialidad e integridad porque una libreria vulnerable podria filtrar datos o alterar el sistema. El resultado es correcto porque npm reporta cero vulnerabilidades.</div>
+  </div>
+
+  <h2>Paso 2 - Dependencias del frontend</h2>
+  <div class="step">
+    <p><span class="label">Herramienta</span> npm audit</p>
+    <p><span class="label">Subcaracteristica</span> Confidencialidad e integridad</p>
+    <p><strong>Por que aqui:</strong> se ejecuta en <code>kinesys</code> porque ahi esta el frontend React/Vite.</p>
+    <pre>cd C:\Users\carde\Documents\ProgramacionMovil\KineSys\kinesys</pre>
+    <pre>npm audit --audit-level=moderate</pre>
+    <p><strong>Resultado esperado:</strong></p>
+    <pre>found 0 vulnerabilities</pre>
+    <div class="say"><strong>Que decir:</strong> Revisamos las librerias del frontend porque este maneja formularios, token y datos de usuario. Si una dependencia es vulnerable, puede afectar confidencialidad o integridad.</div>
+  </div>
+
+  <h2>Paso 3 - Pruebas del frontend</h2>
+  <div class="step">
+    <p><span class="label">Herramienta</span> Jest</p>
+    <p><span class="label">Subcaracteristica</span> Autenticidad e integridad</p>
+    <p><strong>Por que aqui:</strong> las pruebas del frontend validan login, contexto de autenticacion, token, cliente API y servicios.</p>
+    <pre>cd C:\Users\carde\Documents\ProgramacionMovil\KineSys\kinesys</pre>
+    <pre>npm run test:jest -- --silent</pre>
+    <p><strong>Resultado esperado:</strong></p>
+    <pre>Test Suites: 10 passed, 10 total
+Tests:       107 passed, 107 total</pre>
+    <div class="say"><strong>Que decir:</strong> Apoya autenticidad porque revisa partes relacionadas con login y token. Tambien apoya integridad porque confirma que los servicios siguen funcionando despues de las correcciones.</div>
+  </div>
+
+  <h2>Paso 4 - Compilar frontend</h2>
+  <div class="step">
+    <p><span class="label">Herramienta</span> Vite</p>
+    <p><span class="label">Subcaracteristica</span> No es prueba directa de seguridad; apoya integridad del producto</p>
+    <pre>cd C:\Users\carde\Documents\ProgramacionMovil\KineSys\kinesys</pre>
+    <pre>npm run build</pre>
+    <p><strong>Resultado esperado:</strong></p>
+    <pre>✓ built</pre>
+    <div class="say"><strong>Nota:</strong> en esta version el build termina limpio, sin advertencias de SignalR ni de tamaño de chunks.</div>
+    <div class="say"><strong>Que decir:</strong> Esta prueba confirma que las correcciones no rompieron la aplicacion. Por eso se usa como control de apoyo a la integridad.</div>
+  </div>
+
+  <h2>Paso 5 - Lint del frontend</h2>
+  <div class="step">
+    <p><span class="label">Herramienta</span> ESLint</p>
+    <p><span class="label">Subcaracteristica</span> No es prueba directa de seguridad; apoya integridad del producto</p>
+    <pre>cd C:\Users\carde\Documents\ProgramacionMovil\KineSys\kinesys</pre>
+    <pre>npm run lint</pre>
+    <p><strong>Resultado esperado actual:</strong></p>
+    <pre>Sin errores ni advertencias</pre>
+    <div class="say"><strong>Que decir:</strong> ESLint ayuda a detectar errores de codigo. En este resultado la salida es limpia porque no imprime errores ni advertencias.</div>
+  </div>
+
+  <h2>Paso 6 - Dependencias .NET del backend</h2>
+  <div class="step">
+    <p><span class="label">Herramienta</span> dotnet package list --vulnerable</p>
+    <p><span class="label">Subcaracteristica</span> Confidencialidad e integridad</p>
+    <pre>cd C:\Users\carde\Documents\ProgramacionMovil\KineSys\api</pre>
+    <pre>dotnet package list --project .\ApiPrueba.sln --vulnerable --include-transitive</pre>
+    <p><strong>Resultado esperado:</strong></p>
+    <pre>El proyecto "ApiPrueba" especificado no tiene paquetes vulnerables en los origenes actuales.
+El proyecto "ApiPrueba.Tests" especificado no tiene paquetes vulnerables en los origenes actuales.</pre>
+    <div class="say"><strong>Que decir:</strong> Esta prueba revisa paquetes NuGet del backend. Evalua confidencialidad e integridad porque el backend procesa datos sensibles y no debe depender de paquetes vulnerables.</div>
+  </div>
+
+  <h2>Paso 7 - Pruebas del backend</h2>
+  <div class="step">
+    <p><span class="label">Herramienta</span> xUnit con dotnet test</p>
+    <p><span class="label">Subcaracteristica</span> Autenticidad e integridad</p>
+    <pre>cd C:\Users\carde\Documents\ProgramacionMovil\KineSys\api</pre>
+    <pre>dotnet test .\ApiPrueba.sln</pre>
+    <p><strong>Resultado esperado:</strong></p>
+    <pre>Resumen de pruebas: total: 39; con errores: 0; correcto: 39; omitido: 0</pre>
+    <div class="say"><strong>Que decir:</strong> Esta prueba apoya autenticidad porque valida reglas de usuarios, roles y token. Tambien apoya integridad porque confirma que la logica del backend sigue correcta.</div>
+  </div>
+
+  <h2>Paso 8 - Controladores protegidos</h2>
+  <div class="step">
+    <p><span class="label">Herramienta</span> PowerShell</p>
+    <p><span class="label">Subcaracteristica</span> Confidencialidad y autenticidad</p>
+    <pre>cd C:\Users\carde\Documents\ProgramacionMovil\KineSys</pre>
+    <pre>$controllers = Get-ChildItem api\ApiPrueba\Controllers -Filter *.cs</pre>
+    <pre>$without = @($controllers | Where-Object { (Get-Content -Raw $_.FullName) -notmatch '\[Authorize|AuthorizeByRole' })</pre>
+    <pre>"Total controllers: $($controllers.Count)"</pre>
+    <pre>"Without auth attributes: $($without.Count)"</pre>
+    <p><strong>Resultado esperado:</strong></p>
+    <pre>Total controllers: 35
+Without auth attributes: 0</pre>
+    <div class="say"><strong>Que decir:</strong> Evalua confidencialidad porque evita endpoints publicos con datos sensibles. Evalua autenticidad porque obliga a que el usuario este identificado antes de acceder.</div>
+  </div>
+
+  <h2>Paso 9 - Secretos JWT en el codigo</h2>
+  <div class="step">
+    <p><span class="label">Herramienta</span> PowerShell con Select-String</p>
+    <p><span class="label">Subcaracteristica</span> Confidencialidad y autenticidad</p>
+    <pre>cd C:\Users\carde\Documents\ProgramacionMovil\KineSys</pre>
+    <pre>Get-ChildItem .\api\ApiPrueba -Recurse -Include *.cs,*.json |
+  Select-String -Pattern 'ClaveDeAcceso_ParaAccederTokens_2025'</pre>
+    <pre>Select-String -Path .\api\ApiPrueba\appsettings.json -Pattern '"Key"'</pre>
+    <p><strong>Resultado esperado:</strong> no debe imprimir coincidencias.</p>
+    <div class="say"><strong>Que decir:</strong> Evalua confidencialidad porque un secreto escrito en codigo puede filtrarse. Tambien evalua autenticidad porque con la clave JWT alguien podria intentar falsificar tokens.</div>
+  </div>
+
+  <h2>Paso 10 - No devolver Password en respuestas</h2>
+  <div class="step">
+    <p><span class="label">Herramienta</span> PowerShell con Select-String</p>
+    <p><span class="label">Subcaracteristica</span> Confidencialidad</p>
+    <pre>cd C:\Users\carde\Documents\ProgramacionMovil\KineSys</pre>
+    <pre>Get-ChildItem .\api\ApiPrueba\Controllers,.\api\ApiPrueba\Models -Recurse -Include *.cs |
+  Select-String -Pattern 'p\.Password|Password,'</pre>
+    <p><strong>Resultado esperado:</strong> no debe mostrar <code>p.Password</code> en respuestas.</p>
+    <div class="say"><strong>Que decir:</strong> Evalua confidencialidad porque una contraseña, incluso si esta hasheada, no debe devolverse en una respuesta de la API.</div>
+  </div>
+
+  <h2>Paso 11 - Endpoint sin token</h2>
+  <div class="step">
+    <p><span class="label">Herramienta</span> PowerShell, Swagger o Postman</p>
+    <p><span class="label">Subcaracteristica</span> Confidencialidad y autenticidad</p>
+    <p><strong>Terminal 1:</strong></p>
+    <pre>cd C:\Users\carde\Documents\ProgramacionMovil\KineSys\api\ApiPrueba</pre>
+    <pre>dotnet run --launch-profile http</pre>
+    <p><strong>Terminal 2:</strong></p>
+    <pre>try {
+  Invoke-WebRequest -Uri http://localhost:5058/api/Citas -UseBasicParsing
+} catch {
+  $_.Exception.Response.StatusCode.value__
+}</pre>
+    <p><strong>Resultado esperado:</strong></p>
+    <pre>401</pre>
+    <div class="say"><strong>Que decir:</strong> 401 significa que el sistema rechazo una peticion sin token. Eso demuestra autenticidad, porque exige identidad, y confidencialidad, porque no deja ver datos a usuarios anonimos.</div>
+  </div>
+
+  <h2>Paso 12 - Login y JWT</h2>
+  <div class="step">
+    <p><span class="label">Herramienta</span> Swagger, Postman o PowerShell</p>
+    <p><span class="label">Subcaracteristica</span> Autenticidad</p>
+    <pre>http://localhost:5058/swagger</pre>
+    <pre>POST /api/Personas/Login</pre>
+    <p><strong>Resultado esperado:</strong></p>
+    <pre>{
+  "id": 1,
+  "nombres": "...",
+  "apellidos": "...",
+  "token": "eyJ..."
+}</pre>
+    <div class="say"><strong>Que decir:</strong> Esta prueba evalua autenticidad porque confirma que el sistema valida credenciales y genera un token JWT firmado para acceder a recursos protegidos.</div>
+  </div>
+
+  <h2>Paso 13 - Auditoria</h2>
+  <div class="step">
+    <p><span class="label">Herramienta</span> Swagger, Postman o base de datos</p>
+    <p><span class="label">Subcaracteristica</span> Responsabilidad y no repudio</p>
+    <p><strong>Prueba:</strong> iniciar sesion, crear/editar/eliminar un dato importante y consultar auditorias.</p>
+    <p><strong>Campos esperados:</strong></p>
+    <pre>IdPersona
+NombreUsuario
+FechaHora
+DireccionIP
+Accion
+Entidad
+Exitoso</pre>
+    <div class="say"><strong>Que decir:</strong> Evalua responsabilidad porque permite saber que usuario hizo una accion. Evalua no repudio porque queda evidencia con usuario, fecha, IP, accion y resultado.</div>
+  </div>
+
+  <h2>Paso 14 - OWASP ZAP</h2>
+  <div class="step">
+    <p><span class="label">Herramienta</span> OWASP ZAP</p>
+    <p><span class="label">Subcaracteristica</span> Confidencialidad, integridad y autenticidad</p>
+    <p><strong>Levantar API:</strong></p>
+    <pre>cd C:\Users\carde\Documents\ProgramacionMovil\KineSys\api\ApiPrueba</pre>
+    <pre>dotnet run --launch-profile http</pre>
+    <p><strong>Levantar frontend:</strong></p>
+    <pre>cd C:\Users\carde\Documents\ProgramacionMovil\KineSys\kinesys</pre>
+    <pre>npm run dev</pre>
+    <p><strong>En ZAP Desktop:</strong></p>
+    <ol>
+      <li>Abrir OWASP ZAP.</li>
+      <li>Ir a Quick Start.</li>
+      <li>Elegir Automated Scan.</li>
+      <li>Usar <code>http://localhost:5173</code>.</li>
+      <li>Para API, importar <code>http://localhost:5058/swagger/v1/swagger.json</code>.</li>
+    </ol>
+    <p><strong>Resultado esperado:</strong> sin alertas High o Critical.</p>
+    <div class="say"><strong>Que decir:</strong> ZAP analiza la aplicacion desde afuera, como un atacante controlado. Revisa comportamiento real: headers, CORS, endpoints expuestos, XSS e inyecciones.</div>
+  </div>
+
+  <h2>Flujo para explicarlo en clase</h2>
+  <ol>
+    <li><strong>Dependencias:</strong> uso npm audit y NuGet audit. Subcaracteristicas: confidencialidad e integridad.</li>
+    <li><strong>Pruebas automaticas:</strong> uso Jest y xUnit. Subcaracteristicas: autenticidad e integridad.</li>
+    <li><strong>Proteccion de endpoints:</strong> uso PowerShell, Swagger o Postman. Subcaracteristicas: confidencialidad y autenticidad.</li>
+    <li><strong>Secretos y datos sensibles:</strong> uso PowerShell o Semgrep. Subcaracteristicas: confidencialidad y autenticidad.</li>
+    <li><strong>Auditoria:</strong> uso Swagger, Postman o base de datos. Subcaracteristicas: responsabilidad y no repudio.</li>
+    <li><strong>Analisis dinamico:</strong> uso OWASP ZAP. Subcaracteristicas: confidencialidad, integridad y autenticidad.</li>
+  </ol>
+
+  <h2>Cierre corto</h2>
+  <div class="box">
+    <p>En seguridad ISO 25010 no se usa una sola herramienta para todo. Se combinan herramientas de dependencias, pruebas automaticas, revision de codigo, pruebas manuales de autenticacion, auditoria y analisis dinamico.</p>
+    <p>En KineSys los resultados principales fueron correctos: cero vulnerabilidades en npm, cero vulnerabilidades en NuGet, 107 pruebas frontend aprobadas, 39 pruebas backend aprobadas, 35 controladores protegidos y cero controladores sin autorizacion.</p>
+  </div>
+</body>
+</html>

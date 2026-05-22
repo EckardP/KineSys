@@ -11,8 +11,6 @@ using static ApiPrueba.Models.Persona;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using ApiPrueba.JWT;
-using NuGet.Protocol;
-using NuGet.Common;
 using ApiPrueba.Hub;
 using Microsoft.AspNetCore.SignalR;
 
@@ -20,6 +18,7 @@ namespace ApiPrueba.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class PersonasController : ControllerBase
     {
         private readonly ClinicaFisioterapiaBD _context;
@@ -46,7 +45,6 @@ namespace ApiPrueba.Controllers
                         // Campos comunes de Persona
                         p.Id,
                         p.User,
-                        p.Password,
                         p.Nombres,
                         p.Apellidos,
                         p.TipoDocumento,
@@ -104,7 +102,6 @@ namespace ApiPrueba.Controllers
                         // Campos comunes de Persona
                         p.Id,
                         p.User,
-                        p.Password,
                         p.Nombres,
                         p.Apellidos,
                         p.TipoDocumento,
@@ -299,6 +296,7 @@ namespace ApiPrueba.Controllers
             return CreatedAtAction("GetPersona", new { id = persona.Id }, persona);
         }
 
+        [AllowAnonymous]
         [HttpPost("Register")]
         public async Task<ActionResult<Persona>> PostRegistroPersona(RegistroDto registro)
         {
@@ -471,6 +469,7 @@ namespace ApiPrueba.Controllers
         }
 
         // POST: api/Personas/Login
+        [AllowAnonymous]
         [HttpPost("Login")]
         public async Task<ActionResult<Persona>> PostLoginPersona(LoginDto login)
         {

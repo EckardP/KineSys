@@ -183,7 +183,7 @@ function AdminDashboard() {
         stopConnection(conn);
       }
     };
-  }, [isAuthenticated, usuario, loading]);
+  }, [displayName, isAuthenticated, loading, usuario, userIdForSignalR]);
 
   // Limpieza automática de notificaciones antiguas
   useEffect(() => {

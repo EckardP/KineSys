@@ -1,0 +1,102 @@
+﻿=== TABLA 1 ===
+Nombre de la aplicación a probar | Xxxx
+Módulos a ser probados | Objetivos de las pruebas
+Modulo1 | 
+Modulo 2 | 
+……… | 
+Modulo N | 
+=== TABLA 2 ===
+ | Niveles, tipos y métodos de prueba
+Niveles de pruebas | Técnicas de pruebas | Modelos/estrategias/ tipos | Herramientas de pruebas
+ Pruebas unitarias |  |  | 
+
+
+
+Pruebas de integración |  |  | 
+
+Pruebas de sistemas |  |  | 
+ | 
+ | 
+ | 
+ | 
+Pruebas de aceptación |  |  | 
+=== TABLA 3 ===
+EQUIPO | ESPECIFICACIONES TECNICAS
+ | 
+ | 
+=== TABLA 4 ===
+SOFTWARE | VERSION
+ | 
+ | 
+=== TABLA 5 ===
+Campo 1 | Campo 2 | Campo 3….. | Clases cubiertas
+Valor | valor | valor | 
+ |  |  | 
+ |  |  | 
+=== TABLA 6 ===
+CAMPO | Datos de entrada | Escenario
+ |  | 
+ |  | 
+=== TABLA 7 ===
+CAMINO | DATOS ENTRADA | ESCENARIO
+VAR1 | VAR2 | ………
+ |  | 
+ |  | 
+=== TABLA 8 ===
+Prueba
+Caso de prueba | Imagen de la prueba | Resultado
+[Especificar el caso de prueba efectuado.] |  | [Describir el resultado obtenido exitoso o fallido.]
+Observaciones Técnicas/funcionales | 
+Concepto Final | 
+=== TABLA 9 ===
+Prueba
+Caso de prueba | Imagen de la prueba | Resultado
+[Especificar el caso de prueba efectuado.] |  | [Describir el resultado obtenido exitoso o fallido.]
+Observaciones Técnicas/funcionales | 
+Concepto Final | 
+=== TABLA 10 ===
+Tipo de Prueba | RENDIMIENTO
+Nombre de la Prueba | 
+descripción de la Prueba | 
+Ambiente o condiciones previas y necesarias para su ejecución. | 
+Herramientas y metodología utilizada. | Apache JMeter
+Detalle de la ejecución de la prueba (Pantallazos)
+Resultado de la Prueba.
+=== TABLA 11 ===
+Tipo de Prueba | SEGURIDAD
+Nombre de la Prueba | 
+descripción de la Prueba | 
+Ambiente o condiciones previas y necesarias para su ejecución. | 
+Herramientas y metodología utilizada. | OWASP ZAP
+Detalle de la ejecución de la prueba (Pantallazos)
+Resultado de la Prueba.
+=== TABLA 12 ===
+Tipo de Prueba | USABILIDAD
+Nombre de la Prueba | 
+descripción de la Prueba | 
+Ambiente o condiciones previas y necesarias para su ejecución. | 
+Herramientas y metodología utilizada. | 
+Detalle de la ejecución de la prueba (Pantallazos)
+Resultado de la Prueba.
+=== TABLA 13 ===
+Tipo de Prueba | PORTABILIDAD
+Nombre de la Prueba | 
+descripción de la Prueba | 
+Ambiente o condiciones previas y necesarias para su ejecución. | 
+Herramientas y metodología utilizada. | 
+Detalle de la ejecución de la prueba (Pantallazos)
+Resultado de la Prueba.
+=== TABLA 14 ===
+ID Caso:  | Requisito Asociado: | Escenario de Negocio
+Datos de entrada: | Pasos de Ejecución:
+Resultado Esperado: | Resultado Obtenido:
+=== TABLA 15 ===
+ID Caso: CA001 | Requisito Asociado: RF01: Inicio de sesion | Escenario de Negocio: Ingreso exitoso al sistema
+Datos de entrada: user= “cliente”  pass=“123” | Pasos de Ejecución: 1. Abrir sistema  2. Ingresar credenciales  3. Validar acceso
+Resultado Esperado: Acceso correcto al aplicativo | Resultado Obtenido: Acceso correcto
+=== TABLA 16 ===
+Prueba
+Caso de prueba | Imagen de la prueba | Resultado
+[Especificar el caso de prueba efectuado.] |  | [Describir el resultado obtenido exitoso o fallido.]
+Observaciones Técnicas/funcionales | 
+Concepto Final | 
