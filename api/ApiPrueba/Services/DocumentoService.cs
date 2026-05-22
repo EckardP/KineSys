@@ -1,5 +1,6 @@
 ﻿using ApiPrueba.DTOs;
 using ApiPrueba.Models;
+using ApiPrueba.Security;
 using Microsoft.EntityFrameworkCore;
 
 namespace ApiPrueba.Services
@@ -24,7 +25,12 @@ namespace ApiPrueba.Services
         public DocumentoService(DbContext context, string rutaAlmacenamiento)
         {
             _context = context;
-            _rutaAlmacenamiento = rutaAlmacenamiento;
+            if (string.IsNullOrWhiteSpace(rutaAlmacenamiento))
+            {
+                throw new ArgumentException("La ruta de almacenamiento no puede estar vacía", nameof(rutaAlmacenamiento));
+            }
+
+            _rutaAlmacenamiento = Path.GetFullPath(rutaAlmacenamiento);
         }
 
         /// <summary>
@@ -53,14 +59,16 @@ namespace ApiPrueba.Services
             // Generar nombre único para el archivo
             var nombreUnico = $"{Guid.NewGuid()}{extension}";
             var carpetaPaciente = Path.Combine(_rutaAlmacenamiento, $"Paciente_{dto.IdPaciente}");
+            var carpetaPacienteSegura = PathTraversalValidator.ValidarYNormalizarRuta(carpetaPaciente, _rutaAlmacenamiento);
 
             // Crear carpeta si no existe
-            Directory.CreateDirectory(carpetaPaciente);
+            Directory.CreateDirectory(carpetaPacienteSegura);
 
-            var rutaCompleta = Path.Combine(carpetaPaciente, nombreUnico);
+            var rutaCompleta = Path.Combine(carpetaPacienteSegura, nombreUnico);
+            var rutaSegura = PathTraversalValidator.ValidarYNormalizarRuta(rutaCompleta, _rutaAlmacenamiento);
 
             // Guardar archivo en disco
-            using (var fileStream = new FileStream(rutaCompleta, FileMode.Create))
+            using (var fileStream = new FileStream(rutaSegura, FileMode.Create))
             {
                 await archivo.CopyToAsync(fileStream);
             }
@@ -105,13 +113,15 @@ namespace ApiPrueba.Services
                 throw new UnauthorizedAccessException("No tiene permisos para descargar este documento");
             }
 
-            // Verificar que el archivo existe
-            if (!File.Exists(documento.Ruta))
+            // Verificar que el archivo esté dentro de la ruta permitida
+            var rutaSegura = PathTraversalValidator.ValidarYNormalizarRuta(documento.Ruta, _rutaAlmacenamiento);
+
+            if (!File.Exists(rutaSegura))
             {
                 throw new FileNotFoundException("El archivo no se encuentra en el servidor");
             }
 
-            return File.OpenRead(documento.Ruta);
+            return File.OpenRead(rutaSegura);
         }
 
         /// <summary>
@@ -134,9 +144,10 @@ namespace ApiPrueba.Services
             }
 
             // Eliminar archivo físico
-            if (File.Exists(documento.Ruta))
+            var rutaSegura = PathTraversalValidator.ValidarYNormalizarRuta(documento.Ruta, _rutaAlmacenamiento);
+            if (File.Exists(rutaSegura))
             {
-                File.Delete(documento.Ruta);
+                File.Delete(rutaSegura);
             }
 
             // Eliminar registro de base de datos

@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-
-"use client"
-=======
->>>>>>> origin
-
 import { ArrowLeft, Phone, Mail, MapPin, Calendar, User, FileText, Shield, Building } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
