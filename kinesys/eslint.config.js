@@ -1,39 +1,39 @@
+// For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
+import storybook from "eslint-plugin-storybook";
+
 import js from '@eslint/js'
 import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
-export default defineConfig([
-  globalIgnores(['dist', 'coverage']),
-  {
-    files: ['**/*.{js,jsx}'],
-    extends: [
-      js.configs.recommended,
-      reactHooks.configs['recommended-latest'],
-      reactRefresh.configs.vite,
-    ],
-    languageOptions: {
-      ecmaVersion: 2020,
-      globals: {
-        ...globals.browser,
-        ...globals.node,
-        expect: 'readonly',
-      },
-      parserOptions: {
-        ecmaVersion: 'latest',
-        ecmaFeatures: { jsx: true },
-        sourceType: 'module',
-      },
+export default defineConfig([globalIgnores(['dist', 'coverage', 'storybook-static']), {
+  files: ['**/*.{js,jsx}'],
+  extends: [
+    js.configs.recommended,
+    reactHooks.configs['recommended-latest'],
+    reactRefresh.configs.vite,
+  ],
+  languageOptions: {
+    ecmaVersion: 2020,
+    globals: {
+      ...globals.browser,
+      ...globals.node,
+      expect: 'readonly',
     },
-    rules: {
-      'react-refresh/only-export-components': 'off',
-      'no-unused-vars': ['error', {
-        argsIgnorePattern: '^_',
-        caughtErrors: 'none',
-        varsIgnorePattern: '^[A-Z_]',
-        ignoreRestSiblings: true,
-      }],
+    parserOptions: {
+      ecmaVersion: 'latest',
+      ecmaFeatures: { jsx: true },
+      sourceType: 'module',
     },
   },
-])
+  rules: {
+    'react-refresh/only-export-components': 'off',
+    'no-unused-vars': ['error', {
+      argsIgnorePattern: '^_',
+      caughtErrors: 'none',
+      varsIgnorePattern: '^[A-Z_]',
+      ignoreRestSiblings: true,
+    }],
+  },
+}, ...storybook.configs["flat/recommended"]])
