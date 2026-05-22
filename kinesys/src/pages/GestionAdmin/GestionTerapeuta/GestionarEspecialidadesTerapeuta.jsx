@@ -1,6 +1,5 @@
-"use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Plus, Edit, Trash2, X, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -28,7 +27,7 @@ export default function GestionarEspecialidadesTerapeuta({ idTerapeuta }) {
   const [agregandoEspecialidad, setAgregandoEspecialidad] = useState(false)
 
   // Cargar especialidades disponibles y asignadas
-  const cargarDatos = async () => {
+  const cargarDatos = useCallback(async () => {
     try {
       setLoading(true)
       console.log("🔄 Cargando especialidades disponibles y asignadas...")
@@ -55,11 +54,11 @@ export default function GestionarEspecialidadesTerapeuta({ idTerapeuta }) {
     } finally {
       setLoading(false)
     }
-  }
+  }, [idTerapeuta])
 
   useEffect(() => {
     cargarDatos()
-  }, [idTerapeuta])
+  }, [cargarDatos])
 
   // Manejar cambios en el formulario de nueva especialidad
   const handleEspecialidadChange = (e) => {

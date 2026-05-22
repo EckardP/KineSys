@@ -1,5 +1,4 @@
 // src/pages/GestionAdmin/GestionTratamiento/TratamientosList.jsx
-"use client"
 
 import { useState, useEffect } from "react"
 import { Search, Plus, Edit, Trash2, Eye, Stethoscope, Clock, Users, Award } from "lucide-react"
@@ -67,7 +66,7 @@ export default function TratamientosList() {
       t.especialidad?.nombre?.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  const handleAddTratamiento = async (tratamientoData) => {
+  const handleAddTratamiento = async (_tratamientoData) => {
     try {
       await cargarTratamientos()
       setShowForm(false)

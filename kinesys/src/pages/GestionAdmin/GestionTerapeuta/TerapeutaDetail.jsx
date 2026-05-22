@@ -1,4 +1,3 @@
-"use client"
 
 import { ArrowLeft, Phone, Mail, MapPin, Calendar, User, Award, Briefcase } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -46,6 +45,7 @@ export default function TerapeutaDetail({ terapeuta, onBack }) {
     }
 
     cargarDatosAdicionales()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [terapeuta?.idEspecialidad])
 
   if (loading) {

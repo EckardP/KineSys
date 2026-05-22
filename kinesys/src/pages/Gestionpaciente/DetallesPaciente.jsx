@@ -1,4 +1,3 @@
-"use client"
 
 import { ArrowLeft, Phone, Mail, MapPin, Calendar, User, FileText, Shield, Building } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -74,6 +73,7 @@ export default function PatientDetail({ patient, onBack }) {
     }
 
     cargarDatosAdicionales()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [patient?.epsId, patient?.idSeguroMedico])
 
   // Estado de carga inicial

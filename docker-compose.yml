@@ -30,6 +30,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__ClinicaFisioterapiaBD=Server=sqlserver;Database=${DB_NAME};User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=true;Connect Timeout=30
+      - JwtSettings__Key=${JWT_KEY}
       - SQL_SERVER_HOST=sqlserver
       - SQL_SERVER_PORT=1433
     ports:

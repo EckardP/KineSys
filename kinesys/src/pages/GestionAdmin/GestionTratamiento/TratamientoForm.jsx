@@ -1,6 +1,5 @@
-"use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { X, Stethoscope, Clock, DollarSign, FileText, Package, Plus, Trash2, AlertCircle, AlertTriangle } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -33,7 +32,7 @@ export default function TratamientoForm({ onSubmit, onCancel, initialData, espec
   const [loading, setLoading] = useState(false)
   const [cargandoEquipos, setCargandoEquipos] = useState(false)
   const [errorEspecialidad, setErrorEspecialidad] = useState("")
-  const [errorCantidad, setErrorCantidad] = useState("")
+  const [, setErrorCantidad] = useState("")
 
   // Cargar equipos disponibles y tratamientos existentes
   useEffect(() => {
@@ -84,7 +83,7 @@ export default function TratamientoForm({ onSubmit, onCancel, initialData, espec
   }, [initialData])
 
   // Calcular disponibilidad real considerando otros tratamientos
-  const calcularDisponibilidadReal = (idEquipo) => {
+  const calcularDisponibilidadReal = useCallback((idEquipo) => {
     const equipo = equipos.find(e => e.idEquipo === idEquipo)
     if (!equipo) return 0
 
@@ -101,7 +100,7 @@ export default function TratamientoForm({ onSubmit, onCancel, initialData, espec
 
     const disponibilidadReal = equipo.cantidad - cantidadUsadaEnOtrosTratamientos
     return Math.max(0, disponibilidadReal) // No puede ser negativo
-  }
+  }, [equipos, initialData, tratamientosExistentes])
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target
@@ -133,7 +132,7 @@ export default function TratamientoForm({ onSubmit, onCancel, initialData, espec
     } else {
       setErrorCantidad("")
     }
-  }, [equipoSeleccionado, cantidadEquipo, equipos, tratamientosExistentes])
+  }, [calcularDisponibilidadReal, cantidadEquipo, equipoSeleccionado])
 
   const agregarEquipo = () => {
     if (!equipoSeleccionado) {

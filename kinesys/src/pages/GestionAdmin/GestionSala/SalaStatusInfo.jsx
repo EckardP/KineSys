@@ -1,9 +1,8 @@
-"use client"
 
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
-export default function SalaStatusInfo({ formData, onChange, onSelectChange }) {
+export default function SalaStatusInfo({ formData, onChange: _onChange, onSelectChange }) {
   return (
     <div>
       <h3 className="text-lg font-semibold mb-4 text-gray-900">Estado de la Sala</h3>

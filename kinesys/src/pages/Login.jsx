@@ -1,4 +1,3 @@
-"use client"
 
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
@@ -17,6 +16,11 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError("")
+
+    if (!usuario.trim() || !contrasena.trim()) {
+      return
+    }
+
     setCargando(true)
 
     try {
@@ -99,7 +103,7 @@ export default function Login() {
               <p className="text-gray-600">Ingresa tus credenciales para acceder al sistema</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6" aria-label="Formulario de inicio de sesion">
               <div>
                 <label htmlFor="usuario" className="block text-sm font-medium text-gray-700 mb-2">
                   Usuario
@@ -127,7 +131,7 @@ export default function Login() {
                     type={mostrarContrasena ? "text" : "password"}
                     value={contrasena}
                     onChange={(e) => setContrasena(e.target.value)}
-                    placeholder="••••••••"
+                    placeholder="Contraseña"
                     required
                     disabled={cargando}
                     autoComplete="current-password"
@@ -185,6 +189,7 @@ export default function Login() {
               <button
                 type="submit"
                 disabled={cargando}
+                aria-label="Ingresar"
                 className="w-full bg-gray-900 hover:bg-gray-800 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
               >
                 {cargando ? (

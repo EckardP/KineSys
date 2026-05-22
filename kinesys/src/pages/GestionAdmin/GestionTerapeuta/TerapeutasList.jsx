@@ -1,12 +1,9 @@
-"use client"
 
 import { useState, useEffect } from "react"
 import { Search, Plus, Edit, Trash2, Eye, Clock } from "lucide-react"
 import TerapeutaForm from "./TerapeutaForm"
 import TerapeutaDetail from "./TerapeutaDetail"
 import HorariosModal from "./HorariosModal"
-// En las importaciones de TerapeutaForm.jsx
-import TerapeutaAccessInfo from "./TerapeutaAccessInfo"
 import {
   listarTerapeutas,
   eliminarTerapeuta,
@@ -74,7 +71,7 @@ export default function TerapeutasList() {
   if (showForm) {
     return (
       <TerapeutaForm
-        onSubmit={async (terapeutaData) => {
+        onSubmit={async (_terapeutaData) => {
           // Esta función se pasará al formulario y se encargará de guardar el terapeuta
           // Luego recargar la lista y cerrar el formulario
           await cargarTerapeutas()

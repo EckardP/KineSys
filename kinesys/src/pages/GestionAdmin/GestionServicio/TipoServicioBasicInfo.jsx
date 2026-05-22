@@ -1,10 +1,9 @@
-"use client"
 
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 
-export default function TipoServicioBasicInfo({ formData, onChange, onSelectChange }) {
+export default function TipoServicioBasicInfo({ formData, onChange, onSelectChange: _onSelectChange }) {
   return (
     <div>
       <h3 className="text-lg font-semibold mb-4 text-gray-900">Información Básica del Servicio</h3>

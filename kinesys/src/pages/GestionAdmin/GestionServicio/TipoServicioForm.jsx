@@ -1,4 +1,3 @@
-"use client"
 
 import { useState, useEffect } from "react"
 import { X } from "lucide-react"
@@ -10,12 +9,10 @@ import { crearTipoServicio, actualizarTipoServicio } from "../../../services/tip
 import { 
   obtenerEspecialidadesPorTipoServicio, 
   agregarEspecialidadATipoServicio, 
-  eliminarRelacionPorIds 
 } from "../../../services/tipoServicioEspecialidadesService"
 import { 
   obtenerEquiposRequeridosPorTipoServicio, 
   crearEquipoRequerido, 
-  eliminarEquipoRequerido 
 } from "../../../services/equiposRequeridosService"
 import { listarEspecialidades } from "../../../services/especialidadesService"
 import { listarEquipos } from "../../../services/equiposService"

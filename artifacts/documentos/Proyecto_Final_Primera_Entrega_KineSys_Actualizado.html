@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>KineSys - Proyecto Final Primera Entrega Actualizado</title>
+  <style>
+    @page { size: A4; margin: 16mm 14mm 18mm; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: #20262e;
+      background: #ffffff;
+      font-size: 10.4pt;
+      line-height: 1.42;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    h1, h2, h3, h4 { color: #16324f; margin: 0 0 8px; line-height: 1.18; }
+    h1 { font-size: 24pt; }
+    h2 { font-size: 17pt; margin-top: 18px; padding-bottom: 4px; border-bottom: 2px solid #4a90a4; }
+    h3 { font-size: 13pt; margin-top: 14px; color: #275a6c; }
+    h4 { font-size: 11pt; margin-top: 10px; color: #303c4a; }
+    p { margin: 0 0 8px; }
+    ul, ol { margin: 4px 0 10px 22px; padding: 0; }
+    li { margin: 2px 0; }
+    table { width: 100%; border-collapse: collapse; margin: 8px 0 14px; page-break-inside: avoid; }
+    th { background: #e8f1f4; color: #16324f; font-weight: 700; }
+    th, td { border: 1px solid #b7c7cf; padding: 5px 6px; vertical-align: top; }
+    tr:nth-child(even) td { background: #f8fafb; }
+    pre {
+      white-space: pre-wrap;
+      background: #f2f5f7;
+      border: 1px solid #cfd9df;
+      border-radius: 4px;
+      padding: 8px;
+      font-size: 8.6pt;
+      margin: 8px 0 12px;
+    }
+    .cover {
+      min-height: 262mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+      border: 3px solid #16324f;
+      padding: 24mm 18mm;
+    }
+    .cover .kicker { text-transform: uppercase; letter-spacing: 1px; color: #4a6f79; font-weight: 700; }
+    .cover h1 { font-size: 28pt; margin: 12px 0 16px; }
+    .cover h2 { border: 0; font-size: 16pt; margin: 0 0 18px; color: #275a6c; }
+    .cover .block { margin-top: 16px; }
+    .muted { color: #5e6b76; }
+    .note { font-size: 9.4pt; color: #52626c; }
+    .page-break { break-before: page; page-break-before: always; }
+    .toc { columns: 2; column-gap: 20px; }
+    .toc p { margin-bottom: 4px; }
+    .badge-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 8px 0 14px; }
+    .badge {
+      border: 1px solid #b7c7cf;
+      background: #f4f9fa;
+      border-radius: 5px;
+      padding: 8px;
+      text-align: center;
+      min-height: 48px;
+    }
+    .badge strong { display: block; color: #16324f; font-size: 15pt; }
+    .callout {
+      border-left: 4px solid #4a90a4;
+      background: #f3f8fa;
+      padding: 8px 10px;
+      margin: 10px 0 12px;
+      page-break-inside: avoid;
+    }
+    .callout p { margin: 3px 0 0; }
+    .diagram {
+      display: grid;
+      grid-template-columns: 1fr 24px 1fr 24px 1fr;
+      align-items: center;
+      gap: 6px;
+      margin: 8px 0 14px;
+      page-break-inside: avoid;
+    }
+    .box {
+      border: 1px solid #9cb7c2;
+      background: #f7fbfc;
+      border-radius: 5px;
+      padding: 8px;
+      text-align: center;
+      min-height: 48px;
+    }
+    .arrow { text-align: center; color: #275a6c; font-weight: 700; }
+    .small td, .small th { font-size: 9pt; padding: 4px 5px; }
+    .sign { margin-top: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+    .line { border-top: 1px solid #52626c; padding-top: 6px; text-align: center; }
+  </style>
+</head>
+<body>
+  <section class="cover">
+    <div class="kicker">Proyecto final - primera entrega</div>
+    <h1>KineSys</h1>
+    <h2>Sistema de Gestión de Clínica de Fisioterapia</h2>
+    <p><strong>Documento actualizado de descripción y pruebas del software</strong></p>
+    <div class="block">
+      <p><strong>Estudiantes:</strong></p>
+      <p>Eckard Antony Rodriguez Gutierrez</p>
+      <p>Luis Alejandro Narvaez Teran</p>
+    </div>
+    <div class="block">
+      <p><strong>Docente:</strong> Maribel Romero Mestre</p>
+      <p>Universidad Popular del Cesar - Sede Sabanas</p>
+      <p>Ingeniería de Sistemas</p>
+      <p>Valledupar - Cesar</p>
+      <p>2026</p>
+    </div>
+    <p class="note block">Versión adelantada el 26 de abril de 2026 con base en la plantilla "Proyecto final - Pruebas", el PDF inicial y las pruebas implementadas en el repositorio.</p>
+  </section>
+
+  <div class="page-break"></div>
+  <h2>Tabla de contenido</h2>
+  <div class="toc">
+    <p>1. Primera parte: descripción del sistema</p>
+    <p>1.1 Identificación del problema</p>
+    <p>1.2 Descripción detallada del sistema o aplicación</p>
+    <p>1.3 Modelo de requerimientos</p>
+    <p>1.4 Modelo de casos de uso</p>
+    <p>1.5 Modelo de diseño del sistema</p>
+    <p>1.6 Producto del software</p>
+    <p>2. Segunda parte: pruebas del software</p>
+    <p>2.1 Introducción</p>
+    <p>2.2 Planificación de las pruebas</p>
+    <p>2.3 Pruebas unitarias</p>
+    <p>2.4 Pruebas de integración</p>
+    <p>2.5 Pruebas de sistemas</p>
+    <p>2.6 Pruebas de aceptación</p>
+    <p>3. Conclusiones</p>
+    <p>4. Referencias bibliográficas</p>
+    <p>5. Pendientes y observaciones</p>
+  </div>
+
+  <div class="page-break"></div>
+  <h2>1. Primera Parte: Descripción Del Sistema</h2>
+  <h3>1.1 Identificación Del Problema</h3>
+  <p>Las clínicas de fisioterapia manejan información sensible y operativa sobre pacientes, terapeutas, tratamientos, citas, disponibilidad de salas, equipos, autorizaciones, facturación y evolución clínica. Cuando estos procesos se llevan en hojas sueltas, agendas manuales o archivos aislados, aumentan los riesgos de duplicidad, errores de programación, pérdida de trazabilidad y demoras para consultar el estado real de la atención.</p>
+  <p>KineSys responde a esta necesidad mediante una plataforma web que centraliza la gestión clínica y administrativa, reduce el trabajo manual, permite consultar información por rol y fortalece el control sobre citas, pacientes, terapeutas y recursos de la clínica.</p>
+
+  <h3>1.2 Descripción Detallada Del Sistema O Aplicación</h3>
+  <p>KineSys es una aplicación web para la gestión de una clínica de fisioterapia. El frontend está construido con React y Vite; el backend usa ASP.NET Core Web API con Entity Framework Core y SQL Server; la autenticación usa JWT y el sistema incluye soporte para notificaciones en tiempo real con SignalR.</p>
+  <p>La aplicación automatiza procesos de registro y consulta de pacientes, administración de terapeutas y especialidades, gestión de citas, disponibilidad, tratamientos, salas, equipos, reportes, auditoría, facturación y vistas diferenciadas para administrador, terapeuta y paciente. El desarrollo observado sigue una estrategia incremental: se agregan módulos por funcionalidad y se respaldan comportamientos críticos con pruebas unitarias e integración.</p>
+  <div class="diagram">
+    <div class="box"><strong>Frontend</strong><br>React + Vite<br>Rutas y vistas por rol</div>
+    <div class="arrow">-&gt;</div>
+    <div class="box"><strong>Servicios/API client</strong><br>fetch, JWT, CRUD<br>sessionStorage</div>
+    <div class="arrow">-&gt;</div>
+    <div class="box"><strong>Backend</strong><br>ASP.NET Core API<br>EF Core + SQL Server</div>
+  </div>
+
+  <h3>1.3 Modelo De Requerimientos</h3>
+  <h4>Requisitos funcionales</h4>
+  <table><thead><tr><th>ID</th><th>Módulo</th><th>Descripción</th></tr></thead><tbody><tr><td>RF01</td><td>Autenticación</td><td>Permitir inicio y cierre de sesión con usuario, contraseña, JWT y roles del sistema.</td></tr><tr><td>RF02</td><td>Control de acceso</td><td>Redirigir o permitir acceso según roles Administrador, Terapeuta y Paciente.</td></tr><tr><td>RF03</td><td>Pacientes</td><td>Registrar, consultar, actualizar y eliminar información clínica y administrativa de pacientes.</td></tr><tr><td>RF04</td><td>Terapeutas</td><td>Gestionar terapeutas, licencias, especialidades, estado y datos profesionales.</td></tr><tr><td>RF05</td><td>Citas y agenda</td><td>Crear, listar, filtrar, confirmar, cancelar y validar disponibilidad de citas.</td></tr><tr><td>RF06</td><td>Tratamientos</td><td>Administrar tratamientos, protocolos, tipo de servicio, equipos requeridos y duración.</td></tr><tr><td>RF07</td><td>Recursos</td><td>Gestionar salas, equipos, disponibilidad y relaciones con sesiones terapéuticas.</td></tr><tr><td>RF08</td><td>Reportes</td><td>Generar reportes operativos sobre pacientes, citas, terapeutas y actividad de la clínica.</td></tr><tr><td>RF09</td><td>Notificaciones</td><td>Soportar alertas de agenda y notificaciones en tiempo real mediante SignalR.</td></tr><tr><td>RF10</td><td>Facturación</td><td>Registrar información asociada a facturas, copagos, EPS, seguros y autorizaciones.</td></tr><tr><td>RF11</td><td>Auditoría</td><td>Consultar eventos de acceso y acciones relevantes para trazabilidad administrativa.</td></tr><tr><td>RF12</td><td>Paneles por rol</td><td>Presentar vistas separadas para administrador, terapeuta y paciente.</td></tr></tbody></table>
+  <h4>Requisitos no funcionales</h4>
+  <table><thead><tr><th>ID</th><th>Atributo</th><th>Descripción</th></tr></thead><tbody><tr><td>RNF01</td><td>Seguridad</td><td>Usar JWT, cabecera Authorization Bearer, validación de expiración y cierre de sesión ante 401.</td></tr><tr><td>RNF02</td><td>Usabilidad</td><td>Interfaz web organizada por módulos y rutas, con formularios y listas orientados a operación clínica.</td></tr><tr><td>RNF03</td><td>Rendimiento</td><td>Construcción de producción con Vite; se detecta advertencia de chunk JS grande para optimización futura.</td></tr><tr><td>RNF04</td><td>Mantenibilidad</td><td>Separación por api, services, context, hooks, pages y pruebas automatizadas.</td></tr><tr><td>RNF05</td><td>Portabilidad</td><td>Frontend React/Vite ejecutable en Node.js; API .NET 8 y base SQL Server preparada en docker-compose.</td></tr><tr><td>RNF06</td><td>Integridad</td><td>EF Core define claves, relaciones, restricciones de borrado e índices únicos en datos críticos.</td></tr><tr><td>RNF07</td><td>Compatibilidad</td><td>Aplicación orientada a navegadores modernos y ambiente local Windows 11 usado en pruebas.</td></tr><tr><td>RNF08</td><td>Trazabilidad</td><td>Pruebas con salidas registradas en artifacts/pruebas y cobertura HTML/LCOV generada por Vitest.</td></tr></tbody></table>
+
+  <h3>1.4 Modelo De Casos De Uso</h3>
+  <p>Actores principales: Administrador, Terapeuta y Paciente. El Administrador concentra la gestión operativa; el Terapeuta consulta agenda, pacientes, historias y tratamientos; el Paciente consulta su información y citas asociadas.</p>
+  <table><thead><tr><th>Actor</th><th>Casos de uso principales</th></tr></thead><tbody><tr><td>Administrador</td><td>Iniciar sesión; gestionar pacientes; gestionar terapeutas; gestionar citas; gestionar tratamientos; gestionar equipos; gestionar salas; consultar reportes; revisar auditoría.</td></tr><tr><td>Terapeuta</td><td>Iniciar sesión; consultar dashboard; revisar citas próximas; consultar pacientes; registrar información clínica; revisar tratamientos y facturación asociada.</td></tr><tr><td>Paciente</td><td>Iniciar sesión; consultar panel del paciente; revisar citas próximas; consultar datos básicos y evolución disponible.</td></tr><tr><td>Sistema</td><td>Validar JWT; aplicar roles; enviar cabeceras Authorization; notificar eventos; mantener consistencia de relaciones e índices.</td></tr></tbody></table>
+
+  <h3>1.5 Modelo De Diseño Del Sistema</h3>
+  <h4>Componentes principales</h4>
+  <table><thead><tr><th>Componente</th><th>Responsabilidad</th><th>Evidencia en repositorio</th></tr></thead><tbody><tr><td>AppRouter</td><td>Define rutas públicas y de módulos administrativos, terapeuta y paciente.</td><td>kinesys/src/router/AppRouter.jsx</td></tr><tr><td>AuthContext</td><td>Maneja sesión, token, usuario, login, logout y recuperación desde sessionStorage.</td><td>kinesys/src/context/AuthContext.jsx</td></tr><tr><td>apiCliente</td><td>Centraliza solicitudes HTTP, cabecera Authorization y manejo de errores 401.</td><td>kinesys/src/api/apiCliente.js</td></tr><tr><td>Services</td><td>Encapsulan operaciones de negocio para citas, pacientes, terapeutas y demás entidades.</td><td>kinesys/src/services</td></tr><tr><td>API .NET</td><td>Expone controladores REST, autenticación JWT, SignalR y persistencia con EF Core.</td><td>api/ApiPrueba</td></tr><tr><td>ClinicaFisioterapiaBD</td><td>Contexto EF Core con DbSets, relaciones, índices y restricciones.</td><td>api/ApiPrueba/data/ClinicaFisioterapiaBD.cs</td></tr></tbody></table>
+  <h4>Relaciones principales del modelo de datos</h4>
+  <table><thead><tr><th>Entidad</th><th>Relaciones o notas de diseño</th></tr></thead><tbody><tr><td>Persona</td><td>Clase base con discriminador para Paciente, Terapeuta, Administrador y otros roles.</td></tr><tr><td>Paciente</td><td>Relacionado con EPS, seguro médico, citas, tratamientos, historial médico, notas, facturas y autorizaciones.</td></tr><tr><td>Terapeuta</td><td>Relacionado con citas, tratamientos, disponibilidad, especialidades, alertas y planes de tratamiento.</td></tr><tr><td>Cita</td><td>Relaciona paciente, terapeuta, tratamiento, sala, tipo de servicio, autorizaciones y estados de agenda.</td></tr><tr><td>Tratamiento</td><td>Relacionado con terapeuta, planes, protocolos, tipos de terapia y equipos requeridos.</td></tr><tr><td>DisponibilidadTerapeuta</td><td>Índice por terapeuta y día de semana para consultas frecuentes de agenda.</td></tr></tbody></table>
+  <div class="callout"><strong>Avance de diagramas</strong><p>La plantilla solicita diagramas UML y entidad-relación. En este PDF se deja el modelo textual adelantado con componentes y relaciones identificadas desde el código. Queda pendiente insertar los diagramas gráficos formales si el docente los exige como imagen.</p></div>
+
+  <h3>1.6 Producto Del Software</h3>
+  <table><thead><tr><th>Elemento</th><th>Detalle</th></tr></thead><tbody><tr><td>Aplicación</td><td>KineSys - Sistema de Gestión de Clínica de Fisioterapia</td></tr><tr><td>Frontend local</td><td>cd kinesys; npm run dev</td></tr><tr><td>Build de producción</td><td>cd kinesys; npm run build</td></tr><tr><td>API local</td><td>cd api/ApiPrueba; dotnet run</td></tr><tr><td>Base de datos</td><td>SQL Server configurado en docker-compose.yml</td></tr><tr><td>Link público</td><td>Pendiente de despliegue o entrega por el equipo</td></tr></tbody></table>
+
+  <div class="page-break"></div>
+  <h2>2. Segunda Parte: Pruebas Del Software</h2>
+  <h3>2.1 Introducción</h3>
+  <p>Esta sección presenta el plan, diseño, ejecución y evaluación de pruebas del sistema KineSys. Se actualiza el documento inicial incorporando la implementación real de Jest, Vitest y pruebas xUnit existentes en el backend.</p>
+  <p>El enfoque de pruebas combina caja negra para validar entradas, salidas y flujos de usuario, y caja blanca para verificar caminos internos, manejo de errores, servicios, hooks, contexto de autenticación, cliente API y generación de JWT.</p>
+  <div class="badge-grid">
+    <div class="badge"><strong>9/9</strong>Archivos Vitest aprobados</div>
+    <div class="badge"><strong>98/98</strong>Pruebas frontend aprobadas</div>
+    <div class="badge"><strong>71.54%</strong>Cobertura de sentencias</div>
+    <div class="badge"><strong>38/39</strong>Pruebas backend aprobadas</div>
+  </div>
+
+  <h3>2.2 Planificación De Las Pruebas</h3>
+  <h4>Objetivos</h4>
+  <p>Objetivo general: verificar y validar que KineSys cumple los comportamientos críticos de autenticación, control de acceso, gestión de pacientes, terapeutas, citas y comunicación con API, reduciendo defectos en los flujos principales antes de la entrega.</p>
+  <ul><li>Verificar que el login maneja credenciales válidas, campos vacíos, respuestas 401, errores 500 y roles no reconocidos.</li><li>Validar que los roles del sistema se usan correctamente para permitir o bloquear rutas protegidas.</li><li>Comprobar que los servicios de pacientes, terapeutas y citas transforman datos y llaman los endpoints esperados.</li><li>Verificar que apiCliente agrega Authorization cuando corresponde y limpia la sesión ante expiración.</li><li>Medir la cobertura automatizada y dejar evidencia de ejecución en consola.</li><li>Identificar pendientes reales para pruebas externas de rendimiento, seguridad y aceptación.</li></ul>
+
+  <h4>Alcance</h4>
+  <table><thead><tr><th>Módulo a probar</th><th>Objetivo de la prueba</th></tr></thead><tbody><tr><td>Autenticación y roles</td><td>Login, token JWT, persistencia de sesión, expiración y rutas protegidas</td></tr><tr><td>Pacientes</td><td>Servicios de listado, creación, actualización y eliminación; filtrado por rol Paciente</td></tr><tr><td>Terapeutas</td><td>Servicios de listado, creación, actualización y eliminación; filtrado por rol Terapeuta</td></tr><tr><td>Citas</td><td>CRUD, filtros por paciente/terapeuta/estado, resumen y verificación de solapamiento</td></tr><tr><td>API cliente</td><td>Métodos getAll, getById, create, update, delete y customRequest con cabeceras</td></tr><tr><td>Constantes y JWT</td><td>Roles compartidos, validación de rol y lectura de claims ASP.NET</td></tr><tr><td>Frontend build</td><td>Compilación de producción con Vite</td></tr><tr><td>Backend API .NET</td><td>Pruebas xUnit existentes sobre CitasController, modelo Cita y JwtTokenGenerator</td></tr></tbody></table>
+
+  <h4>Estrategias De Pruebas</h4>
+  <table><thead><tr><th>Nivel</th><th>Técnicas</th><th>Modelos / estrategias / tipos</th><th>Herramientas</th></tr></thead><tbody><tr><td>Unitarias</td><td>Caja negra y caja blanca</td><td>Clases de equivalencia, valores límite, mocks de fetch/sessionStorage, render de componentes</td><td>Vitest, Jest, Testing Library</td></tr><tr><td>Integración</td><td>Incremental y basada en hilos</td><td>Integración Contexto -&gt; servicios -&gt; apiCliente; controlador .NET -&gt; EF InMemory</td><td>Vitest/Jest, xUnit, EF Core InMemory</td></tr><tr><td>Sistema</td><td>Caja negra</td><td>Build de producción, seguridad de token, portabilidad local, revisión de cobertura</td><td>Vite, V8 coverage, consola</td></tr><tr><td>Aceptación</td><td>Caja negra</td><td>Escenarios por rol y flujo principal de negocio; avance documental con criterios esperados</td><td>Manual/pendiente Selenium o Katalon</td></tr></tbody></table>
+
+  <h4>Ambiente De Pruebas</h4>
+  <table><thead><tr><th>Equipo</th><th>Especificaciones técnicas</th></tr></thead><tbody><tr><td>Equipo de pruebas</td><td>Windows 11 Home Single Language 64 bits, Intel Core i5-1235U, 10 núcleos, 12 procesadores lógicos, 15.7 GB RAM</td></tr><tr><td>Repositorio local</td><td>C:\Users\carde\Documents\ProgramacionMovil\KineSys</td></tr></tbody></table>
+  <table><thead><tr><th>Software</th><th>Versión / estado</th></tr></thead><tbody><tr><td>Node.js</td><td>v24.14.0</td></tr><tr><td>npm</td><td>11.9.0</td></tr><tr><td>React</td><td>19.1.1</td></tr><tr><td>Vite</td><td>7.x en proyecto; build ejecutado con Vite 7.2.2</td></tr><tr><td>Vitest</td><td>4.1.5</td></tr><tr><td>Jest</td><td>30.3.0</td></tr><tr><td>Testing Library React</td><td>16.3.2</td></tr><tr><td>.NET SDK</td><td>10.0.103; API objetivo net8.0</td></tr><tr><td>SQL Server</td><td>Configurado por docker-compose con imagen mcr.microsoft.com/mssql/server:2022-latest</td></tr><tr><td>Docker</td><td>No disponible en esta máquina al momento de ejecutar pruebas</td></tr></tbody></table>
+
+  <h3>2.3 Pruebas Unitarias</h3>
+  <h4>Análisis De Las Pruebas</h4>
+  <p>Las pruebas unitarias automatizadas se concentran en componentes funcionales de bajo acoplamiento: utilidades JWT, constantes de roles, cliente API, servicios de entidades, AuthContext, hook de autorización y formulario de login.</p>
+  <table class="small"><thead><tr><th>Archivo de prueba</th><th>Casos</th><th>Componente validado</th><th>Resultado</th></tr></thead><tbody><tr><td>src/api/apiCliente.test.js</td><td>10</td><td>Cliente HTTP, token global, sessionStorage, CRUD y manejo 401</td><td>Aprobado</td></tr><tr><td>src/context/AuthContext.test.jsx</td><td>7</td><td>Estado inicial, recuperación de sesión, login, logout y uso fuera del proveedor</td><td>Aprobado</td></tr><tr><td>src/hooks/useRequireAuth.test.jsx</td><td>6</td><td>Redirecciones por autenticación y roles permitidos</td><td>Aprobado</td></tr><tr><td>src/services/citasService.test.js</td><td>18</td><td>Listado, creación, eliminación, filtros, resumen y disponibilidad de citas</td><td>Aprobado</td></tr><tr><td>src/services/pacientesService.test.js</td><td>12</td><td>CRUD de pacientes, rol 1, registro y errores del API</td><td>Aprobado</td></tr><tr><td>src/services/terapeutasService.test.js</td><td>12</td><td>CRUD de terapeutas, rol 2, activos y endpoint de registro</td><td>Aprobado</td></tr><tr><td>src/test/unitarias/login.equivalencia.test.jsx</td><td>7</td><td>Clases de equivalencia del login por rol, campos vacíos y errores</td><td>Aprobado</td></tr><tr><td>src/utils/constants.test.js</td><td>14</td><td>Roles del frontend, hasRole y hasAnyRole</td><td>Aprobado</td></tr><tr><td>src/utils/jwt.test.js</td><td>12</td><td>Decodificación JWT, claims ASP.NET y expiración</td><td>Aprobado</td></tr></tbody></table>
+
+  <h4>Análisis Por Clases De Equivalencia - Login</h4>
+  <table><thead><tr><th>Campo / condición</th><th>Clases válidas</th><th>Clases inválidas</th></tr></thead><tbody><tr><td>Usuario</td><td>Texto no vacío con usuario existente</td><td>Vacío; usuario inexistente; formato no registrado</td></tr><tr><td>Contraseña</td><td>Texto no vacío asociado al usuario</td><td>Vacía; incorrecta; error de servidor</td></tr><tr><td>Rol recibido</td><td>Administrador, Terapeuta, Paciente</td><td>Rol no reconocido o sin claims suficientes</td></tr><tr><td>Respuesta API</td><td>200 con token JWT y datos de usuario</td><td>401 credenciales inválidas; 500 error servidor</td></tr></tbody></table>
+
+  <h4>Casos Por Valores Límite</h4>
+  <table><thead><tr><th>Campo</th><th>Dato de entrada</th><th>Escenario</th><th>Resultado esperado</th></tr></thead><tbody><tr><td>Usuario</td><td>cadena vacía</td><td>Límite inferior inválido</td><td>Error/submit bloqueado</td></tr><tr><td>Usuario</td><td>cadena no vacía</td><td>Valor válido</td><td>Se permite intento de login</td></tr><tr><td>Contraseña</td><td>cadena vacía</td><td>Límite inferior inválido</td><td>Error/submit bloqueado</td></tr><tr><td>Contraseña</td><td>cadena no vacía</td><td>Valor válido</td><td>Se permite intento de login</td></tr><tr><td>Token JWT</td><td>sin payload o formato inválido</td><td>Formato inválido</td><td>decodificarToken devuelve null</td></tr><tr><td>Token JWT</td><td>exp menor al tiempo actual</td><td>Token expirado</td><td>tokenExpirado devuelve true</td></tr><tr><td>Token JWT</td><td>exp futuro</td><td>Token vigente</td><td>tokenExpirado devuelve false</td></tr></tbody></table>
+
+  <h4>Pruebas Del Camino Básico - Login</h4>
+  <p>Método o flujo validado: envío del formulario Login.jsx, invocación de login() desde AuthContext, recepción de token, extracción de datos con jwt.js y redirección según rol.</p>
+  <table><thead><tr><th>Camino</th><th>Datos de entrada</th><th>Escenario</th><th>Resultado</th></tr></thead><tbody><tr><td>C1</td><td>Usuario y contraseña válidos; rol Administrador</td><td>Respuesta 200 con token</td><td>Sesión guardada y acceso al módulo administrativo</td></tr><tr><td>C2</td><td>Usuario y contraseña válidos; rol Terapeuta</td><td>Respuesta 200 con token</td><td>Sesión guardada y acceso a /dashboard</td></tr><tr><td>C3</td><td>Campo usuario vacío</td><td>Validación de formulario</td><td>No se ejecuta login()</td></tr><tr><td>C4</td><td>Contraseña vacía</td><td>Validación de formulario</td><td>No se ejecuta login()</td></tr><tr><td>C5</td><td>Credenciales inválidas</td><td>Respuesta 401</td><td>Mensaje de error y usuario no autenticado</td></tr><tr><td>C6</td><td>Error interno</td><td>Respuesta 500 o fetch rechazado</td><td>Mensaje de error controlado</td></tr><tr><td>C7</td><td>Rol no reconocido</td><td>Token/respuesta con rol fuera de catálogo</td><td>No hay caída de interfaz</td></tr></tbody></table>
+
+  <h4>Diseño De Casos De Prueba</h4>
+  <table><thead><tr><th>ID</th><th>Caso</th><th>Datos de prueba</th><th>Resultado esperado</th><th>Resultado obtenido</th></tr></thead><tbody><tr><td>CE-P01</td><td>Administrador válido</td><td>usuario admin + contraseña correcta</td><td>login() se invoca con valores exactos y permite sesión</td><td>Aprobado</td></tr><tr><td>CE-P02</td><td>Terapeuta válido</td><td>usuario terapeuta + contraseña correcta</td><td>login() autentica y redirige al dashboard del terapeuta</td><td>Aprobado</td></tr><tr><td>CI-P03</td><td>Usuario vacío</td><td>usuario vacío + contraseña</td><td>validación HTML5 evita llamada a login()</td><td>Aprobado</td></tr><tr><td>CI-P04</td><td>Contraseña vacía</td><td>usuario + contraseña vacía</td><td>validación HTML5 evita llamada a login()</td><td>Aprobado</td></tr><tr><td>CI-P05</td><td>Credenciales inválidas</td><td>respuesta 401</td><td>se muestra mensaje de error</td><td>Aprobado</td></tr><tr><td>CI-P06</td><td>Error servidor</td><td>respuesta 500</td><td>se muestra error genérico controlado</td><td>Aprobado</td></tr><tr><td>CI-P07</td><td>Rol no reconocido</td><td>rol fuera de catálogo</td><td>el flujo termina sin caída de la interfaz</td><td>Aprobado</td></tr></tbody></table>
+
+  <h4>Ejecución Y Evaluación De Pruebas Unitarias</h4>
+  <table><thead><tr><th>Herramienta</th><th>Comando</th><th>Resultado</th></tr></thead><tbody><tr><td>Jest</td><td>npm run test:jest</td><td>Test Suites: 9 passed, 9 total. Tests: 98 passed, 98 total. Time: 5.202 s.</td></tr><tr><td>Vitest</td><td>npm run test</td><td>Test Files: 9 passed. Tests: 98 passed. Duration: 6.88 s.</td></tr><tr><td>Vitest Coverage</td><td>npm run test:coverage</td><td>98 pruebas aprobadas con cobertura V8.</td></tr></tbody></table>
+  <table class="small"><thead><tr><th>Archivo / grupo</th><th>Sentencias</th><th>Ramas</th><th>Funciones</th><th>Líneas</th></tr></thead><tbody><tr><td>Total frontend</td><td>71.54%</td><td>71.24%</td><td>74.69%</td><td>71.42%</td></tr><tr><td>api/apiCliente.js</td><td>93.33%</td><td>82.35%</td><td>80.00%</td><td>93.33%</td></tr><tr><td>context/AuthContext.jsx</td><td>97.95%</td><td>70.00%</td><td>83.33%</td><td>100.00%</td></tr><tr><td>hooks/useRequireAuth.js</td><td>91.30%</td><td>61.53%</td><td>100.00%</td><td>100.00%</td></tr><tr><td>pages/Login.jsx</td><td>89.65%</td><td>77.27%</td><td>66.66%</td><td>89.65%</td></tr><tr><td>services/pacientesService.js</td><td>79.31%</td><td>33.33%</td><td>100.00%</td><td>78.57%</td></tr><tr><td>services/citasService.js</td><td>48.99%</td><td>60.71%</td><td>61.11%</td><td>49.29%</td></tr></tbody></table>
+  <pre><code>Resumen de ejecución frontend:
+Jest:   9 suites aprobadas, 98 pruebas aprobadas.
+Vitest: 9 archivos aprobados, 98 pruebas aprobadas.
+Coverage V8: Statements 71.54%, Branches 71.24%, Functions 74.69%, Lines 71.42%.</code></pre>
+
+  <h3>2.4 Pruebas De Integración</h3>
+  <h4>Estrategia De Pruebas Incrementales</h4>
+  <p>Se aplica integración incremental desde utilidades y servicios hacia componentes de mayor nivel. Primero se verifican utilidades de token y roles, luego apiCliente, servicios de dominio, AuthContext, hooks de protección y finalmente flujos de login y citas.</p>
+  <table class="small"><thead><tr><th>ID</th><th>Componentes integrados</th><th>Datos / condición</th><th>Resultado esperado</th><th>Resultado obtenido</th></tr></thead><tbody><tr><td>INT-01</td><td>AuthContext + API Personas/Login + jwt.js</td><td>Credenciales válidas</td><td>Token guardado en sessionStorage y usuario autenticado</td><td>Aprobado en AuthContext.test.jsx</td></tr><tr><td>INT-02</td><td>useRequireAuth + React Router + AuthContext</td><td>Usuario sin sesión</td><td>Redirección a /login</td><td>Aprobado en useRequireAuth.test.jsx</td></tr><tr><td>INT-03</td><td>apiCliente + sessionStorage</td><td>Token existente sin token global</td><td>Cabecera Authorization Bearer incluida</td><td>Aprobado en apiCliente.test.js</td></tr><tr><td>INT-04</td><td>citasService + disponibilidad</td><td>Crear cita con idDisponibilidad</td><td>Crea cita y actualiza disponibilidad; revierte si falla</td><td>Aprobado en citasService.test.js</td></tr><tr><td>INT-05</td><td>pacientesService + Register</td><td>Datos válidos de paciente</td><td>Envía user/password igual al documento y rol Paciente</td><td>Aprobado en pacientesService.test.js</td></tr><tr><td>INT-06</td><td>terapeutasService + Register/Update</td><td>Datos válidos de terapeuta</td><td>Asigna/preserva rol Terapeuta y estado activo</td><td>Aprobado en terapeutasService.test.js</td></tr></tbody></table>
+
+  <h4>Estrategia De Pruebas Basadas En Hilos</h4>
+  <p>Se organizan hilos funcionales que atraviesan varias capas del sistema: autenticación, agenda/citas, administración de personas y seguridad del cliente API.</p>
+  <table><thead><tr><th>Hilo</th><th>Secuencia</th><th>Resultado esperado</th><th>Estado</th></tr></thead><tbody><tr><td>Hilo autenticación</td><td>Login -&gt; token JWT -&gt; AuthContext -&gt; rutas protegidas</td><td>Usuario autenticado con rol correcto accede; rol incorrecto redirige</td><td>Aprobado</td></tr><tr><td>Hilo agenda/citas</td><td>Listar citas -&gt; filtrar -&gt; verificar disponibilidad -&gt; crear/eliminar</td><td>Detecta solapamientos, ignora canceladas y libera disponibilidad</td><td>Aprobado</td></tr><tr><td>Hilo administración de personas</td><td>Listar personas -&gt; filtrar por rol -&gt; crear paciente/terapeuta -&gt; actualizar/eliminar</td><td>Servicios separan Paciente rol 1 y Terapeuta rol 2</td><td>Aprobado</td></tr><tr><td>Hilo seguridad del API cliente</td><td>Token global/sessionStorage -&gt; solicitud fetch -&gt; respuesta 401</td><td>Elimina sesión y dispara evento auth-token-expired</td><td>Aprobado</td></tr></tbody></table>
+
+  <h4>Integración Backend .NET</h4>
+  <p>El backend contiene un proyecto ApiPrueba.Tests con xUnit, FluentAssertions, Moq y EF Core InMemory. Se ejecutó dotnet test sobre la solución completa.</p>
+  <table><thead><tr><th>Grupo</th><th>Cantidad</th><th>Propósito</th><th>Estado</th></tr></thead><tbody><tr><td>CitasControllerTests</td><td>14 escenarios declarados</td><td>GET/POST/PUT/DELETE con EF Core InMemory</td><td>Ejecutado</td></tr><tr><td>JwtTokenGeneratorTests</td><td>11 escenarios declarados</td><td>Formato JWT, claims, rol, expiración y unicidad</td><td>Ejecutado</td></tr><tr><td>CitaModelTests</td><td>9 escenarios declarados</td><td>Atributos, valores por defecto, enum Rol y nulabilidad</td><td>Ejecutado con 1 fallo</td></tr></tbody></table>
+  <div class="callout"><strong>Resultado backend</strong><p>dotnet test ejecutó 39 pruebas: 38 superadas y 1 fallida. La falla no corresponde a una caída funcional de API sino a una expectativa desactualizada en CitaModelTests: el test espera exactamente 3 roles, pero el enum Rol actual contiene 6 roles.</p></div>
+
+  <h3>2.5 Pruebas De Sistemas</h3>
+  <p>Las pruebas de sistema se adelantan con evidencia automatizada disponible en el entorno local. Las pruebas externas de JMeter, OWASP ZAP, Selenium o Katalon quedan planteadas para una siguiente iteración porque esas herramientas no se encuentran configuradas en el repositorio ni instaladas en esta máquina.</p>
+  <table><thead><tr><th>Tipo de prueba</th><th>Nombre / foco</th><th>Herramienta</th><th>Resultado</th></tr></thead><tbody><tr><td>Seguridad</td><td>Token JWT, roles, Authorization Bearer, limpieza de sesión ante 401</td><td>Vitest/Jest/xUnit</td><td>Automatizado aprobado en frontend; xUnit con observación en enum Rol</td></tr><tr><td>Rendimiento</td><td>Build de producción y tamaño de paquetes</td><td>Vite build</td><td>Build exitoso en 14.19 s; advertencia por chunk JS de 1,858.38 kB</td></tr><tr><td>Usabilidad</td><td>Login, rutas por rol y formularios principales</td><td>Testing Library + revisión documental</td><td>Flujos principales del login aprobados; pruebas con usuarios reales pendientes</td></tr><tr><td>Portabilidad</td><td>Ejecución en Windows 11, Node, npm y .NET</td><td>Build y pruebas locales</td><td>Frontend compila y pruebas pasan; Docker no disponible localmente</td></tr></tbody></table>
+  <pre><code>Build de producción:
+npm run build
+Vite build exitoso en 14.19 s.
+2878 módulos transformados.
+CSS: 287.18 kB (gzip 42.07 kB).
+JS: 1,858.38 kB (gzip 526.32 kB).
+Observación: Vite advierte que algunos chunks superan 500 kB; se recomienda code-splitting en una iteración futura.</code></pre>
+
+  <h3>2.6 Pruebas De Aceptación</h3>
+  <p>Se diseñan casos de aceptación centrados en los requisitos más visibles para el usuario final. Parte de estos casos ya está respaldada por pruebas automatizadas; los escenarios que dependen de interacción completa con navegador y datos reales quedan pendientes para ejecución manual o automatización E2E.</p>
+  <table class="small"><thead><tr><th>ID Caso</th><th>Requisito asociado</th><th>Escenario de negocio</th><th>Pasos de ejecución</th><th>Resultado esperado</th><th>Resultado obtenido</th></tr></thead><tbody><tr><td>CA-01</td><td>RF01/RF02</td><td>Ingreso de usuario terapeuta</td><td>Abrir /login, ingresar credenciales válidas, enviar formulario</td><td>Acceso al panel de terapeuta</td><td>Aprobado por pruebas automatizadas del flujo</td></tr><tr><td>CA-02</td><td>RF03</td><td>Registrar paciente desde administración</td><td>Ingresar datos válidos y enviar</td><td>Paciente creado con rol 1 y credenciales por documento</td><td>Diseñado; ejecución manual pendiente</td></tr><tr><td>CA-03</td><td>RF04</td><td>Registrar terapeuta desde administración</td><td>Ingresar datos profesionales válidos y guardar</td><td>Terapeuta creado con rol 2 y estado activo</td><td>Diseñado; ejecución manual pendiente</td></tr><tr><td>CA-04</td><td>RF05</td><td>Crear cita sin conflicto</td><td>Seleccionar paciente, terapeuta y horario disponible</td><td>Cita creada y disponibilidad actualizada</td><td>Cubierto por servicio; ejecución UI pendiente</td></tr><tr><td>CA-05</td><td>RNF01</td><td>Sesión expirada</td><td>Forzar respuesta 401 en solicitud autenticada</td><td>Sesión limpiada y evento de expiración emitido</td><td>Aprobado en apiCliente.test.js</td></tr></tbody></table>
+
+  <div class="page-break"></div>
+  <h2>3. Conclusiones</h2>
+  <ol><li>Las pruebas unitarias frontend quedaron consolidadas con Jest y Vitest: 98 casos pasan correctamente en 9 archivos de prueba.</li><li>La cobertura automatizada del frontend alcanza 71.54% en sentencias y 71.42% en líneas, suficiente como avance para una primera entrega, con oportunidad de mejorar en services/citasService.</li><li>El flujo de autenticación es el componente mejor respaldado: se validan credenciales, sesión persistida, claims JWT, expiración, roles y rutas protegidas.</li><li>Las pruebas de integración muestran que apiCliente, servicios, AuthContext y hooks se comunican correctamente bajo escenarios exitosos y de error.</li><li>El backend posee una base de pruebas xUnit útil para controlador de citas, modelo Cita y generación JWT; sin embargo, debe ajustarse una prueba desactualizada sobre el enum Rol.</li><li>La aplicación compila para producción con Vite; el principal hallazgo técnico de sistema es el tamaño del bundle JavaScript, que conviene optimizar con carga dinámica o manualChunks.</li><li>Quedan pendientes las evidencias gráficas solicitadas por la plantilla: diagramas UML finales, pantallazos de interfaz, pruebas con JMeter, OWASP ZAP y pruebas E2E con Selenium/Katalon.</li></ol>
+
+  <h2>4. Referencias Bibliográficas</h2>
+  <ul><li>Repositorio local KineSys: código fuente del frontend React/Vite y backend ASP.NET Core.</li><li>Plantilla proyecto final - Pruebas.doc, Universidad Popular del Cesar.</li><li>Documentación oficial de React, Vite, Vitest, Jest, Testing Library, ASP.NET Core, Entity Framework Core y xUnit.</li><li>Salidas de ejecución generadas en artifacts/pruebas: jest-output.txt, vitest-output.txt, coverage-output.txt, build-output.txt y dotnet-test-output.txt.</li></ul>
+
+  <h2>5. Pendientes Y Observaciones</h2>
+  <table><thead><tr><th>Elemento</th><th>Motivo</th><th>Avance dejado en este documento</th></tr></thead><tbody><tr><td>Diagramas UML formales</td><td>No hay imágenes editables en el repositorio</td><td>Se deja diseño textual y relaciones principales adelantadas</td></tr><tr><td>Pantallazos de interfaz</td><td>No se levantó servidor visual para capturas</td><td>Se documentan rutas, módulos y evidencias de consola</td></tr><tr><td>JMeter</td><td>Herramienta no instalada</td><td>Prueba de rendimiento queda planteada; build Vite ejecutado como avance</td></tr><tr><td>OWASP ZAP</td><td>Herramienta no instalada</td><td>Prueba de seguridad queda planteada; autenticación y token cubiertos por tests</td></tr><tr><td>Selenium/Katalon</td><td>No configurado en el proyecto</td><td>Pruebas de aceptación quedan diseñadas para ejecución manual o futura automatización</td></tr><tr><td>Backend xUnit</td><td>1 prueba fallida por enum Rol</td><td>La prueba espera 3 roles, pero el modelo contiene 6: Paciente, Terapeuta, Administrador, Recepcionista, Contador y Supervisor</td></tr></tbody></table>
+
+  <div class="sign">
+    <div class="line">Eckard Antony Rodriguez Gutierrez</div>
+    <div class="line">Luis Alejandro Narvaez Teran</div>
+  </div>
+</body>
+</html>

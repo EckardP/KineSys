@@ -1,5 +1,4 @@
 // src/pages/GestionCita/CitaDetail.jsx
-"use client"
 
 import { ArrowLeft, Edit, Calendar, User, Users, Clock, DollarSign, MapPin } from "lucide-react"
 

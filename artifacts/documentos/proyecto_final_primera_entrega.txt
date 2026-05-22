@@ -1,0 +1,1183 @@
+KINESYS - Sistema de Gestión de Clínica de Fisioterapia
+ESTUDIANTES:
+Eckard Antony Rodriguez Gutierrez
+Luis Alejandro Narvaez Teran
+DOCENTE:
+Maribel Romero Mestre
+Universidad Popular del Cesar – Sede Sabanas
+Ingeniería de Sistemas
+Valledupar - Cesar
+2026
+
+-- 1 of 30 --
+
+SEGUNDA PARTE
+I. PRUEBAS DEL SOFTWARE
+1.1. INTRODUCCIÓN
+1.2. PLANIFICACIÓN DE LAS PRUEBAS
+1.2.1. Objetivos de las pruebas
+1.2.2. Alcance de las pruebas
+1.2.3. Estrategias de pruebas
+1.2.4. Ambiente de pruebas
+1.3. PRUEBAS UNITARIAS
+Análisis de las pruebas
+Diseño de casos de pruebas
+Ejecución y evaluación de las pruebas
+1.4. PRUEBAS DE INTEGRACIÓN
+1.4.1. Estrategia de Pruebas incrementales
+• Diseño casos de pruebas
+• Ejecución y evaluación de las pruebas de integración
+1.4.2. Estrategia de Pruebas basadas en hilos
+• Diseño casos de pruebas
+• Ejecución y evaluación de las pruebas de integración
+5. REFERENCIAS - BIBLIOGRAFICAS
+
+-- 2 of 30 --
+
+1. PRUEBAS DEL SOFTWARE
+1.1. Introducción
+El presente documento describe el plan de pruebas para el sistema KineSys -
+Sistema de Gestión de Clínica de Fisioterapia. Se aplican técnicas de pruebas
+unitarias (caja negra y caja blanca) y pruebas de integración para verificar que el
+sistema cumple con los requerimientos funcionales y no funcionales
+especificados.
+Las pruebas unitarias se enfocan en validar los módulos individuales mediante
+clases de equivalencia, valores limite y análisis de camino básico. Las pruebas
+de integración verifican la correcta comunicación entre los componentes del
+sistema utilizando estrategias incrementales y basadas en hilos.
+1.2. PLANIFICACIÓN DE LAS PRUEBAS
+1.2.1. OBJETIVOS
+Objetivo General: Verificar y validar que el sistema KineSys cumple con
+todos los requerimientos funcionales y no funcionales especificados.
+Objetivos Específicos:<
+- Verificar que el registro de pacientes valida correctamente todos los campos
+obligatorios y formatos
+- Validar que el control de acceso basado en roles funciona segun lo
+especificado
+- Comprobar que el calendario de disponibilidad muestra correctamente los
+horarios de los terapeutas
+- Verificar que las alertas de conflicto de horario se generan apropiadamente
+- Validar que los reportes de pacientes activos/inactivos se calculan
+correctamente
+
+-- 3 of 30 --
+
+1.2.2. ALCANCE
+Nombre de la aplicación a probar KineSys - Sistema de Gestión de Clínica
+de Fisioterapia
+Módulos a ser probados Objetivos de las pruebas
+Gestión de Pacientes Verificar registro.
+Gestión de Profesionales/Terapeutas Validar registro de fisioterapeutas
+Gestión de Tratamientos Comprobar catálogo de terapias,
+reserva de citas y calendario
+Reportes y Estadisticas Validar generacion correcta de reportes
+1.2.3. ESTRATEGIAS DE PRUEBAS
+Niveles, tipos y métodos de prueba
+Niveles de
+pruebas
+Técnicas de
+pruebas
+Modelos/estrategias/
+tipos
+Herramientas de
+pruebas
+Pruebas unitarias Caja negra, caja
+blanca
+Clases de equivalencias Junit/Jest
+Valores límites
+Camino básico
+Pruebas de
+integración
+Caja negra Incremental
+ascendente/descendent
+e
+Selenium, Cypress
+Pruebas basadas en
+hilos
+Pruebas de
+sistemas
+Caja negra Pruebas de seguridad Lighthouse, OWASP
+ZAP
+Pruebas interfaz de
+usuario
+Pruebas de
+aceptación
+Caja negra Pruebas de usuario final Manual con usuarios
+reales.
+
+-- 4 of 30 --
+
+1.2.4. AMBIENTE DE PRUEBAS
+Configuración base de hardware
+EQUIPO ESPECIFICACIONES TECNICAS
+Computador de desarrollo Intel Core i5 210H, 16GB Ram, 512GB
+SSD
+Software para el ambiente de pruebas
+SOFTWARE VERSION
+Node.js 18.x o superior
+Base de datos MySQL
+1.3. PRUEBAS UNITARIAS
+Por cada módulo a probar realice:
+A. ANÁLISIS DE LAS PRUEBAS
+
+-- 5 of 30 --
+
+NOMBRE DEL MÓDULO: REGISTRO DE PACIENTES
+a. Análisis de pruebas clases de equivalencias
+
+-- 6 of 30 --
+
+Condiciones de Entrada Clases de equivalencia
+válida
+Clases de equivalencia no
+válida
+Nombres (Max 50
+caracteres)
+1) 2<=longitud <=50,
+solo letras y
+espacios
+2) Longitud = 0 (vacío)
+3) Longitud > 50,
+4) Contiene números
+Apellidos (max 50
+caracteres)
+5. 2 <= longitud <= 50,
+solo letras y
+espacios
+6. Longitud = 0 (vacío).
+7. Longitud > 50
+8. Contiene números.
+Tipo Documento 9. CC
+10. TI
+11. CE
+12. PA
+13. Valor diferente a los
+permitidos
+Numero Documento (6-15
+digitos)
+14. 6 <= longitud <= 15,
+solo números
+15. Longitud <6
+16. Longitud > 15
+17. Contiene letras
+18. Vacío
+Email 19. Formato valido
+(x@dominio.com)
+20. Sin @
+21. Sin dominio
+22. Vacío (si obligatorio)
+Teléfono (10 dígitos) 23. 10 <= longitud <=
+10, solo números
+24. Longitud <10
+25. Longitud > 10
+26. Contiene letras
+Fecha Nacimiento 27. Fecha valida
+pasada
+28. Fecha futura
+29. Formato invalido
+Dirección (max 100
+caracteres)
+30. 15 <= longitud <=
+100
+31. Vacío
+32. Longitud >100
+EPS 33. EPS valida de la
+lista
+34. EPS no registrada
+Género 35. Masculino
+36. Femenino
+38. Valor no permitido
+
+-- 7 of 30 --
+
+37. Otro
+Casos de pruebas
+b. Casos de pruebas por Valores Limites
+caso Nombres Apellidos Tipo
+Doc
+Num Doc Email Telefono Clases
+cubiertas
+Resultado
+esperado
+CP1 Juan
+carlos
+Perez
+García
+CC 1234567890 Juan@gmail.com 3001234567 1,5,9,14,19,23 Registro
+exitoso
+CP2 (vacío) Perez
+García
+CC 1234567890 Juan@gmail.com 3001234567 2 Error:
+Nombre
+requerido
+CP3 Juan (Vacío) CC 1234567890 Juan@gmail.com 3001234567 6 Error:
+Apellido
+requerido
+CP4 Juan12 Perez CC 1234567890 Juan@gmail.com 3001234567 4 Error:
+Nombre
+solo letras
+CP5 Juan Perez CC 12345 Juan@gmail.com 3001234567 15 Error:
+Documento
+muy corto
+CP6 Juan Perez CC 12345678901 Juan@gmail.com 3001234567 16 Error:
+Documento
+muy largo
+CP7 Juan Perez CC 1234567890 Juangmail.com 3001234567 20 Error:
+Email
+invalido
+CP8 Juan Perez CC 1234567890 Juan@gmail.com 123456 24 Error:
+Telefono
+
+-- 8 of 30 --
+
+CAMPO Datos de entrada Escenario Resultado
+Nombres 1 Caracter (“J”) Limite inferior-1 Error
+Nombres 2 caracteres ("Ju") Limite inferior
+exacto
+OK
+Nombres 50 caracteres Limite_superior
+exacto
+OK
+Nombres 51 caracteres Limite superior+1 Error
+Numero
+Documento
+12345 Limite inferior-1 Error
+Numero
+Documento
+123456 Limite inferior
+exacto
+OK
+Numero
+Documento
+123456789012345 Limite_superior
+exacto
+OK
+Numero
+Documento
+1234567890123456 Limite superior+1 Error
+Teléfono 300456789 Limite inferior-1 Error
+Teléfono 3004567890 Limite inferior
+exacto
+OK
+Teléfono 3004567890 Limite_superior
+exacto
+OK
+Teléfono 30045678901 Limite superior+1 Error
+Dirección Calle 21 #23-4a si Limite inferior-1 Error
+Dirección Calle 21 #23-4a sic Limite inferior
+exacto
+OK
+Dirección 100 caracteres Limite_superior
+exacto
+OK
+Dirección 101 caracteres Limite superior+1 Error
+
+-- 9 of 30 --
+
+c. Pruebas del Camino básico
+
+-- 10 of 30 --
+
+CAMINO DATOS ENTRADA ESCENARIO
+Doc_Identidad Nombre Respuesta
+de la Api
+C1 12345678 | Juan Manuel | { success:
+true, id: 1 }
+Paciente creado
+exitosamente.
+C2 12345678| Maria Garcia | { status: 409,
+message: "409 Conflict" }
+"Ya existe un
+paciente con ese
+
+-- 11 of 30 --
+
+documento de
+identidad".
+C3 99999999 | Pedro Busquest | { status:
+500, message: "Server Error" }
+Error de servidor
+B. Diseño casos de pruebas
+S# Prerrequisitos S# Datos de pruebas
+1 Sistema en
+ejecución
+1 Nombres = "David
+Manuel"
+2 Base de datos
+conectada
+2 Apellidos = "Pérez
+García"
+3 Usuario con
+permisos de
+registro
+3 Tipo Documento = "CC"
+4 Formulario de
+paciente
+disponible
+4 Número Documento =
+"1234567890"
+5 Email =
+"davidperez.@gmail.com"
+6 Teléfono = "3001234567"
+7 Fecha Nacimiento =
+"15/06/1985"
+8 Dirección = "Calle 21
+#23-4a"
+9 EPS = "Famisanar"
+10 Género = "Masculino"
+
+-- 12 of 30 --
+
+NOMBRE DEL MÓDULO: REGISTRO DE TERAPEUTAS
+
+-- 13 of 30 --
+
+Análisis de pruebas clases de equivalencias
+Condiciones de Entrada Clases de equivalencia
+válida
+Clases de equivalencia no
+válida
+Usuario (Texto, 4–20
+caracteres)
+1) 4 ≤ longitud ≤ 20,
+alfanumérico
+2) Longitud = 0 (vacío)
+3) Longitud < 4
+4) Longitud > 20
+5) Caracteres especiales
+Contraseña (Texto, mín 6
+caracteres)
+6) Longitud ≥ 6 7) Longitud = 0
+8) Longitud < 6
+Tipo de documento (Lista
+desplegable)
+9. CC
+10. CE
+11. TI
+12. PA
+13) Sin selección
+Numero Documento (6-
+10 digitos)
+14) 100000 ≤ longitud ≤
+999999999, solo letras
+15) Longitud < 100000
+16) Longitud > 999999999
+17) Caracteres inválidos
+Nombres (alfanumerico,
+máx 50 caracteres)
+18) 2 ≤ longitud ≤ 30, solo
+letras
+19) Longitud<2
+20) Longitud > 30
+21) Null
+Apellidos (Texto, máx 50
+caracteres)
+22) 2 ≤ longitud ≤ 50, solo
+letras
+23) Longitud = 0
+24) Longitud > 50
+25) Caracteres inválidos
+Género (Lista
+desplegable)
+26) ‘Masculino’
+)”Femenino”
+)”Otro”
+27) Sin selección
+
+-- 14 of 30 --
+
+Fecha de nacimiento
+(Fecha) (DD,MM,YY)
+28) Formato válido 29) Vacía
+30)Formato invalido
+31) Fecha Actual o futura
+Email (Texto, formato
+correo)
+32) Formato válido
+(texto@dominio.com
+33) Sin “@”
+34) Vacío
+35) Formato incorrecto
+Celular (Numérico, 10
+dígitos)
+36) Solo números, longitud
+válida
+37) Contiene letras
+38) Longitud inválida
+39) Vacío
+Departamento (String) 40)Departamento valido 41) departamento no valido
+Ciudad(String) 42)Ciudad valida 43)Ciudad no valido
+Dirección (Texto) 44) 4 ≤ longitud ≤ 30,
+alfanumérico
+45)longitud <4
+46)longitud >30
+47)Null
+Numero de licencia
+(Numerico)
+48) 1 ≤ licencia≤
+999999999
+49)licencia > 999999999
+50) licencia <1
+51)Null
+Título académico (String) 52) 4 ≤ longitud ≤ 30,
+alfanumérico
+53)longitud <4
+54)longitud >30
+55)Null
+Años de experiencia
+(Numérico)
+56) 1≤ años ≤ 99 57) años < 1
+58)años >99
+59) Texto
+60) Vacío
+Fecha de vinculación
+(Fecha) (DD,MM,YY)
+61)Formato válido 62)Formato invalido
+
+-- 15 of 30 --
+
+63)Fecha futura o actual
+64)Null
+Terapeuta Estado
+(Booleano / Checkbox)
+Uno de los siguientes
+65) ”Activo”
+66) ”Inactivo”
+67) ”Retirado”
+68)Ningun estado registrado
+Especialidad (Lista /
+Múltiple selección)
+69) Al menos una
+especialidad precargada
+seleccionada
+70) No selecciona ninguna
+Casos de pruebas
+Cas
+o
+Usuari
+o
+Contra
+seña
+Tipo
+Doc
+Num
+Doc
+Nombr
+es
+Apellido
+s Email Teléfon
+o
+Clase
+s
+cubier
+tas
+Resultado
+esperado
+1 juan12
+3 123456 CC 1234567
+8 Juan Pérez juan@gm
+ail.com
+300123
+4567
+1,6,9,1
+4,19,2
+3,35,4
+0
+Registro
+exitoso
+2 ju 123456 CC 1234567
+8 Juan Pérez juan@gm
+ail.com
+300123
+4567 3
+Error:
+usuario
+inválido
+3 juan12
+3 123 CC 1234567
+8 Juan Pérez juan@gm
+ail.com
+300123
+4567 8
+Error:
+contraseñ
+a inválida
+4 juan12
+3 123456 — 1234567
+8 Juan Pérez juan@gm
+ail.com
+300123
+4567 13
+Error: tipo
+document
+o
+obligatorio
+5 juan12
+3 123456 CC abc Juan Pérez juan@gm
+ail.com
+300123
+4567 17
+Error:
+número
+document
+o inválido
+
+-- 16 of 30 --
+
+6 juan12
+3 123456 CC 1234567
+8 J Pérez juan@gm
+ail.com
+300123
+4567 19
+Error:
+nombre
+inválido
+7 juan12
+3 123456 CC 1234567
+8 Juan Pérez123 juan@gm
+ail.com
+300123
+4567 26
+Error:
+apellido
+inválido
+8 juan12
+3 123456 CC 1234567
+8 Juan Pérez juangmail
+.com
+300123
+4567 36
+Error:
+email
+inválido
+9 juan12
+3 123456 CC 1234567
+8 Juan Pérez juan@gm
+ail.com 30abc 41
+Error:
+teléfono
+inválido
+d. Casos de pruebas por Valores Limites
+CAMP
+O Datos de entrada Escen
+ario
+Result
+ado
+Usuario "abc" (3 caracteres)
+Límite
+inferior
+-1
+Error
+Usuario "abcd" (4 caracteres)
+Límite
+inferior
+exacto
+OK
+Usuario "abcdefghijklmnopqrst" (20 caracteres)
+Límite
+superio
+r
+exacto
+OK
+Usuario "abcdefghijklmnopqrstu" (21 caracteres)
+Límite
+superio
+r +1
+Error
+
+-- 17 of 30 --
+
+Contras
+eña "12345" (5 caracteres)
+Límite
+inferior
+-1
+Error
+Contras
+eña "123456" (6 caracteres)
+Límite
+inferior
+exacto
+OK
+Número
+Docum
+ento
+99999
+Límite
+inferior
+-1
+Error
+Número
+Docum
+ento
+100000
+Límite
+inferior
+exacto
+OK
+Número
+Docum
+ento
+999999999
+Límite
+superio
+r
+exacto
+OK
+Número
+Docum
+ento
+1000000000
+Límite
+superio
+r +1
+Error
+Nombre
+s "J" (1 carácter)
+Límite
+inferior
+-1
+Error
+Nombre
+s "Ju" (2 caracteres)
+Límite
+inferior
+exacto
+OK
+Nombre
+s
+"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" (30
+caracteres)
+Límite
+superio
+r
+exacto
+OK
+Nombre
+s
+"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" (31
+caracteres)
+Límite
+superio
+r +1
+Error
+Apellido
+s "A" (1 carácter)
+Límite
+inferior
+-1
+Error
+Apellido
+s "Al" (2 caracteres)
+Límite
+inferior
+exacto
+OK
+
+-- 18 of 30 --
+
+Apellido
+s
+"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAA" (50 caracteres)
+Límite
+superio
+r
+exacto
+OK
+Apellido
+s
+"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAA" (51 caracteres)
+Límite
+superio
+r +1
+Error
+Direcció
+n "abc" (3 caracteres)
+Límite
+inferior
+-1
+Error
+Direcció
+n "abcd" (4 caracteres)
+Límite
+inferior
+exacto
+OK
+Direcció
+n
+"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" (30
+caracteres)
+Límite
+superio
+r
+exacto
+OK
+Direcció
+n
+"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" (31
+caracteres)
+Límite
+superio
+r +1
+Error
+Número
+de
+licencia
+0
+Límite
+inferior
+-1
+Error
+Número
+de
+licencia
+1
+Límite
+inferior
+exacto
+OK
+Número
+de
+licencia
+999999999
+Límite
+superio
+r
+exacto
+OK
+Número
+de
+licencia
+1000000000
+Límite
+superio
+r +1
+Error
+Título
+académ
+ico
+"abc" (3 caracteres)
+Límite
+inferior
+-1
+Error
+
+-- 19 of 30 --
+
+Título
+académ
+ico
+"abcd" (4 caracteres)
+Límite
+inferior
+exacto
+OK
+Título
+académ
+ico
+"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" (30
+caracteres)
+Límite
+superio
+r
+exacto
+OK
+Título
+académ
+ico
+"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" (31
+caracteres)
+Límite
+superio
+r +1
+Error
+Años
+de
+experie
+ncia
+0
+Límite
+inferior
+-1
+Error
+Años
+de
+experie
+ncia
+1
+Límite
+inferior
+exacto
+OK
+Años
+de
+experie
+ncia
+99
+Límite
+superio
+r
+exacto
+OK
+Años
+de
+experie
+ncia
+100
+Límite
+superio
+r +1
+Error
+e. Pruebas del Camino básico
+Permite registrar un nuevo terapeuta en el sistema validando todos los campos del
+formulario.
+• Coloque fragmento de código del metodo a validar
+
+-- 20 of 30 --
+
+• Elabore el grafo y encuentre los caminos a probar para cada método o
+módulo, que tenga estructuras a validar.
+
+-- 21 of 30 --
+
+Complejidad ciclomatica :
+Total Aristas = 9
+Total Nodos = 10
+V(G) = 9 - 10 + 2 = 1
+Sin tener en cuenta las excepciones posibles lanzadas por el sistema
+• Encuentre los datos de pruebas (utilice el siguiente formato por cada método o
+modulo).
+Caminos a Probar :
+
+-- 22 of 30 --
+
+# Camino Nodos Recorridos Descripción
+C1 Registro
+Exitoso
+N1 → N2 → N3 → N4 (F) → N6
+→ N7 → N8
+Crear nuevo terapeuta - Sin
+errores
+C2 Edición
+Exitosa
+N1 → N2 → N3 → N4 (V) →
+N5 → N7 → N8
+Actualizar terapeuta existente -
+Sin errores
+C3 Error /
+Excepción
+N1 → N2 → N3 → N4 (F) → N6
+→ EXC → N9 → N10
+Error al crear (documento
+duplicado, servidor, etc.)
+CAMINO Datos de Entrada ESCENARIO
+Doc_Identidad Nombre Licencia Respuesta
+de la Api
+C1 987654321 Ana María
+Rodríguez
+FT-
+123456
+{success:
+true, id: 25 }
+Terapeuta
+creado
+exitosamente.
+C2 987654321 Ana María
+Rodríguez
+(editado)
+FT-
+123446
+{success:
+true, id: 25 }
+Terapeuta
+actualizado
+exitosamente
+(modoEdicion =
+true).
+C3A 987654321 Carlos
+Mendoza
+FT-
+123456
+{status: 409,
+message:
+"Ya existe
+un terapeuta
+con ese
+documento"
+}
+Conflicto -
+Documento de
+identidad
+duplicado.
+C3B 555555555 Pedro
+Bustamante
+FT-
+555555
+{status: 500,
+message:
+"Error
+interno del
+servidor" }
+Error del
+servidor (500).
+C3C 888888888 Laura
+Gómez
+FT-
+123456
+{status: 409,
+message:
+"Ya existe
+un terapeuta
+Conflicto -
+Licencia
+profesional
+duplicada.
+
+-- 23 of 30 --
+
+con esa
+licencia" }
+Nombre Modulo:Registrar Terapeuta
+S# Prerrequisitos S# Datos de pruebas
+1 Sistema en ejecución 1 Usuario = " maria.gonzalez "
+2 Base de datos conectada 2 Contraseña = "123456"
+3 Usuario con permisos de
+registro
+3 TipoDoc = "CC"
+4 Formulario de terapeuta
+disponible
+4 NumDoc = "123456789"
+5 Nombres = "Juan"
+6 Apellidos = "Perez"
+7 Email = "juan@gmail.com"
+8 Teléfono = "3001234567"
+9 Especialidad = "Fisioterapia"
+Escenario de pruebas 1
+PASO Detalles del Paso Resultados
+Esperados
+Resultados
+Actuales
+Estado
+1 El usuario abre el
+formulario de
+terapeuta
+Formulario cargado
+correctamente
+Pendiente No
+ejecutado
+2 Ingresa datos
+válidos en todos
+los campos
+Datos aceptados por
+el formulario
+Pendiente No
+ejecutado
+3 modoEdicion =
+false
+El sistema entra en
+modo creación
+Pendiente No
+ejecutado
+
+-- 24 of 30 --
+
+4 Presiona
+"Guardar"
+Se ejecuta
+crearTerapeuta(datos)
+Pendiente No
+ejecutado
+5 Se completa la
+petición al backend
+Registro exitoso Pendiente No
+ejecutado
+6 Se ejecuta
+cargarTerapeutas()
+Lista actualizada Pendiente No
+ejecutado
+7 Se ejecuta
+limpiarFormulario()
+Campos vacíos Pendiente No
+ejecutado
+Escenario de pruebas 2
+PASO Detalles del Paso Resultados
+Esperados
+Resultados
+Actuales
+Estado
+1 Usuario llena
+formulario
+Datos válidos Pendiente No ejecutado
+2 modoEdicion = false Flujo de
+creación
+Pendiente No ejecutado
+3 Presiona "Guardar" Se intenta
+crear
+terapeuta
+Pendiente No ejecutado
+4 Backend genera
+error
+Se captura en
+catch
+Pendiente No ejecutado
+5 Se ejecuta
+alert(error.message)
+Mensaje de
+error visible
+Pendiente No ejecutado
+
+-- 25 of 30 --
+
+6 No se limpia el
+formulario
+Datos
+permanecen
+Pendiente No ejecutado
+NOMBRE DEL MODULO: GESTION DE TERAPIAS Y TRATAMIENTOS
+
+-- 26 of 30 --
+
+A. ANÁLISIS POR CLASES DE EQUIVALENCIA
+
+-- 27 of 30 --
+
+Campo Clases Válidas Clases Inválidas
+nombre
+1) Cadena no vacía con
+caracteres visibles (1-255
+chars)
+2) Cadena vacía "" 3)
+Solo espacios en
+blanco " "
+idEspecialidad 4) Valor numérico diferente
+a "0" (ID existente)
+5) Valor "0"
+(placeholder sin
+seleccionar)
+duracionMinutos 6) Valor entre 5 y 240
+inclusive
+7) Valor menor a 5 8)
+Valor mayor a 240
+costoBase 9) Valor mayor o igual a 0 10) Valor negativo
+(menor a 0)
+sesionesRecomendadas 11) Valor entre 1 y 50
+inclusive
+12) Valor menor a 1 13)
+Valor mayor a 50
+frecuenciaRecomendada
+14) Valores permitidos:
+"Diaria", "Semanal",
+"Quincenal", "Mensual"
+15) Valor diferente a los
+permitidos
+cantidadEquipo 16) Valor ≥ 1 y ≤
+disponibilidadReal
+17) Valor mayor a
+disponibilidadReal
+CASOS REPRESENTATIVOS POR CLASES DE EQUIVALENCIA
+Cas
+o nombre idEspeciali
+dad
+duracionMin
+utos
+costoBa
+se
+Clases
+Cubiert
+as
+Resultad
+o
+Esperado
+1 "Terapia
+Fisica" "1" 60 150000 1, 4, 6,
+9
+Registro
+exitoso
+2 "" "1" 30 50000 2, 4, 6,
+9
+Error: "El
+nombre
+del
+tratamient
+o es
+obligatorio
+"
+3 " " "1" 45 80000 3, 4, 6,
+9 Error: "El
+nombre
+
+-- 28 of 30 --
+
+del
+tratamient
+o es
+obligatorio
+"
+4 "Rehabilitaci
+on" "0" 45 100000 1, 5, 6,
+9
+Error: "Por
+favor,
+selecciona
+una
+especialid
+ad"
+5 "Masaje" "2" 3 80000 1, 4, 7,
+9
+Input no
+permite
+valor
+(min=5)
+6 "Electrotera
+pia" "1" 300 200000 1, 4, 8,
+9
+Input no
+permite
+valor
+(max=240)
+7 "Terapia
+Manual" "1" 60 -5000 1, 4, 6,
+10
+Input no
+permite
+valor
+(min=0)
+B. CASOS DE PRUEBA POR VALORES LÍMITE
+Caso CAMPO Datos de entrada Escenario
+1 duracionMinutos 4 Límite inferior inválido
+(min = 5)
+2 duracionMinutos 5 Límite inferior válido
+3 duracionMinutos 6 Valor dentro del rango
+4 duracionMinutos 239 Valor dentro del rango
+5 duracionMinutos 240 Límite superior válido
+
+-- 29 of 30 --
+
+6 duracionMinutos 241 Límite superior inválido
+(max = 240)
+7 sesionesRecomendadas 0 Límite inferior inválido
+(min = 1)
+8 sesionesRecomendadas 1 Límite inferior válido
+9 sesionesRecomendadas 2 Valor dentro del rango
+10 sesionesRecomendadas 49 Valor dentro del rango
+11 sesionesRecomendadas 50 Límite superior válido
+12 sesionesRecomendadas 51 Límite superior inválido
+(max = 50)
+13 costoBase -1 Límite inferior inválido
+(min = 0)
+14 costoBase 0 Límite inferior válido
+15 costoBase 1 Valor dentro del rango
+16 cantidadEquipo 0 Límite inferior inválido
+(min = 1)
+17 cantidadEquipo 1 Límite inferior válido
+18 cantidadEquipo disponibilidadReal Límite superior válido
+19 cantidadEquipo disponibilidadReal
++ 1
+Límite con advertencia
+(excede disponibilidad)
+
+-- 30 of 30 --
+

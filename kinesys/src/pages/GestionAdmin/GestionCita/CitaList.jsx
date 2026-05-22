@@ -1,5 +1,4 @@
 // src/pages/GestionCita/CitaList.jsx
-"use client"
 
 import { useState, useEffect } from "react"
 import { 

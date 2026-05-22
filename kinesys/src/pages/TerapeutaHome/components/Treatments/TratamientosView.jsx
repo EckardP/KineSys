@@ -1,5 +1,4 @@
 // kinesys\src\pages\TerapeutaHome\components\Treatments\TratamientosView.jsx
-"use client"
 
 import { useState, useEffect } from "react"
 import { Search, Eye, Stethoscope, Clock, Users, Award } from "lucide-react"

@@ -1,5 +1,3 @@
-"use client"
-
 // src/pages/GestionAdmin/GestionReporte/Reportes.jsx
 import { useEffect, useState } from "react"
 import {
@@ -18,11 +16,26 @@ import {
   ResponsiveContainer,
 } from "recharts"
 import { Calendar, Users, Stethoscope, TrendingUp, Activity, FileText, Download } from "lucide-react"
-import * as XLSX from "xlsx"
 import { listarPacientes } from "../../../services/pacientesService.js"
 import { listarTerapeutas } from "../../../services/terapeutasService.js"
 import { listarCitas } from "../../../services/citasService.js"
 import "../../AdminHome/AdminDashboard.css"
+
+const escaparCsv = (valor) => {
+  const texto = valor == null ? "" : String(valor)
+  return `"${texto.replace(/"/g, '""')}"`
+}
+
+const descargarCsv = (filas, nombreArchivo) => {
+  const contenido = filas.map((fila) => fila.map(escaparCsv).join(",")).join("\n")
+  const blob = new Blob([`\uFEFF${contenido}`], { type: "text/csv;charset=utf-8" })
+  const url = URL.createObjectURL(blob)
+  const enlace = document.createElement("a")
+  enlace.href = url
+  enlace.download = nombreArchivo
+  enlace.click()
+  URL.revokeObjectURL(url)
+}
 
 const Reportes = () => {
   const [citas, setCitas] = useState([])
@@ -56,13 +69,13 @@ const Reportes = () => {
 
   // Calcular estadísticas
   const totalPacientes = pacientes.length
-  const pacientesActivos = pacientes.filter((p) => p.estado === "activo").length
+  const pacientesActivos = pacientes.filter((p) => p.activo === true).length
   const totalTerapeutas = terapeutas.length
-  const terapeutasActivos = terapeutas.filter((t) => t.estado === "activo").length
+  const terapeutasActivos = terapeutas.filter((t) => t.activo === true).length
   const totalCitas = citas.length
-  const citasCompletadas = citas.filter((c) => c.estado === "completada").length
-  const citasProgramadas = citas.filter((c) => c.estado === "programada").length
-  const citasCanceladas = citas.filter((c) => c.estado === "cancelada" || c.estado === "inasistencia").length
+  const citasCompletadas = citas.filter((c) => c.estado === "Completada").length
+  const citasProgramadas = citas.filter((c) => c.estado === "Programada").length
+  const citasCanceladas = citas.filter((c) => c.estado === "Cancelada" || c.estado === "Inasistencia").length
 
   // Distribución de estados de citas
   const estadoCitasData = [
@@ -73,9 +86,9 @@ const Reportes = () => {
 
   // Citas por terapeuta
   const citasPorTerapeuta = terapeutas.map((terapeuta) => ({
-    nombre: terapeuta.nombres.split(" ")[0],
+    nombre: terapeuta.nombres?.split(" ")[0] ?? terapeuta.nombre ?? "Sin nombre",
     citas: citas.filter((c) => c.idTerapeuta === terapeuta.id).length,
-    completadas: citas.filter((c) => c.idTerapeuta === terapeuta.id && c.estado === "completada").length,
+    completadas: citas.filter((c) => c.idTerapeuta === terapeuta.id && c.estado === "Completada").length,
   }))
 
   // Tendencia mensual de citas (últimos 6 meses)
@@ -95,8 +108,8 @@ const Reportes = () => {
       data.push({
         mes: monthName,
         total: citasDelMes.length,
-        completadas: citasDelMes.filter((c) => c.estado === "completada").length,
-        canceladas: citasDelMes.filter((c) => c.estado === "cancelada" || c.estado === "inasistencia").length,
+        completadas: citasDelMes.filter((c) => c.estado === "Completada").length,
+        canceladas: citasDelMes.filter((c) => c.estado === "Cancelada" || c.estado === "Inasistencia").length,
       })
     }
 
@@ -115,19 +128,18 @@ const Reportes = () => {
   const tasaCompletitud = totalCitas > 0 ? ((citasCompletadas / totalCitas) * 100).toFixed(1) : "0"
   const tasaCancelacion = totalCitas > 0 ? ((citasCanceladas / totalCitas) * 100).toFixed(1) : "0"
 
-  // Exportar a Excel
+  // Exportar reporte sin dependencias vulnerables de hojas de calculo.
   const handleExport = () => {
-    const worksheet = XLSX.utils.json_to_sheet(
-      citas.map((c) => ({
-        Paciente: c.paciente?.nombreCompleto || "N/A",
-        Terapeuta: c.terapeuta?.nombres || "N/A",
-        Fecha: new Date(c.fecha).toLocaleDateString(),
-        Estado: c.estado,
-      })),
-    )
-    const workbook = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Reportes")
-    XLSX.writeFile(workbook, "reportes_clinica.xlsx")
+    const filas = [
+      ["Paciente", "Terapeuta", "Fecha", "Estado"],
+      ...citas.map((c) => [
+        c.paciente?.nombreCompleto || "N/A",
+        c.terapeuta?.nombres || "N/A",
+        c.fecha ? new Date(c.fecha).toLocaleDateString() : "N/A",
+        c.estado || "N/A",
+      ]),
+    ]
+    descargarCsv(filas, "reportes_clinica.csv")
   }
 
   return (

@@ -1,4 +1,3 @@
-Ôªøusing NuGet.Common;
 using System.Text.Json.Serialization;
 using ApiPrueba.Models;
 
@@ -10,6 +9,7 @@ namespace ApiPrueba.Models
 
         public int Id { get; set; }
         public string? User { get; set; }
+        [JsonIgnore]
         public string? Password { get; set; }
         public string? Nombres { get; set; }
         public string? Apellidos { get; set; }
@@ -47,13 +47,13 @@ namespace ApiPrueba.Models
             public string? Ciudad { get; set; }
             public string? Departamento { get; set; }
 
-            // üî• CAMBIOS CR√çTICOS - Hacer nullable
+            // ?? CAMBIOS CRÕTICOS - Hacer nullable
             public string? NoLicencia { get; set; }
             public string? TituloAcademico { get; set; }
-            public int? A√±osExperiencia { get; set; }           // ‚Üê Cambiado a nullable
-            public DateTime? FechaContratacion { get; set; }    // ‚Üê Cambiado a nullable
+            public int? AÒosExperiencia { get; set; }           // ? Cambiado a nullable
+            public DateTime? FechaContratacion { get; set; }    // ? Cambiado a nullable
 
-            // Propiedades espec√≠ficas del Paciente
+            // Propiedades especÌficas del Paciente
             public int? EpsId { get; set; }
             public int? IdSeguroMedico { get; set; }
             public int? NumeroDeAfiliacion { get; set; }
@@ -83,7 +83,7 @@ namespace ApiPrueba.Models
             // Rol para determinar el tipo
             public Rol Rol { get; set; }
 
-            // Campos espec√≠ficos de Paciente
+            // Campos especÌficos de Paciente
             public int? IdSeguroMedico { get; set; }
             public int? EpsId { get; set; }
             public int? NumeroDeAfiliacion { get; set; }
@@ -92,11 +92,11 @@ namespace ApiPrueba.Models
             public DateTime? FechaAfiliacion { get; set; }
             public string? Regimen { get; set; }
 
-            // üî• CAMBIOS CR√çTICOS - Hacer nullable
+            // ?? CAMBIOS CRÕTICOS - Hacer nullable
             public string? NoLicencia { get; set; }
             public string? TituloAcademico { get; set; }
-            public int? A√±osExperiencia { get; set; }           // ‚Üê Cambiado a nullable
-            public DateTime? FechaContratacion { get; set; }    // ‚Üê Cambiado a nullable
+            public int? AÒosExperiencia { get; set; }           // ? Cambiado a nullable
+            public DateTime? FechaContratacion { get; set; }    // ? Cambiado a nullable
         }
 
         public class LoginDto
@@ -109,8 +109,6 @@ namespace ApiPrueba.Models
         {
             public string? User { get; set; }
             public Rol Rol { get; set; }
-
-            public Token? Token { get; set; }
         }
 
         //[JsonIgnore]
@@ -120,7 +118,7 @@ namespace ApiPrueba.Models
     // Agrega la clase Administrador que hereda de Persona
     public class Administrador : Persona
     {
-        // Puedes agregar propiedades espec√≠ficas del administrador aqu√≠ si es necesario
+        // Puedes agregar propiedades especÌficas del administrador aquÌ si es necesario
     }
 
     public class Recepcionista : Persona
