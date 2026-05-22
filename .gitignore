@@ -28,6 +28,10 @@ yarn-error.log*
 .env.*.local
 .vite/
 coverage/
+storybook-static/
+debug-storybook.log
+playwright-report/
+test-results/
 .DS_Store
 
 # =======================

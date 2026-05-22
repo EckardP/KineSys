@@ -60,71 +60,35 @@ export default function FormPaciente() {
     }
   }, [cargarPaciente, esEdicion]);
 
-  // --- Validaciones ---
-  const validarFormulario = () => {
-    const nuevosErrores = {};
+  // Función para validar el correo electrónico
+  const validarCorreo = (correo) => {
+    const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regexCorreo.test(correo);
+  };
 
-    // Validar campos obligatorios
-    if (!formData.nombreCompleto.trim()) nuevosErrores.nombreCompleto = "El nombre completo es obligatorio";
-    if (!formData.documentoIdentidad.trim()) nuevosErrores.documentoIdentidad = "El documento de identidad es obligatorio";
-    if (!formData.telefono.trim()) nuevosErrores.telefono = "El teléfono es obligatorio";
-    if (!formData.correoElectronico.trim()) nuevosErrores.correoElectronico = "El correo electrónico es obligatorio";
-    if (!formData.fechaNacimiento) nuevosErrores.fechaNacimiento = "La fecha de nacimiento es obligatoria";
-    if (!formData.genero) nuevosErrores.genero = "El género es obligatorio";
-    if (!formData.direccion.trim()) nuevosErrores.direccion = "La dirección es obligatoria";
+  const manejarCambio = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
 
-    // Validar formato de email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (formData.correoElectronico && !emailRegex.test(formData.correoElectronico)) {
-      nuevosErrores.correoElectronico = "Formato de correo electrónico inválido";
-    }
-
-    // Validar teléfono (solo números, mínimo 8 dígitos)
-    const telefonoRegex = /^\d{8,}$/;
-    if (formData.telefono && !telefonoRegex.test(formData.telefono.replace(/\s/g, ''))) {
-      nuevosErrores.telefono = "El teléfono debe contener solo números y al menos 8 dígitos";
-    }
-
-    // Validar documento de identidad (solo números)
-    const documentoRegex = /^\d+$/;
-    if (formData.documentoIdentidad && !documentoRegex.test(formData.documentoIdentidad)) {
-      nuevosErrores.documentoIdentidad = "El documento debe contener solo números";
-    }
-
-    // Validar fecha de nacimiento (no puede ser fecha futura)
-    if (formData.fechaNacimiento) {
-      const fechaNacimiento = new Date(formData.fechaNacimiento);
-      const hoy = new Date();
-      if (fechaNacimiento > hoy) {
-        nuevosErrores.fechaNacimiento = "La fecha de nacimiento no puede ser futura";
+    // Validar el correo electrónico en tiempo real
+    if (name === "correoElectronico") {
+      if (!validarCorreo(value)) {
+        setErroresValidacion((prev) => ({ ...prev, correoElectronico: "Correo electrónico no válido." }));
+      } else {
+        setErroresValidacion((prev) => {
+          const { correoElectronico, ...resto } = prev;
+          return resto;
+        });
       }
     }
-
-    setErroresValidacion(nuevosErrores);
-    return Object.keys(nuevosErrores).length === 0;
   };
 
-  // --- Manejar cambios en los campos ---
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    
-    // Limpiar error del campo cuando el usuario empiece a escribir
-    if (erroresValidacion[name]) {
-      setErroresValidacion(prev => ({
-        ...prev,
-        [name]: ""
-      }));
-    }
-  };
-
-  // --- Enviar formulario ---
-  const handleSubmit = async (e) => {
+  const manejarEnvio = async (e) => {
     e.preventDefault();
-    
-    // Validar formulario antes de enviar
-    if (!validarFormulario()) {
-      setError("Por favor, corrige los errores en el formulario.");
+
+    // Validar el correo antes de enviar
+    if (!validarCorreo(formData.correoElectronico)) {
+      setErroresValidacion((prev) => ({ ...prev, correoElectronico: "Correo electrónico no válido." }));
       return;
     }
 
@@ -188,7 +152,7 @@ export default function FormPaciente() {
           <p className="text-muted mt-2">Cargando datos...</p>
         </div>
       ) : (
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={manejarEnvio}>
           <Row className="mb-3">
             <Col md={6}>
               <Form.Group controlId="nombreCompleto">
@@ -290,7 +254,7 @@ export default function FormPaciente() {
                   type="email"
                   name="correoElectronico"
                   value={formData.correoElectronico}
-                  onChange={handleChange}
+                  onChange={manejarCambio}
                   isInvalid={!!erroresValidacion.correoElectronico}
                   placeholder="ejemplo@correo.com"
                   required
