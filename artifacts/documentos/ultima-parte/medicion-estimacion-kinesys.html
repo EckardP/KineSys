@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>KineSys - Medicion y estimacion del software</title>
+  <style>
+    @page { size: A4; margin: 15mm 13mm 17mm; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: #1f2933;
+      background: #fff;
+      font-size: 10.5pt;
+      line-height: 1.42;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    h1, h2, h3 { color: #14344d; line-height: 1.16; margin: 0 0 8px; }
+    h1 { font-size: 27pt; }
+    h2 { font-size: 17pt; margin-top: 18px; padding-bottom: 5px; border-bottom: 2px solid #3c7d8f; }
+    h3 { font-size: 13pt; margin-top: 14px; color: #285b68; }
+    p { margin: 0 0 8px; }
+    table { width: 100%; border-collapse: collapse; margin: 8px 0 14px; page-break-inside: avoid; }
+    th, td { border: 1px solid #b8c8d0; padding: 5px 6px; vertical-align: top; }
+    th { background: #e8f2f5; color: #14344d; text-align: left; }
+    tr:nth-child(even) td { background: #f8fbfc; }
+    .cover {
+      min-height: 260mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+      border: 3px solid #14344d;
+      padding: 22mm;
+    }
+    .cover .kicker { text-transform: uppercase; letter-spacing: 1px; font-weight: 700; color: #3c7d8f; }
+    .page-break { page-break-before: always; break-before: page; }
+    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 10px 0 14px; }
+    .card { border: 1px solid #b8c8d0; background: #f7fbfc; border-radius: 6px; padding: 8px; text-align: center; }
+    .card strong { display: block; font-size: 15pt; color: #14344d; }
+    .callout { border-left: 4px solid #3c7d8f; background: #f2f8fa; padding: 8px 10px; margin: 10px 0 12px; }
+    .muted { color: #5b6670; }
+    code { font-family: Consolas, monospace; }
+  </style>
+</head>
+<body>
+  <section class="cover">
+    <div class="kicker">Tercera y cuarta parte</div>
+    <h1>KineSys</h1>
+    <h2>Medicion y estimacion del software</h2>
+    <p>Sistema de gestion de clinica de fisioterapia</p>
+    <p class="muted">Fecha de medicion: 29 de mayo de 2026</p>
+    <p class="muted">Repositorio: C:\Users\carde\Documents\ProgramacionMovil\KineSys</p>
+  </section>
+
+  <section class="page-break">
+    <h2>Diagnostico de cumplimiento</h2>
+    <p>La revision cruza la documentacion del producto con el estado actual del repositorio. El alcance principal esta implementado y cuenta con evidencia automatizada de compilacion, lint y pruebas.</p>
+    <div class="grid">
+      <div class="card"><strong>27622</strong>NLOC producto</div>
+      <div class="card"><strong>114</strong>clases C#</div>
+      <div class="card"><strong>146/146</strong>pruebas aprobadas</div>
+      <div class="card"><strong>71.83%</strong>cobertura frontend</div>
+    </div>
+    <table><thead><tr><th>Modulo</th><th>Estado</th><th>Evidencia</th></tr></thead><tbody><tr><td>Gestion de pacientes</td><td>Cumple</td><td>CRUD, dashboard, ficha, historial, contactos/documentos desde API</td></tr><tr><td>Gestion de terapeutas</td><td>Cumple</td><td>Registro, especialidades, disponibilidad y gestion administrativa</td></tr><tr><td>Gestion de terapias y tratamientos</td><td>Cumple</td><td>Tratamientos, protocolos, tipos de servicio y equipos requeridos</td></tr><tr><td>Agenda y control de sesiones</td><td>Cumple</td><td>Citas, disponibilidad, calendario, asistencia y dialogos de atencion</td></tr><tr><td>Reportes y estadisticas</td><td>Cumple</td><td>Graficos operativos, exportacion CSV y resumen de pacientes/citas/terapeutas</td></tr><tr><td>Seguridad y roles</td><td>Cumple</td><td>JWT, rutas por rol, fallback policy autenticada y pruebas de token</td></tr><tr><td>Auditoria</td><td>Cumple parcial</td><td>Componentes y controladores de auditoria disponibles; falta mayor evidencia E2E</td></tr><tr><td>Exportacion PDF clinica</td><td>Cumple parcial</td><td>Existe soporte documental y exportacion CSV; PDF clinico puede ampliarse</td></tr></tbody></table>
+  </section>
+
+  <section>
+    <h2>Medicion del software</h2>
+    <h3>Introduccion</h3>
+    <p>La medicion permite evaluar el producto desde atributos internos y externos. En KineSys se midieron tamano, complejidad de clases, mantenibilidad, fiabilidad, seguridad, portabilidad, rendimiento, compatibilidad y adecuacion funcional.</p>
+    <h3>Objetivos</h3>
+    <p>Generar un diagnostico tecnico del sistema, encontrar areas criticas y proponer acciones de mejora verificables.</p>
+    <h3>Alcance</h3>
+    <p>Incluye frontend React/Vite y API ASP.NET Core. Se excluyen dependencias, build, cobertura, migraciones generadas, archivos Designer, snapshots y pruebas automatizadas.</p>
+    <h3>Tipos y herramientas de metricas</h3>
+    <table><thead><tr><th>Herramienta</th><th>Uso</th></tr></thead><tbody><tr><td>Generador local</td><td>Conteo de LOC, NLOC, clases, WMC, DIT, CBO y cohesion aproximada.</td></tr><tr><td>SonarQube</td><td>Configurado mediante sonar-project.properties para ejecutar analisis y capturar pantalla.</td></tr><tr><td>Vitest/Jest/xUnit/ESLint/Vite</td><td>Evidencia de fiabilidad, cobertura, lint, build y mantenibilidad.</td></tr></tbody></table>
+
+    <h3>Metricas de tamano del codigo fuente</h3>
+    <table><thead><tr><th>Modelo de medicion</th><th>Resultado</th><th>Analisis</th></tr></thead><tbody><tr><td>LOC - lenguaje de programacion</td><td>31062</td><td>Lineas fisicas no vacias en JS/JSX/CSS/C# del producto</td></tr><tr><td>LOC - SonarQube</td><td>27622</td><td>NLOC no comentadas aplicando sonar-project.properties</td></tr><tr><td>LOC - otra herramienta local</td><td>27622</td><td>Conteo cloc-like del generador scripts/docs/build-ultima-parte-document.js</td></tr></tbody></table>
+    <table><thead><tr><th>Extension</th><th>Archivos</th><th>LOC fisicas</th><th>NLOC</th></tr></thead><tbody><tr><td>.cs</td><td>87</td><td>6599</td><td>5178</td></tr><tr><td>.css</td><td>11</td><td>2109</td><td>1714</td></tr><tr><td>.js</td><td>62</td><td>3171</td><td>2525</td></tr><tr><td>.jsx</td><td>112</td><td>19183</td><td>18205</td></tr></tbody></table>
+
+    <h3>Archivos de mayor tamano</h3>
+    <table><thead><tr><th>Archivo</th><th>Extension</th><th>LOC fisicas</th><th>NLOC</th></tr></thead><tbody><tr><td>kinesys\src\features\admin\GestionAdmin\GestionTerapeuta\Terapeuta.jsx</td><td>.jsx</td><td>923</td><td>881</td></tr><tr><td>kinesys\src\features\admin\GestionAdmin\GestionPaciente\PatientForm.jsx</td><td>.jsx</td><td>783</td><td>754</td></tr><tr><td>kinesys\src\features\patient\Gestionpaciente\PacienteForm.jsx</td><td>.jsx</td><td>783</td><td>754</td></tr><tr><td>kinesys\src\features\therapist\TerapeutaHome\components\patients\PatientForm.jsx</td><td>.jsx</td><td>802</td><td>751</td></tr><tr><td>kinesys\src\styles\GlobalStyles.css</td><td>.css</td><td>813</td><td>683</td></tr><tr><td>kinesys\src\features\admin\GestionAdmin\GestionTratamiento\TratamientoForm.jsx</td><td>.jsx</td><td>598</td><td>557</td></tr><tr><td>kinesys\src\features\admin\GestionAdmin\GestionCita\CitaTherapistSelection.jsx</td><td>.jsx</td><td>555</td><td>502</td></tr><tr><td>kinesys\src\features\patient\Gestionpaciente\Pacientes.jsx</td><td>.jsx</td><td>440</td><td>431</td></tr><tr><td>api\ApiPrueba\Controllers\PersonasController.cs</td><td>.cs</td><td>473</td><td>412</td></tr><tr><td>kinesys\src\features\admin\GestionAdmin\GestionTerapeuta\GestionarEspecialidadesTerapeuta.jsx</td><td>.jsx</td><td>395</td><td>371</td></tr></tbody></table>
+
+    <h3>Metricas de tamano orientadas a clases</h3>
+    <p>Totales: 114 clases, 297 metodos, WMC promedio 5.06, DIT maximo 1, CBO promedio 2.62.</p>
+    <table><thead><tr><th>Clase</th><th>Metodos</th><th>WMC</th><th>DIT</th><th>CBO</th><th>Grado de cohesion</th></tr></thead><tbody><tr><td>PersonasController</td><td>12</td><td>50</td><td>1</td><td>14</td><td>Baja</td></tr><tr><td>TratamientoesController</td><td>9</td><td>26</td><td>1</td><td>7</td><td>Baja</td></tr><tr><td>FacturasController</td><td>15</td><td>24</td><td>1</td><td>9</td><td>Baja</td></tr><tr><td>FacturaService</td><td>10</td><td>16</td><td>0</td><td>7</td><td>Media</td></tr><tr><td>HistorialClinicoService</td><td>5</td><td>16</td><td>1</td><td>21</td><td>Baja</td></tr><tr><td>TerapeutaEspecialidadsController</td><td>9</td><td>15</td><td>1</td><td>3</td><td>Media</td></tr><tr><td>AuthorizationService</td><td>3</td><td>15</td><td>1</td><td>4</td><td>Media</td></tr><tr><td>DisponibilidadTerapeutasController</td><td>8</td><td>14</td><td>1</td><td>2</td><td>Alta</td></tr><tr><td>PacientesController</td><td>7</td><td>14</td><td>1</td><td>4</td><td>Alta</td></tr><tr><td>TerapeutasController</td><td>7</td><td>14</td><td>1</td><td>3</td><td>Alta</td></tr><tr><td>DocumentoService</td><td>5</td><td>14</td><td>1</td><td>5</td><td>Media</td></tr><tr><td>AlertaAgendasController</td><td>7</td><td>12</td><td>1</td><td>2</td><td>Alta</td></tr></tbody></table>
+    <div class="callout"><strong>Analisis.</strong> La modularidad general es aceptable por WMC promedio bajo. La clase PersonasController concentra mayor complejidad y conviene dividir responsabilidades de login, registro y consulta de personas.</div>
+  </section>
+
+  <section class="page-break">
+    <h2>Medicion de calidad - ISO/IEC 25010</h2>
+    <table><thead><tr><th>Caracteristica</th><th>Metrica/formula</th><th>Resultado</th><th>Analisis del resultado</th></tr></thead><tbody><tr><td>Usabilidad</td><td>Rutas principales implementadas / rutas requeridas</td><td>8 / 8 = 100%</td><td>Paneles por rol y navegacion por modulos; faltan pruebas con usuarios reales.</td></tr><tr><td>Seguridad</td><td>Controles activos / controles esperados</td><td>5 / 5 = 100%</td><td>JWT, CORS restringido, fallback policy, manejo 401 y pruebas de token.</td></tr><tr><td>Portabilidad</td><td>Entornos verificados / entornos objetivo</td><td>2 / 3 = 66.7%</td><td>Frontend y backend verificados en Windows; Docker/produccion queda pendiente.</td></tr><tr><td>Mantenibilidad</td><td>Cobertura + complejidad media</td><td>Cobertura 71.83%, WMC promedio 5.06</td><td>Separacion por capas adecuada; PersonasController concentra mayor complejidad.</td></tr><tr><td>Rendimiento</td><td>Build productivo + tamano de assets</td><td>Build exitoso, asset mayor bajo 746 KB</td><td>La app compila; conviene seguir dividiendo chunks si crece.</td></tr><tr><td>Fiabilidad</td><td>Pruebas aprobadas / pruebas ejecutadas</td><td>146 / 146 = 100%</td><td>107 pruebas frontend y 39 pruebas backend superadas.</td></tr><tr><td>Compatibilidad</td><td>Navegadores modernos soportados / objetivo</td><td>3 / 3 planeados</td><td>React/Vite compatible con Chromium, Firefox y WebKit; requiere validacion visual final.</td></tr><tr><td>Adecuacion funcional</td><td>Modulos documentados implementados / modulos requeridos</td><td>8 / 8 = 100%</td><td>El alcance principal del documento esta cubierto o parcialmente cubierto con evidencia.</td></tr></tbody></table>
+    <h3>Medicion con herramientas</h3>
+    <table><thead><tr><th>Herramienta</th><th>Resultado</th><th>Interpretacion</th></tr></thead><tbody><tr><td>ESLint</td><td>0 errores</td><td>El frontend no presenta errores estaticos segun la configuracion actual.</td></tr><tr><td>Vitest coverage</td><td>71.83% sentencias, 71.75% lineas</td><td>Cobertura suficiente para avance; ampliar servicios y vistas criticas.</td></tr><tr><td>Jest/Vitest</td><td>107/107 pruebas frontend</td><td>Las capas de API cliente, autenticacion, servicios y utilidades estan protegidas.</td></tr><tr><td>xUnit</td><td>39/39 pruebas backend</td><td>Citas, modelos y generador JWT funcionan en pruebas automatizadas.</td></tr><tr><td>Vite build</td><td>Build exitoso</td><td>La aplicacion genera artefactos productivos correctamente.</td></tr></tbody></table>
+    <h3>Assets generados por build</h3>
+    <table><thead><tr><th>Archivo</th><th>Tamano</th></tr></thead><tbody><tr><td>index-e3tjscHp.js</td><td>742.33 KB</td></tr><tr><td>charts-CDrM2CsF.js</td><td>351.51 KB</td></tr><tr><td>index-5fJIbvTA.css</td><td>291.61 KB</td></tr><tr><td>calendar-BoD_g4Z2.js</td><td>278.21 KB</td></tr><tr><td>ui-DpFeWDjJ.js</td><td>97.50 KB</td></tr><tr><td>signalr-WRsbbMxL.js</td><td>54.35 KB</td></tr><tr><td>react-Drmo6ITY.js</td><td>47.35 KB</td></tr></tbody></table>
+  </section>
+
+  <section class="page-break">
+    <h2>Estimacion del software</h2>
+    <p>Supuesto economico: $ 4.200.000 COP por persona-mes. Los resultados se expresan en persona-mes para comparar los modelos.</p>
+    <h3>Puntos de funcion</h3>
+    <table><thead><tr><th>Elemento</th><th>Cantidad</th><th>Peso</th><th>Resultado</th></tr></thead><tbody><tr><td>Entradas externas (EI)</td><td>36</td><td>4</td><td>144</td></tr><tr><td>Salidas externas (EO)</td><td>18</td><td>5</td><td>90</td></tr><tr><td>Consultas externas (EQ)</td><td>22</td><td>4</td><td>88</td></tr><tr><td>Archivos logicos internos (ILF)</td><td>14</td><td>10</td><td>140</td></tr><tr><td>Archivos de interfaz externa (EIF)</td><td>1</td><td>7</td><td>7</td></tr><tr><td>PF ajustados</td><td>-</td><td>VAF 1.08</td><td>506.5</td></tr></tbody></table>
+
+    <h3>Puntos de caso de uso</h3>
+    <table><thead><tr><th>Concepto</th><th>Valor</th></tr></thead><tbody><tr><td>Peso de actores</td><td>11</td></tr><tr><td>Peso de casos de uso</td><td>185</td></tr><tr><td>UUCP</td><td>196</td></tr><tr><td>TCF</td><td>0.95</td></tr><tr><td>ECF</td><td>0.82</td></tr><tr><td>PCU</td><td>152.7</td></tr></tbody></table>
+
+    <h3>Puntos de objetos</h3>
+    <table><thead><tr><th>Elemento</th><th>Calculo</th><th>Resultado</th></tr></thead><tbody><tr><td>Pantallas</td><td>34 x 2</td><td>68</td></tr><tr><td>Reportes</td><td>7 x 5</td><td>35</td></tr><tr><td>Componentes 3GL</td><td>20 x 10</td><td>200</td></tr><tr><td>Puntos objeto</td><td>Suma</td><td>303</td></tr><tr><td>Puntos nuevos</td><td>70% por reutilizacion</td><td>212.1</td></tr></tbody></table>
+
+    <h3>Puntos de historia</h3>
+    <table><thead><tr><th>Dato</th><th>Valor</th></tr></thead><tbody><tr><td>Total de historias</td><td>199</td></tr><tr><td>Velocidad asumida</td><td>22 puntos por sprint</td></tr><tr><td>Duracion por sprint</td><td>2 semanas</td></tr><tr><td>Equipo base</td><td>4 personas</td></tr></tbody></table>
+
+    <h3>Estimacion con herramienta digital</h3>
+    <p>Se usa una estimacion COCOMO organica basada en las 27.6 KLOC medidas por el generador local.</p>
+
+    <h3>Analisis comparativo</h3>
+    <table><thead><tr><th>Modelo</th><th>Tamano</th><th>Esfuerzo (pm)</th><th>Tiempo (meses)</th><th>Personas</th><th>Costo</th></tr></thead><tbody><tr><td>Puntos de funcion</td><td>506.5 PF</td><td>50.7</td><td>11.1</td><td>5</td><td>$ 212.738.400 COP</td></tr><tr><td>Puntos de caso de uso</td><td>152.7 PCU</td><td>23.9</td><td>8.3</td><td>3</td><td>$ 100.198.875 COP</td></tr><tr><td>Puntos de objeto</td><td>212.1 PO</td><td>16.3</td><td>7.2</td><td>3</td><td>$ 68.524.615 COP</td></tr><tr><td>Puntos de historia</td><td>199 PH</td><td>18.1</td><td>4.5</td><td>4</td><td>$ 75.981.818 COP</td></tr><tr><td>Herramienta COCOMO/LOC</td><td>27.6 KLOC</td><td>78.3</td><td>13.1</td><td>6</td><td>$ 328.683.883 COP</td></tr></tbody></table>
+    <div class="callout"><strong>Propuesta viable.</strong> Para planear la continuacion academica del producto conviene usar puntos de caso de uso complementados con puntos de historia. COCOMO queda como cota superior de estabilizacion para un escenario productivo mas formal.</div>
+  </section>
+
+  <section>
+    <h2>Conclusiones generales</h2>
+    <ol>
+      <li>KineSys cubre el alcance principal de la documentacion y posee modulos funcionales para pacientes, terapeutas, tratamientos, agenda, reportes, seguridad y auditoria.</li>
+      <li>La mantenibilidad es favorable: WMC promedio bajo, separacion por capas y pruebas automatizadas exitosas.</li>
+      <li>La complejidad mas alta esta en PersonasController; dividirlo en autenticacion, usuarios y personas mejoraria el diseno.</li>
+      <li>La evidencia para la entrega final queda repetible: ejecutar <code>node scripts/docs/build-ultima-parte-document.js</code> actualiza Markdown, HTML y JSON.</li>
+      <li>Para cumplir la exigencia visual de SonarQube, se agrego <code>sonar-project.properties</code>; solo faltaria ejecutar el scanner y anexar el pantallazo.</li>
+    </ol>
+    <h2>Referencias bibliograficas</h2>
+    <ul>
+      <li>ISO/IEC 25010: modelo de calidad de producto de software.</li>
+      <li>Pressman, R. Ingenieria de software: un enfoque practico.</li>
+      <li>Sommerville, I. Software Engineering.</li>
+      <li>Documentacion oficial de React, Vite, Vitest, Jest, ASP.NET Core, Entity Framework Core y xUnit.</li>
+      <li>Repositorio local KineSys y documentacion enviada: Avance Documentacion Ing.Software y Ultima parte.</li>
+    </ul>
+  </section>
+</body>
+</html>
