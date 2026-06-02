@@ -1,33 +1,27 @@
-import { Routes, Route } from "react-router-dom"
-import Home from "../pages/Home"
-import Therapists from "../pages/Therapists"
-import Pacientes from "../pages/Gestionpaciente/Pacientes"
-import FormPaciente from "../pages/Gestionpaciente/FormPaciente"
-import Treatments from "../pages/Treatments"
-import Agenda from "../pages/Agenda"
-import Login from "../pages/Login"
-import PacienteCardMini from "../pages/Gestionpaciente/components/PacienteCardMini"
-
-import AdminHome from "../pages/AdminHome/AdminHome"
-import AgendaAdmin from "../pages/GestionAdmin/GestionAgenda/AgendaAdmin"
-import Reportes from "../pages/GestionAdmin/GestionReporte/Reportes"
-
-import PatientList from "../pages/GestionAdmin/GestionPaciente/PatientList"
-import PatientForm from "../pages/GestionAdmin/GestionPaciente/PatientForm"
-import PatientDetail from "../pages/GestionAdmin/GestionPaciente/PatientDetail"
-
-import AppointmentList from "../pages/GestionAdmin/GestionCita/AppointmentList"
-import AppointmentForm from "../pages/GestionAdmin/GestionCita/AppointmentForm"
-import CitaList from "../pages/GestionAdmin/GestionCita/CitaList"
-
-import TerapeutaHome from "../pages/TerapeutaHome/TerapeutaHome"
-import TerapeutasList from "@/pages/GestionAdmin/GestionTerapeuta/TerapeutasList"
-import TratamientosList from "@/pages/GestionAdmin/GestionTratamiento/TratamientosList" // Tus tratamientos
-import PacienteDashboard from "../pages/Gestionpaciente/PacienteDashboard"
-import EquiposList from "@/pages/GestionAdmin/GestionEquipo/EquiposList"
-import TipoServiciosList from "@/pages/GestionAdmin/GestionServicio/TipoServiciosList"
-import SalasList from "@/pages/GestionAdmin/GestionSala/SalasList"
-
+import { Route, Routes } from "react-router-dom"
+import Home from "@/features/public/Home"
+import Therapists from "@/features/public/Therapists"
+import Treatments from "@/features/public/Treatments"
+import Agenda from "@/features/public/Agenda"
+import Login from "@/features/auth/Login"
+import Pacientes from "@/features/patient/Gestionpaciente/Pacientes"
+import FormPaciente from "@/features/patient/Gestionpaciente/FormPaciente"
+import PacienteCardMini from "@/features/patient/Gestionpaciente/components/PacienteCardMini"
+import PacienteDashboard from "@/features/patient/Gestionpaciente/PacienteDashboard"
+import AdminHome from "@/features/admin/AdminHome/AdminHome"
+import AgendaAdmin from "@/features/admin/GestionAdmin/GestionAgenda/AgendaAdmin"
+import Reportes from "@/features/admin/GestionAdmin/GestionReporte/Reportes"
+import PatientList from "@/features/admin/GestionAdmin/GestionPaciente/PatientList"
+import PatientForm from "@/features/admin/GestionAdmin/GestionPaciente/PatientForm"
+import PatientDetail from "@/features/admin/GestionAdmin/GestionPaciente/PatientDetail"
+import AppointmentForm from "@/features/admin/GestionAdmin/GestionCita/AppointmentForm"
+import CitaList from "@/features/admin/GestionAdmin/GestionCita/CitaList"
+import TerapeutasList from "@/features/admin/GestionAdmin/GestionTerapeuta/TerapeutasList"
+import TratamientosList from "@/features/admin/GestionAdmin/GestionTratamiento/TratamientosList"
+import EquiposList from "@/features/admin/GestionAdmin/GestionEquipo/EquiposList"
+import TipoServiciosList from "@/features/admin/GestionAdmin/GestionServicio/TipoServiciosList"
+import SalasList from "@/features/admin/GestionAdmin/GestionSala/SalasList"
+import TerapeutaHome from "@/features/therapist/TerapeutaHome/TerapeutaHome"
 
 export default function AppRouter() {
   return (
@@ -38,43 +32,31 @@ export default function AppRouter() {
       <Route path="/agenda" element={<Agenda />} />
       <Route path="/login" element={<Login />} />
 
-      {/* MÓDULO PACIENTES LEGACY (puede ser deprecado eventualmente) */}
+      {/* Modulo pacientes legacy */}
       <Route path="/pacientes" element={<Pacientes />} />
       <Route path="/pacientes/nuevo" element={<FormPaciente />} />
       <Route path="/pacientes/:id" element={<PacienteCardMini />} />
 
-
-      {/* MÓDULO ADMIN */}
-      <Route path="/gestionadmin/*" element={<AdminHome />} /> {/* Agregar /* aquí */}
-      {/* MÓDULO ADMIN - Added /* to allow nested routes */}
+      {/* Modulo administrador */}
+      <Route path="/gestionadmin/*" element={<AdminHome />} />
       <Route path="/AdminHome/*" element={<AdminHome />} />
-
       <Route path="/gestionterapeuta/terapeuta" element={<TerapeutasList />} />
-
       <Route path="/gestionagenda/agendaadmin" element={<AgendaAdmin />} />
-
       <Route path="/gestionreporte/reportes" element={<Reportes />} />
-
       <Route path="/gestionpaciente/pacientes" element={<PatientList />} />
       <Route path="/gestionpaciente/nuevo" element={<PatientForm />} />
       <Route path="/gestionpaciente/:id" element={<PatientDetail />} />
       <Route path="/gestionpaciente/editar/:id" element={<PatientForm />} />
-
       <Route path="/gestioncita/citas" element={<CitaList />} />
       <Route path="/gestioncita/nueva" element={<AppointmentForm />} />
       <Route path="/gestioncita/editar/:id" element={<AppointmentForm />} />
-
-      {/* MANTENER AMBAS RUTAS - TRATAMIENTOS Y EQUIPOS */}
       <Route path="/gestiontratamiento/tratamientos" element={<TratamientosList />} />
       <Route path="/gestionequipo/equipos" element={<EquiposList />} />
-
       <Route path="/gestionservicio/servicios" element={<TipoServiciosList />} />
-
       <Route path="/gestionsala/salas" element={<SalasList />} />
 
-      {/* MÓDULO TERAPEUTA */}
+      {/* Modulo terapeuta y paciente */}
       <Route path="/dashboard" element={<TerapeutaHome />} />
-
       <Route path="/paciente-dashboard" element={<PacienteDashboard />} />
     </Routes>
   )

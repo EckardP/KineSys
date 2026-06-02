@@ -1,18 +1,56 @@
-# React + Vite
+# KineSys
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend React/Vite del sistema de gestion para una clinica de fisioterapia. Esta carpeta contiene la aplicacion web, servicios de consumo del API, rutas por rol, pruebas automatizadas y build de produccion.
 
-Currently, two official plugins are available:
+## Requisitos
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Node.js 24.x o compatible con Vite 7.
+- npm 11.x.
+- API .NET disponible en la URL configurada por `src/config/apiConfig.js` o variables de entorno.
 
-## React Compiler
+## Comandos
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+```bash
+npm install
+npm run dev
+npm run build
+npm run lint
+npm test
+npm run test:coverage
+npm run test:jest
+```
 
-Note: This will impact Vite dev & build performances.
+## Modulos principales
 
-## Expanding the ESLint configuration
+- Autenticacion con JWT y roles: administrador, terapeuta y paciente.
+- Gestion de pacientes, fichas, historial y contactos/documentos asociados.
+- Gestion de terapeutas, especialidades y disponibilidad.
+- Tratamientos, protocolos, servicios, salas y equipos.
+- Agenda, citas, asistencia y control de sesiones.
+- Reportes operativos con graficos y exportacion CSV.
+- Auditoria y soporte de notificaciones en tiempo real con SignalR.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Evidencia de calidad
+
+La ultima verificacion local dejo estos resultados:
+
+- `npm run lint`: sin errores.
+- `npm test`: 10 archivos y 107 pruebas aprobadas.
+- `npm run test:coverage`: 71.83% de sentencias y 71.75% de lineas.
+- `npm run build`: build productivo generado en `dist/`.
+
+## Documentacion de la entrega final
+
+Desde la raiz del repositorio se puede regenerar la tercera y cuarta parte:
+
+```bash
+node scripts/docs/build-ultima-parte-document.js
+```
+
+El comando genera:
+
+- `artifacts/documentos/ultima-parte/medicion-estimacion-kinesys.md`
+- `artifacts/documentos/ultima-parte/medicion-estimacion-kinesys.html`
+- `artifacts/documentos/ultima-parte/metricas-kinesys.json`
+
+La configuracion de SonarQube esta en `../sonar-project.properties`.

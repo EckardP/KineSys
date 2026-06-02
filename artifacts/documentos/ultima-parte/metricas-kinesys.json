@@ -1,0 +1,216 @@
+{
+  "fecha": "29 de mayo de 2026",
+  "loc": {
+    "byExtension": [
+      [
+        ".cs",
+        87,
+        6599,
+        5178
+      ],
+      [
+        ".css",
+        11,
+        2109,
+        1714
+      ],
+      [
+        ".js",
+        62,
+        3171,
+        2525
+      ],
+      [
+        ".jsx",
+        112,
+        19183,
+        18205
+      ]
+    ],
+    "topFiles": [
+      {
+        "file": "kinesys\\src\\features\\admin\\GestionAdmin\\GestionTerapeuta\\Terapeuta.jsx",
+        "ext": ".jsx",
+        "total": 963,
+        "nonEmpty": 923,
+        "nloc": 881
+      },
+      {
+        "file": "kinesys\\src\\features\\admin\\GestionAdmin\\GestionPaciente\\PatientForm.jsx",
+        "ext": ".jsx",
+        "total": 838,
+        "nonEmpty": 783,
+        "nloc": 754
+      },
+      {
+        "file": "kinesys\\src\\features\\patient\\Gestionpaciente\\PacienteForm.jsx",
+        "ext": ".jsx",
+        "total": 838,
+        "nonEmpty": 783,
+        "nloc": 754
+      },
+      {
+        "file": "kinesys\\src\\features\\therapist\\TerapeutaHome\\components\\patients\\PatientForm.jsx",
+        "ext": ".jsx",
+        "total": 861,
+        "nonEmpty": 802,
+        "nloc": 751
+      },
+      {
+        "file": "kinesys\\src\\styles\\GlobalStyles.css",
+        "ext": ".css",
+        "total": 941,
+        "nonEmpty": 813,
+        "nloc": 683
+      },
+      {
+        "file": "kinesys\\src\\features\\admin\\GestionAdmin\\GestionTratamiento\\TratamientoForm.jsx",
+        "ext": ".jsx",
+        "total": 649,
+        "nonEmpty": 598,
+        "nloc": 557
+      },
+      {
+        "file": "kinesys\\src\\features\\admin\\GestionAdmin\\GestionCita\\CitaTherapistSelection.jsx",
+        "ext": ".jsx",
+        "total": 621,
+        "nonEmpty": 555,
+        "nloc": 502
+      },
+      {
+        "file": "kinesys\\src\\features\\patient\\Gestionpaciente\\Pacientes.jsx",
+        "ext": ".jsx",
+        "total": 470,
+        "nonEmpty": 440,
+        "nloc": 431
+      },
+      {
+        "file": "api\\ApiPrueba\\Controllers\\PersonasController.cs",
+        "ext": ".cs",
+        "total": 539,
+        "nonEmpty": 473,
+        "nloc": 412
+      },
+      {
+        "file": "kinesys\\src\\features\\admin\\GestionAdmin\\GestionTerapeuta\\GestionarEspecialidadesTerapeuta.jsx",
+        "ext": ".jsx",
+        "total": 419,
+        "nonEmpty": 395,
+        "nloc": 371
+      }
+    ],
+    "totals": {
+      "files": 272,
+      "total": 34951,
+      "nonEmpty": 31062,
+      "nloc": 27622
+    }
+  },
+  "classTotals": {
+    "clases": 114,
+    "metodos": 297,
+    "wmc": 577,
+    "dit": 1,
+    "cbo": 299,
+    "wmcPromedio": 5.06,
+    "cboPromedio": 2.62
+  },
+  "isoRows": [
+    [
+      "Usabilidad",
+      "Rutas principales implementadas / rutas requeridas",
+      "8 / 8 = 100%",
+      "Paneles por rol y navegacion por modulos; faltan pruebas con usuarios reales."
+    ],
+    [
+      "Seguridad",
+      "Controles activos / controles esperados",
+      "5 / 5 = 100%",
+      "JWT, CORS restringido, fallback policy, manejo 401 y pruebas de token."
+    ],
+    [
+      "Portabilidad",
+      "Entornos verificados / entornos objetivo",
+      "2 / 3 = 66.7%",
+      "Frontend y backend verificados en Windows; Docker/produccion queda pendiente."
+    ],
+    [
+      "Mantenibilidad",
+      "Cobertura + complejidad media",
+      "Cobertura 71.83%, WMC promedio 5.06",
+      "Separacion por capas adecuada; PersonasController concentra mayor complejidad."
+    ],
+    [
+      "Rendimiento",
+      "Build productivo + tamano de assets",
+      "Build exitoso, asset mayor bajo 746 KB",
+      "La app compila; conviene seguir dividiendo chunks si crece."
+    ],
+    [
+      "Fiabilidad",
+      "Pruebas aprobadas / pruebas ejecutadas",
+      "146 / 146 = 100%",
+      "107 pruebas frontend y 39 pruebas backend superadas."
+    ],
+    [
+      "Compatibilidad",
+      "Navegadores modernos soportados / objetivo",
+      "3 / 3 planeados",
+      "React/Vite compatible con Chromium, Firefox y WebKit; requiere validacion visual final."
+    ],
+    [
+      "Adecuacion funcional",
+      "Modulos documentados implementados / modulos requeridos",
+      "8 / 8 = 100%",
+      "El alcance principal del documento esta cubierto o parcialmente cubierto con evidencia."
+    ]
+  ],
+  "estimaciones": [
+    [
+      "Puntos de funcion",
+      "506.5 PF",
+      "50.7",
+      "11.1",
+      5,
+      "$ 212.738.400 COP"
+    ],
+    [
+      "Puntos de caso de uso",
+      "152.7 PCU",
+      "23.9",
+      "8.3",
+      3,
+      "$ 100.198.875 COP"
+    ],
+    [
+      "Puntos de objeto",
+      "212.1 PO",
+      "16.3",
+      "7.2",
+      3,
+      "$ 68.524.615 COP"
+    ],
+    [
+      "Puntos de historia",
+      "199 PH",
+      "18.1",
+      "4.5",
+      4,
+      "$ 75.981.818 COP"
+    ],
+    [
+      "Herramienta COCOMO/LOC",
+      "27.6 KLOC",
+      "78.3",
+      "13.1",
+      6,
+      "$ 328.683.883 COP"
+    ]
+  ],
+  "pruebas": {
+    "frontend": "107/107",
+    "backend": "39/39",
+    "lint": "0 errores",
+    "build": "exitoso"
+  }
+}
