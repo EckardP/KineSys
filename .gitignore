@@ -53,5 +53,8 @@ $RECYCLE.BIN/
 *.sublime-project
 *.code-workspace
 
-echo "Kinesys.zip" >> .gitignore
-echo "*.zip" >> .gitignoresKinesys.zip
+# =======================
+# Archives
+# =======================
+*.zip
+Kinesys.zip

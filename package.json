@@ -1,6 +1,18 @@
 {
-  "dependencies": {
-    "@microsoft/signalr": "^10.0.0",
-    "axios": "^1.13.2"
+  "name": "kinesys-root",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Repositorio raiz de KineSys: frontend React/Vite, API ASP.NET Core y documentacion academica.",
+  "scripts": {
+    "dev": "npm --prefix kinesys run dev",
+    "build": "npm --prefix kinesys run build",
+    "lint": "npm --prefix kinesys run lint",
+    "test": "npm run test:frontend && npm run test:backend",
+    "test:frontend": "npm --prefix kinesys test",
+    "test:coverage": "npm --prefix kinesys run test:coverage",
+    "test:backend": "dotnet test api/ApiPrueba.sln",
+    "docs:ultima": "node scripts/docs/build-ultima-parte-document.js",
+    "docs:ultima:pdf": "node kinesys/scripts/generar-pdf-seguridad.mjs artifacts/documentos/ultima-parte/medicion-estimacion-kinesys.html artifacts/documentos/ultima-parte/medicion-estimacion-kinesys.pdf",
+    "docs:primera": "node scripts/docs/build-proyecto-final-document.js"
   }
 }

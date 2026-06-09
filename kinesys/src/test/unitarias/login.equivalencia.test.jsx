@@ -19,7 +19,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
-import Login from '../../pages/Login';
+import Login from '@/features/auth/Login';
 
 vi.mock('../../config/apiConfig', () => ({ API_BASE_URL: 'http://localhost:5058/api' }));
 
@@ -102,7 +102,7 @@ describe('CI-P04 | Campo contraseña vacío (CI3)', () => {
 });
 
 // ─── Clase CI-P05: Credenciales incorrectas (401) ────────────────────────
-describe('CI-P05 | Credenciales inválidas — respuesta 401 (CI5)', () => {
+describe('CI-P05 | Credenciales inválidas - respuesta 401 (CI5)', () => {
   test('muestra mensaje de error al recibir credenciales incorrectas', async () => {
     const loginMock = vi.fn().mockRejectedValue(new Error('Credenciales inválidas'));
     renderLogin(loginMock);

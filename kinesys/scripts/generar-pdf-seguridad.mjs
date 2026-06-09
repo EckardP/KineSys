@@ -6,10 +6,10 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, "..", "..");
 const htmlPath = process.argv[2]
   ? path.resolve(repoRoot, process.argv[2])
-  : path.join(repoRoot, "artifacts", "seguridad_iso25010_kinesys_explicado.html");
+  : path.join(repoRoot, "artifacts", "documentos", "seguridad-iso25010", "seguridad_iso25010_kinesys_explicado.html");
 const pdfPath = process.argv[3]
   ? path.resolve(repoRoot, process.argv[3])
-  : path.join(repoRoot, "artifacts", "seguridad_iso25010_kinesys_explicado.pdf");
+  : path.join(repoRoot, "artifacts", "documentos", "seguridad-iso25010", "seguridad_iso25010_kinesys_explicado.pdf");
 
 const browser = await chromium.launch();
 const page = await browser.newPage();

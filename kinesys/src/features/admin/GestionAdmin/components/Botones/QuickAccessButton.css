@@ -1,0 +1,40 @@
+.quick-button {
+  min-height: 126px;
+  background: var(--ks-surface);
+  border: 1px solid var(--ks-border);
+  border-radius: var(--ks-radius);
+  box-shadow: var(--ks-shadow-sm);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  cursor: pointer;
+  transition: background var(--ks-transition), transform var(--ks-transition), box-shadow var(--ks-transition);
+  width: 100%;
+  text-align: left;
+}
+
+.quick-button:hover {
+  background: var(--ks-surface-muted);
+  transform: translateY(-2px);
+  box-shadow: var(--ks-shadow-md);
+}
+
+.quick-icon {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+  color: var(--ks-primary);
+  background: rgba(39, 96, 108, 0.10);
+  border-radius: var(--ks-radius);
+}
+
+.quick-label {
+  font-weight: 800;
+  color: var(--ks-ink);
+  font-size: 0.9rem;
+}
